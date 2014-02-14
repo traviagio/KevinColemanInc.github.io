@@ -3,7 +3,7 @@
 # ----------------------- #
 
 url: http://KevinColemanInc.github.io
-title: Hi. I am Kevin Coleman
+title: Kevin Coleman
 subtitle: "I am a software developer based in Atlanta with interests in start ups, web apps, and design. feel free to contact me"
 author: Kevin Coleman
 simple_search: http://google.com/search
@@ -20,6 +20,12 @@ subscribe_rss: /atom.xml
 subscribe_email:
 # RSS feeds can list your email address if you like
 email:
+
+navigation:
+- text: Home
+  url: /index.html
+- text: About
+  url: /about/
 
 # ----------------------- #
 #    Jekyll & Plugins     #
@@ -81,6 +87,9 @@ google_plus_one_size: medium
 # Hidden: No visible button, just add author information to search results
 googleplus_user:
 googleplus_hidden: false
+
+#linked in
+linkedin_user: kevinjcoleman
 
 # Pinboard
 pinboard_user:
