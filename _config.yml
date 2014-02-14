@@ -3,10 +3,10 @@
 # ----------------------- #
 
 url: http://KevinColemanInc.github.io
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
-simple_search: https://www.google.com/search
+title: Kevin Coleman's Blog
+subtitle: A blog for hackers.
+author: Kevin Coleman
+simple_search: http://google.com/search
 description:
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
@@ -64,13 +64,13 @@ default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.
 # ----------------------- #
 
 # Github repositories
-github_user:
-github_repo_count: 0
+github_user: KevinColemanInc
+github_repo_count: 10
 github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
-twitter_user:
+twitter_user: KevinColemanInc
 twitter_tweet_button: true
 
 # Google +1
