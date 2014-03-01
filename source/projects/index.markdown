@@ -11,7 +11,7 @@ In no particular order, here is a list of all of the projects I have worked on i
 ## Under development
 * Focused Care Solutions - monitor healthcare member's health remotely
 * LeadResponder [link](http://LeadResponder.com) - respond to contact requests immediately
-* SnapDocs [link](SnapDocs.io) - share important documents descretely
+* SnapDocs [link](http://SnapDocs.io) - share important documents descretely
 
 ## Ended development
 ### BitcoinFTW
