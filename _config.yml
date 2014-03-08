@@ -28,6 +28,8 @@ navigation:
   url: /about/
 - text: Projects
   url: /projects/
+- text: Contact
+  url: /contact/
 
 # ----------------------- #
 #    Jekyll & Plugins     #
