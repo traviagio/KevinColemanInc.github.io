@@ -15,7 +15,7 @@ footer: true
 
   <div class="col-sm-offset-2 col-sm-10">
 
-  <button type="submit" class="btn btn-default">Send 
+  <button type="submit" class="btn btn-info">Send 
   </button>
   
   <div id="result">
