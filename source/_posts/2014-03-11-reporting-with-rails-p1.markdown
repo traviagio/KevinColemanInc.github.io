@@ -77,7 +77,7 @@ def show
 end
 ```
 
-[Brakeman](http://brakemanscanner.org/) hates this, because using .to_sym on any parameter is a huge security flaw.  This reporting engine was locked behind CanCan/Devise and only staff members had access to this page.  But someone malicious could of done a lot of damage to the system if abused.
+[Brakeman](http://brakemanscanner.org/) hates this, because using .to_sym on any parameter is a huge security flaw.  This reporting engine was locked behind [CanCan](https://github.com/ryanb/cancan)/[Devise](https://github.com/plataformatec/devise) and only staff members had access to this page.  But someone malicious could of done a lot of damage to the system if abused.
 
 ## Pros
 
