@@ -31,7 +31,7 @@ These reports need to be install via rake tasks or migrations (to be honest, my 
 ```ruby
  Report.create!(
     name: "All Users",
-    url_name: "all_users"
+    url_name: "all_users",
     description: "show all users in the database"
     )
 ```
