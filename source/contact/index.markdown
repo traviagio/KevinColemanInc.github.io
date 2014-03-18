@@ -35,3 +35,6 @@ footer: true
   }
   new Fireform('#contact', 'http://fireform.org/list/63/email', options);
 </script>
+
+
+<iframe width='180' height='260' src='https://wizpert.com/wizapi/widget?beta_key=3ba42&ep=28263&size=standard&topic_slug=rails-programming' frameborder='0' scrolling='no' allowfullscreen></iframe>

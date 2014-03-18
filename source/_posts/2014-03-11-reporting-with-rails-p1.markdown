@@ -84,7 +84,7 @@ end
 * Custom sql == more control over the queries allowing for greater efficiency
 * SQL is managed in GIT, so you can easily view the changes
 * Formatting is handled by RoR, which lets you make use of the helper methods
-* Because the SQL lives in code, you can leverage ruby by creating custom ruby methods to generate portions of it.  (think a method the lets all reports sharing the same where conditions for datetime restrictions)
+* Because the SQL lives in code, you can leverage ruby by creating custom ruby methods to generate portions of SQL.  (think a method the lets all reports sharing the same where conditions for datetime restrictions)
 
 ## Cons
 
