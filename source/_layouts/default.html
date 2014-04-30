@@ -13,6 +13,10 @@
   	  </div>
   	</div>
   </div>
+  <div id="js-ca"><i class="fa fa-comments-o fa-2x"></i><span id="js-ca-status">Chat loading</span>
+  </div>
+
+
   <div class="container" id="main">
       <div class="row-fluid">
         <div id="content">
@@ -25,6 +29,24 @@
         </footer>
       </div>
   </div>
+
+  <script type="text/javascript">
+    //var sound = new Howl({  urls: ['http://www.soundjay.com/button/button-37.mp3']}).play();
+    var socketio = io.connect("ss-chat-p.herokuapp.com");
+    socketio.on("message_to_client", function(data) {
+
+        if(data["isAdminOnline"])
+        {
+            $("#js-ca").html("<a href='/chat'><i class='fa fa-comments-o fa-2x'></i> <span id='js-ca-status'>Chat Online</span></a>");
+        }
+        else
+        {
+            $("#js-ca").html("<i class='fa fa-comments-o fa-2x'></i> <span id='js-ca-status'>Chat Offline</span>");
+        }
+    });
+
+</script>
+
   {% include after_footer.html %}
 </body>
 </html>

@@ -1,7 +1,6 @@
 ---
 layout: page
 title: "Projects"
-date: 2014-03-01 09:53
 comments: true
 sharing: true
 footer: true
@@ -9,11 +8,16 @@ footer: true
 In no particular order, here is a list of all of the projects I have worked on in the last 3 years.
 
 ## Under development
-* Focused Care Solutions - monitor healthcare member's health remotely
-* LeadResponder [link](http://LeadResponder.com) - respond to contact requests immediately
-* SnapDocs [link](http://SnapDocs.io) - share important documents descretely
+### SparkChat [link](http://kcoleman.me/chat)
+Chat with me when I am gTalk
+
+### LeadResponder [link](http://LeadResponder.com)
+Respond to contact requests immediately
 
 ## Ended development
+### Focused Care Solutions
+Monitor healthcare member's health remotely
+
 ### BitcoinFTW
 Bitcoin algorithm trading platform built in C# and RoR.
 
