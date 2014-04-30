@@ -5,38 +5,36 @@ comments: true
 sharing: true
 footer: true
 ---
-In no particular order, here is a list of all of the projects I have worked on in the last 3 years.
+Try some things I've built recently like…
 
-## Under development
-### SparkChat [link](http://kcoleman.me/chat)
+## SparkChat [link](http://kcoleman.me/chat)
 Chat with me when I am gTalk
 
-### LeadResponder [link](http://LeadResponder.com)
+## LeadResponder [link](http://LeadResponder.com)
 Respond to contact requests immediately
 
-## Ended development
-### Focused Care Solutions
+## ~~Focused Care Solutions~~
 Monitor healthcare member's health remotely
 
-### BitcoinFTW
+## BitcoinFTW
 Bitcoin algorithm trading platform built in C# and RoR.
 
-### Atlanta Botanical Gardens Holiday Nights ticketing platform
+## Atlanta Botanical Gardens Holiday Nights ticketing platform
 Custom built ticketing platform with mobile app that processed over 200k. 
 
-### Freshtix [link](http://freshtix.com)
+## Freshtix [link](http://freshtix.com)
 Ticketing platform for small events in Atlanta
 
-### TA Ticket Printing [link](taticketprinting.com)
+## TA Ticket Printing [link](taticketprinting.com)
 Maintained Ruby on Rails [Spree](http://spreecommerce.com/) e-commerce store with customizable inventory
 
-### Crowdfunding platform
+## Crowdfunding platform
 Simple crowdfunding platform
 
-### FIRST Robotics Scouting website '12 [link](http://ditu2012scouting.herokuapp.com/)
+## FIRST Robotics Scouting website '12 [link](http://ditu2012scouting.herokuapp.com/)
 Web application to assist robotics teams with their scouting for the 2012 robotics season. Github: [Team5454/RingItUp2012-2013](https://github.com/Team5454/RingItUp2012-2013)
 
-### TuDew [link](http://tudew.herokuapp.com/)
+## TuDew [link](http://tudew.herokuapp.com/)
 To do list application in RoR. Github: [KevinColemanInc/TuDew](https://github.com/KevinColemanInc/TuDew)
 
 ## Startup weekend/hackathon projects
