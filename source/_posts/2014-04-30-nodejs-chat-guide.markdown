@@ -146,10 +146,8 @@ The status message is set to 'SparkBot is ready' when the xmpp client connects a
 
 If there are any errors with the xmpp client, they are displayed in the logs and the process is killed.
 
-The `set_status_method` function wraps the xmpp request to set the status message for the Google Talk client.
-
+The `set_status_method` function wraps the xmpp request to set the status message for the Google Talk client.sdfsdf
 ## Creating the Client view
-
 This blog is hosted on Github Pages and talks with my server on a different subdomain (chat.kcoleman.me).  I loved the style of Google Talk's chat window with the speech boxes pointing to a profile pic.  Since I don't have a profile pic to use, I replaced that with a name.  You can style this code to your hearts content, but the Javascript I used looks like this.
 
 ```javascript
@@ -187,7 +185,7 @@ When a user clicks the submit button, I get the values of the input name and mes
 
 Because this uses Sockets.io, we need to include their library in the client as well.
 
-```HTML
+```html
   <script src="http://ss-chat-p.herokuapp.com/socket.io/socket.io.js"></script>
 ```
 
