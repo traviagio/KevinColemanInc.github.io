@@ -20,7 +20,7 @@ Monitor healthcare member's health remotely
 Bitcoin algorithm trading platform built in C# and RoR.
 
 ## Atlanta Botanical Gardens Holiday Nights ticketing platform
-Custom built ticketing platform with mobile app that processed over 200k. 
+Custom built ticketing platform with mobile app that processed over 200k tickets. 
 
 ## Freshtix [link](http://freshtix.com)
 Ticketing platform for small events in Atlanta

@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Chat"
+title: "Chat with me"
 comments: true
 sharing: true
 footer: true
@@ -17,7 +17,7 @@ footer: true
     </fieldset>
     </form>
 </div>
-
+I hosted a node.js application on [Heroku](http://heroku.com) that messages me on Google Talk whenever someone contact's me.  Unfortunately, just because I might be signed in doesn't mean I am always sitting a computer.  You can read about how I built this in my [NodeJS Chat Guide](/blog/2014/04/30/nodejs-chat-guide/).
 
 <script type="text/javascript">
     //var sound = new Howl({  urls: ['http://www.soundjay.com/button/button-37.mp3']}).play();

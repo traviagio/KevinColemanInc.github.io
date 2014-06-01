@@ -37,6 +37,9 @@
     width: 300px;
     margin: 20px auto;
   }
+  #discussion::-webkit-scrollbar { 
+    display: none; 
+  }
 
   #discussion {
     overflow-y: scroll;
