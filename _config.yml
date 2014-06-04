@@ -30,6 +30,8 @@ navigation:
   url: /projects/
 - text: Contact
   url: /contact/
+- text: Coleman Laws
+  url: /coleman-laws/
 
 # ----------------------- #
 #    Jekyll & Plugins     #
