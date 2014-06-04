@@ -5,6 +5,7 @@ date: 2014-06-04 17:50:34 -0400
 comments: true
 categories: 
 ---
+<img src="/images/desktop.jpg" title="My path to success" />
 My first and foremost goal is to become a successful entrepreneur.  Unfortunately, I am still working on trying to get there.  While my [grandfather's laws](/coleman-laws) make a great guide for running a business, I don't have a business yet to run.
 
 After talking with many other successful entrepreneurs, I find that everyone has to find their own path to success, but you can learn from what the greats have to say and let their advice guide you.
