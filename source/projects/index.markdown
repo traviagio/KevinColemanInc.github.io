@@ -8,7 +8,7 @@ footer: true
 Try some things I've built recently like…
 
 ## SparkChat [link](http://kcoleman.me/chat)
-Chat with me when I am gTalk
+Chat with me when I am gTalk.  Still in alpha version.  Currently trying to port it to [Meteor](https://www.meteor.com/) when I have time.
 
 ## LeadResponder [link](http://LeadResponder.com)
 Respond to contact requests immediately
@@ -25,7 +25,7 @@ Custom built ticketing platform with mobile app that processed over 200k tickets
 ## Freshtix [link](http://freshtix.com)
 Ticketing platform for small events in Atlanta
 
-## TA Ticket Printing [link](taticketprinting.com)
+## TA Ticket Printing [link](http://taticketprinting.com)
 Maintained Ruby on Rails [Spree](http://spreecommerce.com/) e-commerce store with customizable inventory
 
 ## Crowdfunding platform
