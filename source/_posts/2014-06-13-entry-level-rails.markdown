@@ -20,6 +20,6 @@ I get asked a lot about what it takes to break into the Ruby on Rails industry a
 1. Understanding a testing framework ([rspec](https://github.com/rspec/rspec-rails) is my preference)
 1. Knowing some basic javascript (jquery)
 1. Know [TDD](http://en.wikipedia.org/wiki/Test-driven_development)
-1. Knowing Fat Controllers, Thin Models
+1. Knowing Thin Controllers, Fat Models
 1. Attends the local ruby on rails [meetup](http://meetup.com)
 
