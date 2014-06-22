@@ -5,7 +5,7 @@ date: 2014-06-01 00:05:08 -0400
 comments: true
 categories: 
 ---
-<img src="/images/alley.jpg" title="Twitter bot v1 on Heroku" />
+<img src="/images/alley.jpg" title="Twitter bot v1 on Heroku" class="banner-img" />
 
 Inspired by the Technology Review article, [How Advanced Social bots Have Infiltrated Twitter](http://www.technologyreview.com/view/527746/how-advanced-socialbots-have-infiltrated-twitter/), I thought it would be an interesting to see how difficult it is to write a bot to generate followers over a given topic.
 

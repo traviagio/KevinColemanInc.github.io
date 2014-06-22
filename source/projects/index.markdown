@@ -38,6 +38,7 @@ Web application to assist robotics teams with their scouting for the 2012 roboti
 To do list application in RoR. Github: [KevinColemanInc/TuDew](https://github.com/KevinColemanInc/TuDew)
 
 ## Startup weekend/hackathon projects
+* [FoodLoop](/blog/2014/06/21/goodie-hack-number-2/) - learn about food in your community
 * QuitFor (SWATL 3rd place) - help friends quit smoking
 * Lendr (SWORL 3rd place) [link](http://lendrapp.herokuapp.com/)- lend money to friends Github: [KevinColemanInc/lendr](https://github.com/KevinColemanInc/lendr)
 * Snugglr (SWNYC) - where snugglers meet snuggle buddies. Github: [KevinColemanInc/snugglr](https://github.com/KevinColemanInc/snugglr)

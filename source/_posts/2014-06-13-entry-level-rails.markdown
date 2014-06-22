@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-<img src="/images/bridge.jpg" title="What it takes to be entry level Rails developers" />
+<img src="/images/bridge.jpg" title="What it takes to be entry level Rails developers" class="banner-img" />
 
 I get asked a lot about what it takes to break into the Ruby on Rails industry at the various hackathons and start up weekends I have attended.  Spurred by this [/r/ruby question](http://www.reddit.com/r/ruby/comments/282n9k/what_ruby_skills_are_essential_for_an_entrylevel/).  I shall try my best to answer this question in a public setting.
 

@@ -5,7 +5,7 @@ date: 2014-05-17 11:14:24 -0400
 comments: true
 categories: 
 ---
-<img src="/images/music_slider.jpg" title="Tagging Models" />
+<img src="/images/music_slider.jpg" title="Tagging Models" class="banner-img"/>
 
 Sometimes you need to tag your models with tokens, think tagging images with keywords or including hashtags in a twitter post.
 

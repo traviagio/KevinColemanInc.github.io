@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-<img src="/images/escalator.jpg" title="My path to success" />
+<img src="/images/escalator.jpg" title="My path to success" class="banner-img" />
 
 
 My first and foremost goal is to become a successful entrepreneur.  Unfortunately, I am still working on trying to get there.  While my [grandfather's laws](/coleman-laws) make a great guide for running a business, I don't have a business yet to run.
