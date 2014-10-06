@@ -5,6 +5,7 @@ date: 2014-10-03 12:05:45 -0400
 comments: true
 categories:
 ---
+
 <img src="/images/mountain.jpeg" title="Angularjs Rails and SEO Part 1" class="banner-img"  />
 
 ## Intro
@@ -30,8 +31,8 @@ app.controller 'IndexCtrl', ($scope, $rootScope) ->
 
 and I have this on my `body` tag
 
-```slim app/views/layouts/application.html.slim
-  body data-status="{{ status }}"
+```haml app/views/layouts/application.html.slim
+  body data-status="{ { status } }"
 ```
 
 So now I can watch the data-status to see when angular has finished running.

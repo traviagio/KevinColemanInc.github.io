@@ -7,6 +7,9 @@ footer: true
 ---
 Try some things I've built recently like…
 
+## Atlanta StartUp Jobs [link](http://www.atlantastartupjobs.com)
+See job postings from Atlanta's top startups.
+
 ## SparkChat [link](http://kcoleman.me/chat)
 Chat with me when I am gTalk.  Still in alpha version.  Currently trying to port it to [Meteor](https://www.meteor.com/) when I have time.
 
@@ -20,7 +23,7 @@ Monitor healthcare member's health remotely
 Bitcoin algorithm trading platform built in C# and RoR.
 
 ## Atlanta Botanical Gardens Holiday Nights ticketing platform
-Custom built ticketing platform with mobile app that processed over 200k tickets. 
+Custom built ticketing platform with mobile app that processed over 200k tickets.
 
 ## Freshtix [link](http://freshtix.com)
 Ticketing platform for small events in Atlanta
