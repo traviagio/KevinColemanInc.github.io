@@ -129,3 +129,5 @@ else
 Much of this script was borrowed from [Ember.js, Google Ajax crawling and Rails](http://www.pieterjongsma.com/2013/01/11/ember-google-ajax-rails.html), but I didn't like he was detecting with angularjs was finished.  He was waiting for the page to finish its server requests, added some padding time and then finished.  Waiting for the flag to be set is a better technique, because I know angular has finished.
 
 Essentially this script takes in a URL, loads the page, and then waits for the flag to be set.  If the flag takes longer than 30s to be set, it bails and just renders what it has.  If you are on Heroku, you may need to shorten this flag to 15s, because [Heroku has a request timeout](https://devcenter.heroku.com/articles/request-timeout) of 30s.
+
+[Part 2](/blog/2014/10/07/angularjs-rails-and-seo-part-2/)
