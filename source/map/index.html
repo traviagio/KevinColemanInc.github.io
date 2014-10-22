@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <title>Basic GPS Map</title>
+    <style  type="text/css">
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #mapDiv {
+            height: 100%;
+            width: 100%;
+            margin: 0px;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="http://js.arcgis.com/3.8/js/esri/css/esri.css" />
+    <script src="https://js.arcgis.com/3.11/"></script>
+</head>
+<body>
+    <script>
+        var map;
+        require([
+            "esri/map",
+            "esri/arcgis/utils",
+            "dojo/domReady!"
+            ], function(Map, arcgisUtils){
+            arcgisUtils.createMap('3f1913849f2f4eeeb7d9a9032a3a1a61', "mapDiv").then(function (response) {
+                map = response.map;
+            });
+        });
+        $('#mapDiv').on('click', '.esriPopupWrapper .mainSection a', function (e) { dialResponder(e) });
+
+    </script>
+    <div id="mapDiv"></div>
+</body>
+</html>

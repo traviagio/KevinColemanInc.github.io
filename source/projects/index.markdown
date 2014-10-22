@@ -7,6 +7,13 @@ footer: true
 ---
 Try some things I've built recently like…
 
+## SparkStart.io [link](http://www.sparkstart.io)
+Spark Start website
+
+## SafetyNet (ATT Hackathon)
+Web operations platform for first responder managment.
+Won: 1st $1000 best public safety app, 1st $1000 ATT WebRTC prize, and 2nd place $250 telerik prize at the public safety ATT Hackathon. 2014
+
 ## Atlanta StartUp Jobs [link](http://www.atlantastartupjobs.com)
 See job postings from Atlanta's top startups.
 
@@ -16,7 +23,7 @@ Chat with me when I am gTalk.  Still in alpha version.  Currently trying to port
 ## LeadResponder [link](http://LeadResponder.com)
 Respond to contact requests immediately
 
-## ~~Focused Care Solutions~~
+## Focused Care Solutions
 Monitor healthcare member's health remotely
 
 ## BitcoinFTW
