@@ -7,6 +7,10 @@ footer: true
 ---
 Try some things I've built recently like…
 
+## ChargeForward [youtube](https://www.youtube.com/watch?v=1y-D-5O2dcY)
+FinApps 2014 3rd place Winner ($10,000 prize!)
+Android Wear application for hands free credit card selection
+
 ## SparkStart.io [link](http://www.sparkstart.io)
 Spark Start website
 
