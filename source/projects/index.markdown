@@ -7,6 +7,10 @@ footer: true
 ---
 Try some things I've built recently like…
 
+## Gathercam [link](https://gathercam.co)
+First place Startup Weekend 2014
+Photo aggregator via social media and hashtags for weddings and events
+
 ## ChargeForward [youtube](https://www.youtube.com/watch?v=1y-D-5O2dcY)
 FinApps 2014 3rd place Winner ($10,000 prize!)
 Android Wear application for hands free credit card selection
