@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Ruby on Rails | Kevin Coleman]]></title>
+  <link href="http://www.kcoleman.me/blog/categories/ruby-on-rails/atom.xml" rel="self"/>
+  <link href="http://www.kcoleman.me/"/>
+  <updated>2014-12-03T19:36:07-05:00</updated>
+  <id>http://www.kcoleman.me/</id>
+  <author>
+    <name><![CDATA[Kevin Coleman]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Setting Up a Ruby on Rails 4.0.1beta1 With OSX Mavericks 10.9]]></title>
+    <link href="http://www.kcoleman.me/blog/2014/02/14/setting-up-a-ruby-on-rails-4-dot-0-1beta1-with-osx-mavericks-10-dot-9/"/>
+    <updated>2014-02-14T01:21:15-05:00</updated>
+    <id>http://www.kcoleman.me/blog/2014/02/14/setting-up-a-ruby-on-rails-4-dot-0-1beta1-with-osx-mavericks-10-dot-9</id>
+    <content type="html"><![CDATA[<p>I keep having to setup Rails environments for people so I am just going to write my first blog article on how to do it on OSX 10.9.</p>
+
+<h2>Installing the Command line tools</h2>
+
+<p>The GCC compiler is required with installing RVM and Brew, so you need to download and install the xcode command line tools.  Open terminal and type in this:</p>
+
+<pre><code class="console Install Command line tools">  $ xcode-select --install
+</code></pre>
+
+<h2>Installing HomeBrew</h2>
+
+<p>Homebrew is a package manager that makes it stupid easy to install and update software.  We will be using this tool to install Git, Postgres, and RVM.  To install this tool enter this into the terminal:</p>
+
+<pre><code class="console Installing HomeBrew">  $ ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)"
+  $ brew doctor
+</code></pre>
+
+<p>The first command fetches and installs brew.  The second will update brew and fetch the latest installation scripts</p>
+
+<h2>Installing Postgres</h2>
+
+<p>Most guides recommend installing MySQL as the db engine, but because Heroku defaults to Postgres and Postgres is the hot right now, I use it in dev and in my production environments.</p>
+
+<p>To install, type this command into the terminal:</p>
+
+<pre><code class="console Installing Postgres">  $ brew update
+  $ brew install postgresql
+</code></pre>
+
+<p>At the end of the install, follow the instructions for how to startup the server.  I would recommend to have it autostart with login, so you don’t have to think about it.  If you wish to manually start it when you need it, don’t lose that command to start it.</p>
+
+<h2>Installing RVM</h2>
+
+<p>RVM is a ruby version manager.  It allows you to install multiple versions of ruby on your computer and easily switch between them.  This is important because as new versions of ruby on released, you will want to be able to test websites before deploying them and you may need to switch back to an old version if you encounter bugs.</p>
+
+<pre><code class="console Installing RVM">  $ \curl -L https://get.rvm.io | bash -s stable
+</code></pre>
+
+<h2>Install Rails</h2>
+
+<p>To install the rails toolset type in this to terminal:</p>
+
+<pre><code class="console Installing Rails">  $ gem install rails
+</code></pre>
+
+<p>This gives you rails command in terminal and allows you to create new rails websits.  To verify this installed properly type:</p>
+
+<pre><code class="console Installing Rails">  $ rails --version
+  Rails 4.1.0.beta1 
+</code></pre>
+
+<h2>Installing Git</h2>
+
+<p>git is the most common tool for managing source code.  I would recommend creating an account on github and using that as your source control.  Check out these guides for a quick start with git</p>
+
+<h3>Quick start git guide from the terminal</h3>
+
+<p>This is one of the best guides I could find on how to quickly emerse yourself into git.
+<a href="http://rogerdudler.github.io/git-guide/" title="Git Guide">Git Guide</a></p>
+
+<h3>GitHub flow</h3>
+
+<p>I uses this pattern for the repo if more than one person is working on it.
+<a href="http://scottchacon.com/2011/08/31/github-flow.html" title="Github Flow">What is GitFlow?</a></p>
+
+<h3>To install Git CLI</h3>
+
+<p>In order to have the most amount of control over your git repo, you will need to install the Git CLI.  Using the CLI can be intimidating at first, but it is definately worth learning.</p>
+
+<pre><code class="console Git CLI">  $ brew update
+  $ brew install git
+</code></pre>
+
+<h3>To install Github GUI</h3>
+
+<p>I also use Github’s GUI tool because it makes committing easier.  Unfortunately it tends to fall flat on its face outside of the happy path (read merge conflicts and rebasing), so you can’t completely rely on this tool for git management.</p>
+
+<p>Follow the instructions here
+<a href="http://mac.github.com/" title="Github tool">Github for mac</a></p>
+
+<h2>Install Heroku toolbelt</h2>
+
+<p><a href="http://Heroku.com/" title="Heroku">Heroku</a> is a popular hosting service for rails applications, mostly because it is free and easy to use.</p>
+
+<p>Make an account at <a href="http://Heroku.com/" title="Heroku">http://heroku.com/</a></p>
+
+<p>Install the toolbelt found here <a href="https://toolbelt.heroku.com/" title="Heroku Toolbelt">Heroku Toolbelt</a></p>
+
+<h2>Optional: Installing Sublime</h2>
+
+<p>Sublime is probably the most common text editor for Rails development.  You can download it here: <a href="http://www.sublimetext.com/" title="Sublime">Sublime</a></p>
+]]></content>
+  </entry>
+  
+</feed>

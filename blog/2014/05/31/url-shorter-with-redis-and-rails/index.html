@@ -1,0 +1,394 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Rails and Redis URL Shortener in Same Application - Kevin Coleman</title>
+  <meta name="author" content="Kevin Coleman">
+
+  
+  <meta name="description" content="Here is how to build a quick URL shortener in Rails 4.0 that shares the same application as the rest of your project, but is meant to run on a &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.kcoleman.me/blog/2014/05/31/url-shorter-with-redis-and-rails">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Kevin Coleman" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet" type="text/css">
+<!--- MathJax Configuration -->
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-48081941-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Kevin Coleman</a></h1>
+  
+    <h2>I am a software engineer at Spark Start with interests in start ups, web apps, and wearables.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscribe" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" viewbox="0 0 100 100"><path class="social" d="M 13.310204,73.332654 C 5.967347,73.332654 0,79.322448 0,86.621428 c 0,7.338776 5.967347,13.262246 13.310204,13.262246 7.370408,0 13.328572,-5.92245 13.328572,-13.262246 0,-7.29898 -5.958164,-13.288774 -13.328572,-13.288774 z M 0.01530612,33.978572 V 53.143878 C 12.493878,53.143878 24.229592,58.02347 33.068368,66.865306 41.894898,75.685714 46.767346,87.47449 46.767346,100 h 19.25 C 66.017346,63.592858 36.4,33.979592 0.01530612,33.978572 l 0,0 z M 0.03877552,0 V 19.17449 C 44.54796,19.17551 80.77551,55.437756 80.77551,100 H 100 C 100,44.87653 55.15102,0 0.03877552,0 z"></path></svg></a></li>
+  
+</ul>
+  
+  
+  
+  
+  
+<ul class="subscribe">
+  <li><a href="https://github.com/KevinColemanInc" rel="subscribe-github" title="@KevinColemanInc on GitHub"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" viewbox="0 0 100 100"><path class="social" d="M 50,0 C 22.385714,0 0,22.385714 0,50 0,77.614286 22.385714,100 50,100 77.614286,100 100,77.614286 100,50 100,22.385714 77.614286,0 50,0 z m 29.692858,79.692858 c -3.859184,3.859182 -8.351022,6.887754 -13.35,9.00306 -1.27041,0.536736 -2.560204,1.009184 -3.867348,1.415306 v -7.493878 c 0,-3.938774 -1.35102,-6.835714 -4.053062,-8.690816 1.692858,-0.163264 3.24694,-0.390816 4.663266,-0.683672 1.416326,-0.292858 2.913266,-0.716328 4.491838,-1.27041 1.57857,-0.55408 2.994896,-1.213264 4.247958,-1.97755 1.253062,-0.765306 2.458164,-1.758164 3.613266,-2.978572 1.155102,-1.220408 2.12449,-2.604082 2.905102,-4.15 0.780612,-1.545918 1.4,-3.40204 1.855102,-5.566326 0.455102,-2.164286 0.683674,-4.54898 0.683674,-7.153062 0,-5.045918 -1.643878,-9.341836 -4.931634,-12.890816 C 77.44796,33.35 77.285714,29.10204 75.463266,24.512244 l -1.22143,-0.145918 c -0.845918,-0.09796 -2.368366,0.260204 -4.565306,1.07449 -2.196938,0.814286 -4.663264,2.14796 -7.396938,4.004082 -3.87449,-1.07449 -7.893878,-1.611224 -12.061224,-1.611224 -4.19898,0 -8.203062,0.536734 -12.012246,1.611224 -1.72449,-1.17245 -3.361224,-2.139796 -4.907142,-2.905102 C 31.753062,25.77449 30.516326,25.254082 29.587756,24.97653 28.660204,24.7 27.79796,24.528572 27,24.463266 c -0.79796,-0.0653 -1.310204,-0.08062 -1.537756,-0.04898 -0.22755,0.03164 -0.390816,0.0653 -0.487754,0.09796 -1.82347,4.62245 -1.985714,8.87143 -0.487756,12.743878 -3.287754,3.54796 -4.931632,7.844898 -4.931632,12.890816 0,2.604082 0.227552,4.988776 0.683674,7.153062 0.456122,2.164286 1.07449,4.020408 1.855102,5.566326 0.780612,1.545918 1.75,2.929592 2.905102,4.15 1.155102,1.220408 2.360204,2.213266 3.613264,2.978572 1.253062,0.766326 2.669388,1.42449 4.24796,1.97755 1.578572,0.554082 3.07551,0.976532 4.491836,1.27041 1.416328,0.292856 2.970408,0.521428 4.663266,0.683672 -2.669388,1.82347 -4.004082,4.720408 -4.004082,8.690816 v 7.639796 C 36.536734,89.818368 35.083674,89.3 33.656122,88.695918 c -4.99898,-2.115306 -9.490816,-5.143878 -13.35,-9.00306 -3.859184,-3.859184 -6.887754,-8.351022 -9.00306,-13.35 C 9.1163263,61.171428 8.0071428,55.67347 8.0071428,50 c 0,-5.67347 1.1091835,-11.171428 3.2969392,-16.342858 2.115306,-4.998978 5.143878,-9.490816 9.00306,-13.35 3.859184,-3.859182 8.351022,-6.887754 13.35,-9.00306 C 38.828572,9.1163266 44.32653,8.0071428 50,8.0071428 c 5.67347,0 11.171428,1.1091838 16.342858,3.2969392 5,2.115306 9.490816,5.143878 13.35,9.00306 3.859182,3.859184 6.887754,8.351022 9.00306,13.35 2.186736,5.17245 3.295918,10.67041 3.295918,16.342858 0,5.672448 -1.109182,11.171428 -3.296938,16.342858 -2.115306,4.998978 -5.143878,9.490816 -9.00204,13.35 l 0,0 z"></path></svg></a></li>
+</ul>
+  
+  
+  
+  
+  
+<ul class="subscribe">
+  <li><a href="https://plus.google.com/+KevinColemanInc" rel="publisher" title="Google+ Profile"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" viewbox="0 0 100 100"><path class="social" d="M 23.03264,55.19021 C 32.01805,55.457578 38.046082,46.137447 36.495958,34.370183 34.943794,22.603939 26.398215,13.161349 17.411784,12.89296 8.4253533,12.625592 2.3973217,21.630392 3.9494863,33.400718 5.5006303,45.164921 14.043148,54.921821 23.03264,55.19021 z M 99.99898,24.999027 100,0 -0.00797206,0 0.0052943,16.202408 C 5.7047282,11.184661 13.611481,6.9914696 21.771315,6.9914696 c 8.721103,0 34.888495,0 34.888495,0 l -7.807765,6.6035874 -11.062106,0 c 7.33732,2.81349 11.246815,11.3407 11.246815,20.090377 0,7.348545 -4.082979,13.667416 -9.852826,18.161652 -5.629021,4.385043 -6.696453,6.220904 -6.696453,9.948752 0,3.180866 6.030073,8.594563 9.183386,10.81923 9.217061,6.498477 12.199952,12.530591 12.199952,22.603843 0,1.604209 -0.198996,3.206378 -0.591884,4.780993 L 100,100 c 0,0 0,-46.594917 0,-68.751495 l -18.750474,0 0,18.750475 -6.250499,0 0,-18.750475 -18.750474,0 0,-6.250498 18.750474,0 0,-18.7494538 6.250499,0 0,18.7494538 18.750474,0 z M 18.147557,74.798916 c 2.111393,0 4.04522,-0.05817 6.048441,-0.05817 -2.651232,-2.571634 -4.749358,-5.722905 -4.749358,-9.606889 0,-2.305285 0.738834,-4.52485 1.77157,-6.496436 -1.053145,0.0745 -2.127721,0.09695 -3.234952,0.09695 -7.261803,0 -13.4286215,-2.351208 -17.99020957,-6.236212 l 0,6.56685 0.00102048,19.70055 C 5.2128523,76.28781 11.409265,74.798916 18.147557,74.798916 z M 44.474145,93.051391 C 43.002599,87.308076 37.788918,84.46091 30.518951,79.420713 c -2.644088,-0.85313 -5.556565,-1.35521 -8.681304,-1.387866 -8.752739,-0.09389 -17.2452523,3.525266 -21.84561906,8.743028 l 0,13.224125 44.64641606,-0.0011 c 0,0 0.263286,-2.21038 0.263286,-3.362512 -10e-4,-1.222547 -0.151032,-2.419581 -0.427585,-3.58498 z"></path></svg></a></li>
+</ul>
+  
+  
+  
+    
+      <form action="http://google.com/search" method="get">
+        <fieldset role="search">
+          <input type="hidden" name="q" value="site:www.kcoleman.me" />
+    
+          <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+        </fieldset>
+      </form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/projects">Projects</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/coleman-laws">Coleman Laws</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      
+        <h1 class="entry-title">Rails and Redis URL Shortener in Same Application</h1>
+      
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-05-31T14:22:47-04:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>2:22 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/locks.jpg" title="Redis key value storage" class="banner-img" /></p>
+
+<p>Here is how to build a quick URL shortener in Rails 4.0 that shares the same application as the rest of your project, but is meant to run on a different domain using <a href="http://redis.io/">Redis</a>.</p>
+
+<h2>Installing Redis</h2>
+
+<p>I recommend just using <a href="http://brew.sh/">brew</a> to install redis.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  brew install redis</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now to start it up, open a new terminal window and type:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">redis-server</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Link Model creation</h2>
+
+<p>Redis maybe great for quick access to information, but it does not guarantee like an <a href="http://en.wikipedia.org/wiki/ACID">ACID compliant</a> database does that the information you put there will always be there.  Because it is a <a href="http://en.wikipedia.org/wiki/NoSQL">noSQL</a> key-value store in memory, if the server it is running against restarts, its entire memory will be lost and you will need to have a reliable back up so you can re-generate the storage as needed.</p>
+
+<figure class='code'><figcaption><span>migration</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">create_table</span> <span class="s2">&quot;links&quot;</span><span class="p">,</span> <span class="ss">force</span><span class="p">:</span> <span class="kp">true</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">datetime</span> <span class="s2">&quot;created_at&quot;</span>
+</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">datetime</span> <span class="s2">&quot;updated_at&quot;</span>
+</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">string</span>   <span class="s2">&quot;short_code&quot;</span><span class="p">,</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
+</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">string</span>   <span class="s2">&quot;long_url&quot;</span><span class="p">,</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
+</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="s2">&quot;click_count&quot;</span><span class="p">,</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The short code will be a 6-8 digit representation of the longer link which will be stored in the <code>long_url</code> field.  I also want to store the click count of these links, so I am adding that as an attribute as well.</p>
+
+<h2>Link Model code</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Link</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:long_url</span><span class="p">,</span> <span class="ss">:click_count</span><span class="p">,</span> <span class="ss">:long_url</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="n">after_create</span> <span class="ss">:store_in_redis</span>
+</span><span class='line'>  <span class="n">before_create</span> <span class="ss">:set_short_code</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">redis_url_key</span><span class="p">(</span><span class="n">short_code</span><span class="p">)</span>
+</span><span class='line'>    <span class="s1">&#39;link:&#39;</span><span class="o">+</span><span class="n">short_code</span><span class="o">+</span><span class="s1">&#39;:url&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">redis_clicks_key</span><span class="p">(</span><span class="n">short_code</span><span class="p">)</span>
+</span><span class='line'>    <span class="s1">&#39;link:&#39;</span><span class="o">+</span><span class="n">short_code</span><span class="o">+</span><span class="s1">&#39;:clicks&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">url</span>
+</span><span class='line'>    <span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">shortener_domain</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">self</span><span class="o">.</span><span class="n">short_code</span> <span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">short_code</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">set_short_code</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">short_code</span> <span class="o">||=</span> <span class="kp">loop</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">token</span> <span class="o">=</span> <span class="p">(</span><span class="vg">$redis</span><span class="o">.</span><span class="n">incr</span><span class="p">(</span><span class="s1">&#39;link:next:id&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="no">Time</span><span class="o">.</span><span class="n">zone</span><span class="o">.</span><span class="n">now</span><span class="o">.</span><span class="n">to_i</span> <span class="o">+</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">36</span><span class="o">**</span><span class="mi">6</span><span class="p">))</span><span class="o">.</span><span class="n">to_s</span><span class="p">(</span><span class="mi">36</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">break</span> <span class="n">token</span> <span class="k">unless</span> <span class="no">Link</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">short_code</span><span class="p">:</span> <span class="n">token</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">store_in_redis</span>
+</span><span class='line'>    <span class="vg">$redis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="no">Link</span><span class="o">.</span><span class="n">redis_url_key</span><span class="p">(</span><span class="nb">self</span><span class="o">.</span><span class="n">short_code</span><span class="p">),</span> <span class="nb">self</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">purchase_link</span><span class="p">)</span>
+</span><span class='line'>    <span class="vg">$redis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="no">Link</span><span class="o">.</span><span class="n">redis_clicks_key</span><span class="p">(</span><span class="nb">self</span><span class="o">.</span><span class="n">short_code</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To start off, we have our validation code to ensure we don&rsquo;t accidently save bad data.</p>
+
+<p>We want to randomly generate a unique short code that is of appropriate length before we save this to the database.  In <code>set_short_code</code>, I keep trying to a valid randomly generated code based off of the time, an incrementor variable I am storing in Redis to ensure uniqueness.  Hypothetically if I got a request at the exact same second and somehow got the same random number, the Redis variable should protect against double urls.</p>
+
+<p>After we write this to the database, we want to store the <code>short_code</code> and <code>long_url</code> in Redis.  We are doing it after we create, because if there are validation errors, then our Redis storage could contain bad data.  The key for the long url will look like &lsquo;link:uDk3nZz:url&rsquo; and the click count will look like &lsquo;link:uDk3nZz:clicks&rsquo;.  So when I want to pull out the long url, I simple say <code>$redis.get(Link.redis_url_key(params[:short_code]))</code> and I will have the long url, assuming it exists.  I can also update the click count in a similar fashion.</p>
+
+<h2>Side note: Redis best practice</h2>
+
+<p>You should use the following naming scheme for all of your Redis keys, so that you have a standard way of retrieving data: [resource]:[id]:[attribute].</p>
+
+<p>I wrote two helper methods to keep track of how we are naming the keys, so we don&rsquo;t end up with a bunch of magic strings everywhere in our project.  If we want to change how we store links in Redis, we only have to look one place, the link model. We will use them later when we create the controller so we know what fields to access with a given <code>short_code</code>.</p>
+
+<h2>Links controller</h2>
+
+<figure class='code'><figcaption><span>links_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">LinksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">show</span>
+</span><span class='line'>    <span class="n">url</span> <span class="o">=</span> <span class="vg">$redis</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="no">Link</span><span class="o">.</span><span class="n">redis_url_key</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:short_code</span><span class="o">]</span><span class="p">))</span>
+</span><span class='line'>    <span class="k">raise</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">RoutingError</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;Not Found&#39;</span><span class="p">)</span> <span class="k">unless</span> <span class="n">url</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="vg">$redis</span><span class="o">.</span><span class="n">incr</span><span class="p">(</span><span class="no">Link</span><span class="o">.</span><span class="n">redis_clicks_key</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:short_code</span><span class="o">]</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">redirect_to</span> <span class="n">url</span><span class="p">,</span> <span class="ss">status</span><span class="p">:</span> <span class="mi">302</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Use the <code>short_code</code> parameter, and that Redis url key method, we look up the long url.</p>
+
+<p>If we can&rsquo;t find the url, then we rails a 404 page. If not, we continue and bump up the click count.  Redis has a built in incrementor so we wont have to worry about accidently loosing click counts during concurrent requests. and redirect ot the url we found in Redis.</p>
+
+<h2>Configuring Routes to work across multiple domains</h2>
+
+<figure class='code'><figcaption><span>routes.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">constraints</span> <span class="ss">domain</span><span class="p">:</span> <span class="s2">&quot;example.com&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">get</span> <span class="s2">&quot;/:short_code&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;likes#show&quot;</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="s1">&#39;social_share&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We put this the top of our routes.rb file, because we want it to override any of the succeeding route configurations.  I recommend changing your host file to point dev.example.com to 127.0.0.1 so when you test this locally, you would hit your local machine as opposed to the production or staging server.</p>
+
+<h2>To be continue</h2>
+
+<p>In the next article, I will be discussing on how to recover from a Redis failure.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+  
+
+
+  <span class="byline author vcard">Authored by <span class="fn">
+  
+    <a href="https://plus.google.com/+kevincolemaninc" rel="author">Kevin Coleman</a>
+  
+  </span></span>
+
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-05-31T14:22:47-04:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>2:22 pm</span></time>
+      
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.kcoleman.me/blog/2014/05/31/url-shorter-with-redis-and-rails/" data-via="KevinColemanInc" data-counturl="http://www.kcoleman.me/blog/2014/05/31/url-shorter-with-redis-and-rails/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/05/17/tagging-models/" title="Previous Post: Tagging Models">&laquo; Tagging Models</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/06/01/twitter-bot-on-heroku/" title="Next Post: Twitter bot on Heroku">Twitter bot on Heroku &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+
+</div>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Kevin Coleman -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> | Themed with <a href="https://github.com/lucaslew/whitespace">Whitespace</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

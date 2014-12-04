@@ -1,0 +1,443 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Rapid Ticket Purchasing and the Extendable Web - Kevin Coleman</title>
+  <meta name="author" content="Kevin Coleman">
+
+  
+  <meta name="description" content="Backstory Last month, I was interested in attending a camping event with my girlfriend. The event organizers release the tickets in two phases with &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.kcoleman.me/blog/2014/04/16/rapid-fire-ticket-purchasing-and-the-extendable-web">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Kevin Coleman" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet" type="text/css">
+<!--- MathJax Configuration -->
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-48081941-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Kevin Coleman</a></h1>
+  
+    <h2>I am a software engineer at Spark Start with interests in start ups, web apps, and wearables.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscribe" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" viewbox="0 0 100 100"><path class="social" d="M 13.310204,73.332654 C 5.967347,73.332654 0,79.322448 0,86.621428 c 0,7.338776 5.967347,13.262246 13.310204,13.262246 7.370408,0 13.328572,-5.92245 13.328572,-13.262246 0,-7.29898 -5.958164,-13.288774 -13.328572,-13.288774 z M 0.01530612,33.978572 V 53.143878 C 12.493878,53.143878 24.229592,58.02347 33.068368,66.865306 41.894898,75.685714 46.767346,87.47449 46.767346,100 h 19.25 C 66.017346,63.592858 36.4,33.979592 0.01530612,33.978572 l 0,0 z M 0.03877552,0 V 19.17449 C 44.54796,19.17551 80.77551,55.437756 80.77551,100 H 100 C 100,44.87653 55.15102,0 0.03877552,0 z"></path></svg></a></li>
+  
+</ul>
+  
+  
+  
+  
+  
+<ul class="subscribe">
+  <li><a href="https://github.com/KevinColemanInc" rel="subscribe-github" title="@KevinColemanInc on GitHub"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" viewbox="0 0 100 100"><path class="social" d="M 50,0 C 22.385714,0 0,22.385714 0,50 0,77.614286 22.385714,100 50,100 77.614286,100 100,77.614286 100,50 100,22.385714 77.614286,0 50,0 z m 29.692858,79.692858 c -3.859184,3.859182 -8.351022,6.887754 -13.35,9.00306 -1.27041,0.536736 -2.560204,1.009184 -3.867348,1.415306 v -7.493878 c 0,-3.938774 -1.35102,-6.835714 -4.053062,-8.690816 1.692858,-0.163264 3.24694,-0.390816 4.663266,-0.683672 1.416326,-0.292858 2.913266,-0.716328 4.491838,-1.27041 1.57857,-0.55408 2.994896,-1.213264 4.247958,-1.97755 1.253062,-0.765306 2.458164,-1.758164 3.613266,-2.978572 1.155102,-1.220408 2.12449,-2.604082 2.905102,-4.15 0.780612,-1.545918 1.4,-3.40204 1.855102,-5.566326 0.455102,-2.164286 0.683674,-4.54898 0.683674,-7.153062 0,-5.045918 -1.643878,-9.341836 -4.931634,-12.890816 C 77.44796,33.35 77.285714,29.10204 75.463266,24.512244 l -1.22143,-0.145918 c -0.845918,-0.09796 -2.368366,0.260204 -4.565306,1.07449 -2.196938,0.814286 -4.663264,2.14796 -7.396938,4.004082 -3.87449,-1.07449 -7.893878,-1.611224 -12.061224,-1.611224 -4.19898,0 -8.203062,0.536734 -12.012246,1.611224 -1.72449,-1.17245 -3.361224,-2.139796 -4.907142,-2.905102 C 31.753062,25.77449 30.516326,25.254082 29.587756,24.97653 28.660204,24.7 27.79796,24.528572 27,24.463266 c -0.79796,-0.0653 -1.310204,-0.08062 -1.537756,-0.04898 -0.22755,0.03164 -0.390816,0.0653 -0.487754,0.09796 -1.82347,4.62245 -1.985714,8.87143 -0.487756,12.743878 -3.287754,3.54796 -4.931632,7.844898 -4.931632,12.890816 0,2.604082 0.227552,4.988776 0.683674,7.153062 0.456122,2.164286 1.07449,4.020408 1.855102,5.566326 0.780612,1.545918 1.75,2.929592 2.905102,4.15 1.155102,1.220408 2.360204,2.213266 3.613264,2.978572 1.253062,0.766326 2.669388,1.42449 4.24796,1.97755 1.578572,0.554082 3.07551,0.976532 4.491836,1.27041 1.416328,0.292856 2.970408,0.521428 4.663266,0.683672 -2.669388,1.82347 -4.004082,4.720408 -4.004082,8.690816 v 7.639796 C 36.536734,89.818368 35.083674,89.3 33.656122,88.695918 c -4.99898,-2.115306 -9.490816,-5.143878 -13.35,-9.00306 -3.859184,-3.859184 -6.887754,-8.351022 -9.00306,-13.35 C 9.1163263,61.171428 8.0071428,55.67347 8.0071428,50 c 0,-5.67347 1.1091835,-11.171428 3.2969392,-16.342858 2.115306,-4.998978 5.143878,-9.490816 9.00306,-13.35 3.859184,-3.859182 8.351022,-6.887754 13.35,-9.00306 C 38.828572,9.1163266 44.32653,8.0071428 50,8.0071428 c 5.67347,0 11.171428,1.1091838 16.342858,3.2969392 5,2.115306 9.490816,5.143878 13.35,9.00306 3.859182,3.859184 6.887754,8.351022 9.00306,13.35 2.186736,5.17245 3.295918,10.67041 3.295918,16.342858 0,5.672448 -1.109182,11.171428 -3.296938,16.342858 -2.115306,4.998978 -5.143878,9.490816 -9.00204,13.35 l 0,0 z"></path></svg></a></li>
+</ul>
+  
+  
+  
+  
+  
+<ul class="subscribe">
+  <li><a href="https://plus.google.com/+KevinColemanInc" rel="publisher" title="Google+ Profile"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" viewbox="0 0 100 100"><path class="social" d="M 23.03264,55.19021 C 32.01805,55.457578 38.046082,46.137447 36.495958,34.370183 34.943794,22.603939 26.398215,13.161349 17.411784,12.89296 8.4253533,12.625592 2.3973217,21.630392 3.9494863,33.400718 5.5006303,45.164921 14.043148,54.921821 23.03264,55.19021 z M 99.99898,24.999027 100,0 -0.00797206,0 0.0052943,16.202408 C 5.7047282,11.184661 13.611481,6.9914696 21.771315,6.9914696 c 8.721103,0 34.888495,0 34.888495,0 l -7.807765,6.6035874 -11.062106,0 c 7.33732,2.81349 11.246815,11.3407 11.246815,20.090377 0,7.348545 -4.082979,13.667416 -9.852826,18.161652 -5.629021,4.385043 -6.696453,6.220904 -6.696453,9.948752 0,3.180866 6.030073,8.594563 9.183386,10.81923 9.217061,6.498477 12.199952,12.530591 12.199952,22.603843 0,1.604209 -0.198996,3.206378 -0.591884,4.780993 L 100,100 c 0,0 0,-46.594917 0,-68.751495 l -18.750474,0 0,18.750475 -6.250499,0 0,-18.750475 -18.750474,0 0,-6.250498 18.750474,0 0,-18.7494538 6.250499,0 0,18.7494538 18.750474,0 z M 18.147557,74.798916 c 2.111393,0 4.04522,-0.05817 6.048441,-0.05817 -2.651232,-2.571634 -4.749358,-5.722905 -4.749358,-9.606889 0,-2.305285 0.738834,-4.52485 1.77157,-6.496436 -1.053145,0.0745 -2.127721,0.09695 -3.234952,0.09695 -7.261803,0 -13.4286215,-2.351208 -17.99020957,-6.236212 l 0,6.56685 0.00102048,19.70055 C 5.2128523,76.28781 11.409265,74.798916 18.147557,74.798916 z M 44.474145,93.051391 C 43.002599,87.308076 37.788918,84.46091 30.518951,79.420713 c -2.644088,-0.85313 -5.556565,-1.35521 -8.681304,-1.387866 -8.752739,-0.09389 -17.2452523,3.525266 -21.84561906,8.743028 l 0,13.224125 44.64641606,-0.0011 c 0,0 0.263286,-2.21038 0.263286,-3.362512 -10e-4,-1.222547 -0.151032,-2.419581 -0.427585,-3.58498 z"></path></svg></a></li>
+</ul>
+  
+  
+  
+    
+      <form action="http://google.com/search" method="get">
+        <fieldset role="search">
+          <input type="hidden" name="q" value="site:www.kcoleman.me" />
+    
+          <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+        </fieldset>
+      </form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/projects">Projects</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/coleman-laws">Coleman Laws</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      
+        <h1 class="entry-title">Rapid Ticket Purchasing and the Extendable Web</h1>
+      
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-16T12:30:31-04:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:30 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>Backstory</h2>
+
+<p>Last month, I was interested in attending a camping event with my girlfriend.  The event organizers release the tickets in two phases with each phase releasing 1000 tickets.  Despite my wicked fast internet connection at Panera Bread, I was unable to purchase the released tickets before they sold out.</p>
+
+<p>In an effort to learn new things, I put my hand towards creating an auto-buy Chrome extension to significantly increase my chances of a ticket purchase.  I also intended to open source the project so anyone would be able to contribute.  Enter <a href="https://github.com/KevinColemanInc/rapid_fire_tickets">rapid_fire_tickets</a>.</p>
+
+<h2>Building the Chrome Extension</h2>
+
+<p>If you get lost, feel free to download the source code for this extension at <a href="https://github.com/KevinColemanInc/rapid_fire_tickets">https://github.com/KevinColemanInc/rapid_fire_tickets</a></p>
+
+<p>Chrome extensions allow you to inject javascript on the page for DOM manipulation.  Firstly, you should create a directory and with our project name as the title.</p>
+
+<p>Now create a <code>manifest.json</code> file.  This file contains all of the high level descriptive information about your project like the name, description, what permissions it wants, what version it is, etc.</p>
+
+<figure class='code'><figcaption><span>manifest.json</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nt">&quot;manifest_version&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rapid fire tickets for Transformus&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;This extension automatically keeps trying to buy tickets for Transformus.&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&quot;content_scripts&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;matches&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;http://www.brownpapertickets.com/event/614931*&quot;</span><span class="p">],</span>
+</span><span class='line'>      <span class="nt">&quot;js&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;jquery.js&quot;</span><span class="p">,</span> <span class="s2">&quot;home.js&quot;</span><span class="p">],</span>
+</span><span class='line'>      <span class="nt">&quot;run_at&quot;</span><span class="p">:</span> <span class="s2">&quot;document_start&quot;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;matches&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;http://www.brownpapertickets.com/viewcart.html&quot;</span><span class="p">],</span>
+</span><span class='line'>      <span class="nt">&quot;js&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;jquery.js&quot;</span><span class="p">,</span> <span class="s2">&quot;checkout.js&quot;</span><span class="p">],</span>
+</span><span class='line'>      <span class="nt">&quot;run_at&quot;</span><span class="p">:</span> <span class="s2">&quot;document_end&quot;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first part is very self explanatory, but the <code>content_scripts</code> attribute is much more interesting.  Here you can request Chrome to run javascript files if the URL pattern matches the string provided.  Since I know that the ticketing website’s URL is such, I included that in the matches string.  The asterisk at the end of the string protects me against any strange URL parameters that might present themselves.</p>
+
+<p>The <code>js</code> attribute tells Chrome to run the included js files when that URL is hit.  I included <code>jQuery</code> in this extension so make life easier.  Then I put my custom js file that will be used to refresh the page and select tickets.</p>
+
+<p>The <code>run_at</code> attribute requests that chrome run the JS at document start.  I did this because I wanted the JS to run before all of the attributes to load so it will behave faster.</p>
+
+<p>Next I will go download <code>jQuery</code> and save it into this folder.  Be sure to name the file the same as how you named it the manifest file.</p>
+
+<p>Next I will create my home.js file.  The idea here is to have it refresh the page until the we see the drop down for ticket selection.  Once that appears we need to set that to a value of 2 and click the submit button on the form.</p>
+
+<h2>Testing</h2>
+
+<p>From that link, we have no idea what the HTML looks and thus don’t know how to sculpt the jQuery selectors to target the correct form elements.  I created a test event and modeled it to behave exactly like the tfus event will when the tickets are released.  This way I can test my software before aiming it at the first event.</p>
+
+<h2>Refresh and check to see if tickets are available</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">(</span> <span class="nb">document</span> <span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.bpt_orangebutton&quot;</span><span class="p">).</span><span class="nx">length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//buy tickets</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="nx">location</span><span class="p">.</span><span class="nx">reload</span><span class="p">();</span> <span class="c1">//reload</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On my test page I noticed that the orange submit button appears on the page when tickets are available.  For this tool, I am going to look for all orange buttons on the page.  If one appears, then tickets are ready to be purchased.  If they are not, then we need to reload the page to check again.</p>
+
+<h2>Select the number of tickets you want</h2>
+
+<p>Now that I can detect when the tickets are available.  I am need to select the drop down and select the number of tickets.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#bpt_date_prices_1017125 .bpt_widget_price_table tr:nth-child(4) select&quot;</span><span class="p">).</span><span class="nx">val</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.bpt_orangebutton&quot;</span><span class="p">).</span><span class="nx">click</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Using Chrome development tools, I found that this selector worked nicely at accomplishing that.  The id of the first element changes event to event, so if I wish to use this against other events, this will need to change.</p>
+
+<p>Putting it all together we get this:</p>
+
+<figure class='code'><figcaption><span>home.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">(</span> <span class="nb">document</span> <span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.bpt_orangebutton&quot;</span><span class="p">).</span><span class="nx">length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#bpt_date_prices_1017125 .bpt_widget_price_table tr:nth-child(4) select&quot;</span><span class="p">).</span><span class="nx">val</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.bpt_orangebutton&quot;</span><span class="p">).</span><span class="nx">click</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="nx">location</span><span class="p">.</span><span class="nx">reload</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A super simple auto add to cart ticket file.</p>
+
+<h2>One step further</h2>
+
+<p>After the tickets have been added to cart, it displays a page asking if you would like to check out now.  Under most circumstances, this scenario is yes.  To speed up the ticket purchasing process, I added another script to auto-click this button.  We can just skip that page and go to directly to the credit card input page.</p>
+
+<p>The script that handles this is similar to the last one and looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">parent</span><span class="p">.</span><span class="nx">location</span><span class="o">=</span><span class="s1">&#39;https://www.brownpapertickets.com/checkout.html&#39;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Rather than locating that button and click it.  I recognized that button is just a link to the checkout page so I ask the browser to relocate to this page.  If there are an cosmetic changes to this page and they change how the page is displayed, it may break any selectors I use on finding that button.  This solution is much more elegant and simple.</p>
+
+<h2>Installation</h2>
+
+<ol>
+<li>In Chrome to <a href="chrome://extensions/">chrome://extensions/</a> and click &ldquo;Load unpacked extensions&rdquo;</li>
+<li>Navigate to the location of the folder you created with the manifest.</li>
+<li>Sign into your <a href="http://www.brownpapertickets.com">http://www.brownpapertickets.com</a> account</li>
+<li>Open a bunch of tabs in chrome and navigate them all to: <a href="http://www.brownpapertickets.com/event/614931">http://www.brownpapertickets.com/event/614931</a></li>
+</ol>
+
+
+<h3>Alternative installation (using my source code on <a href="https://github.com/KevinColemanInc/rapid_fire_tickets">github</a>).</h3>
+
+<ol>
+<li>Download the <a href="https://github.com/KevinColemanInc/rapid_fire_tickets/archive/master.zip">zip file</a></li>
+<li>Unzip it</li>
+<li>In Chrome to <a href="chrome://extensions/">chrome://extensions/</a> and click &ldquo;Load unpacked extensions&rdquo;</li>
+<li>Navigate to the unziped location of the file.</li>
+<li>Sign into your <a href="http://www.brownpapertickets.com">http://www.brownpapertickets.com</a> account</li>
+<li>Open a bunch of tabs in chrome and navigate them all to: <a href="http://www.brownpapertickets.com/event/614931">http://www.brownpapertickets.com/event/614931</a></li>
+</ol>
+
+
+<h2>Buying more than two tickets</h2>
+
+<p>This extension will only purchase two tickets per installation of Chrome.  If you are interested in using this to accumulate more, then here are my recommendations.</p>
+
+<p>In <a href="chrome://extensions/">chrome://extensions/</a>, scroll down to the rapid_fire_tickets and select &ldquo;Allow in incognito mode.&rdquo;  Incognito mode allows you to login to Brown Paper Tickets from another account (thus giving you an additional 2 more tickets).</p>
+
+<p>Now press <code>Ctrl+Shift+N</code> to open a new incognito window, login to a different account and navigate to the event page.  Now you buy 4 tickets!</p>
+
+<p>Next, we should install a couple copies of Chrome.  Chrome only allows one version to be installed on a computer at a given time.  So lets grab other builds!  Go to <a href="http://www.chromium.org/getting-involved/dev-channel">http://www.chromium.org/getting-involved/dev-channel</a> and download and install their canary release.  This version runs seperately from what you have on your computer, because it can be less stable.</p>
+
+<p>Configure the extension like you did before and now you have 8 tickets you can purchase!  Remember, only two tickets can be purchased at once per account so be sure to use different accounts.</p>
+
+<h3>Quick tip: One gmail for multiple accounts</h3>
+
+<p>If you use gmail, you can use their wild card feature to have different emails that point to your email.  For example my email is <a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#111;&#x3a;&#99;&#x2e;&#x70;&#x72;&#x6f;&#103;&#114;&#x61;&#109;&#101;&#x72;&#x40;&#103;&#x6d;&#x61;&#x69;&#108;&#x2e;&#99;&#111;&#x6d;&#x2e;">&#x63;&#x2e;&#112;&#114;&#x6f;&#x67;&#x72;&#x61;&#109;&#101;&#114;&#x40;&#x67;&#109;&#x61;&#x69;&#x6c;&#46;&#x63;&#x6f;&#x6d;&#x2e;</a>  I can create a different brown paper tickets account with this email <a href="&#109;&#97;&#x69;&#108;&#x74;&#x6f;&#58;&#99;&#46;&#x70;&#114;&#x6f;&#103;&#x72;&#97;&#x6d;&#101;&#114;&#x2b;&#98;&#112;&#x74;&#64;&#x67;&#109;&#97;&#x69;&#108;&#x2e;&#99;&#x6f;&#x6d;">&#x63;&#46;&#112;&#114;&#x6f;&#103;&#x72;&#97;&#109;&#x65;&#x72;&#43;&#98;&#x70;&#x74;&#64;&#x67;&#x6d;&#97;&#x69;&#108;&#x2e;&#x63;&#111;&#x6d;</a> and all of the emails going to that new email go to my main inbox.  This way I don&rsquo;t have to keep creating emails to make new accounts.  Anything between the + and the @ symbols are ignored in gmail only.</p>
+
+<h3>Lets scale this further (8 to infinite and beyond!)</h3>
+
+<p>We can apply this technique to multiple computers.  Each computer earns you 8 tickets. So if you are like myself that has a laptop and a desktop and a gf&rsquo;s computer, then I would have the opportunity to purchase 24 tickets!  This scales at 8 tickets per computer.  So 10 computers allows you to purchase 80 tickets (or 8% of all tickets avaliable!).</p>
+
+<p>For those with more resources, you can go to a public library or a college&rsquo;s computer lab to install an apply this extension to an even larger number of computers.</p>
+
+<h2>Conclusion</h2>
+
+<p>Feel free to hack and fork this tool as much as you would like.  I really hope that everyone enjoyed reading this as much I as I enjoyed writing it. Best of luck to everyone buying tickets this weekend!</p>
+
+<h2>Notes</h2>
+
+<p>I would be careful about opening too many tabs, because they may actually slow down the process.  In experimentation, I was able to grab 2 tickets to an event I created with 12 tabs within 10 seconds of the release.</p>
+
+<p>This currently attempts to grab the maximum amount of tickets (2).</p>
+
+<h1>PLEASE PLEASE PLEASE check back with the project an hour before tickets become avaliable.  I plan on releasing an updated version of the project to handle any issues that may arise.</h1>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+  
+
+
+  <span class="byline author vcard">Authored by <span class="fn">
+  
+    <a href="https://plus.google.com/+kevincolemaninc" rel="author">Kevin Coleman</a>
+  
+  </span></span>
+
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-04-16T12:30:31-04:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:30 pm</span></time>
+      
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/chrome/'>chrome</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.kcoleman.me/blog/2014/04/16/rapid-fire-ticket-purchasing-and-the-extendable-web/" data-via="KevinColemanInc" data-counturl="http://www.kcoleman.me/blog/2014/04/16/rapid-fire-ticket-purchasing-and-the-extendable-web/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/03/23/how-to-make-a-gem/" title="Previous Post: Extending Active Record in Rails 4.1">&laquo; Extending Active Record in Rails 4.1</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/04/30/nodejs-chat-guide/" title="Next Post: NodeJS Chat Guide">NodeJS Chat Guide &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+
+</div>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Kevin Coleman -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> | Themed with <a href="https://github.com/lucaslew/whitespace">Whitespace</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

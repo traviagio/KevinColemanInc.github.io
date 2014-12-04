@@ -1,0 +1,586 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>NodeJS Chat Guide - Kevin Coleman</title>
+  <meta name="author" content="Kevin Coleman">
+
+  
+  <meta name="description" content="How I built the chat application for my blog. I have been chatting on wizpert offering technical support for questions and I was inspired to add a &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.kcoleman.me/blog/2014/04/30/nodejs-chat-guide">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Kevin Coleman" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet" type="text/css">
+<!--- MathJax Configuration -->
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-48081941-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Kevin Coleman</a></h1>
+  
+    <h2>I am a software engineer at Spark Start with interests in start ups, web apps, and wearables.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscribe" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" viewbox="0 0 100 100"><path class="social" d="M 13.310204,73.332654 C 5.967347,73.332654 0,79.322448 0,86.621428 c 0,7.338776 5.967347,13.262246 13.310204,13.262246 7.370408,0 13.328572,-5.92245 13.328572,-13.262246 0,-7.29898 -5.958164,-13.288774 -13.328572,-13.288774 z M 0.01530612,33.978572 V 53.143878 C 12.493878,53.143878 24.229592,58.02347 33.068368,66.865306 41.894898,75.685714 46.767346,87.47449 46.767346,100 h 19.25 C 66.017346,63.592858 36.4,33.979592 0.01530612,33.978572 l 0,0 z M 0.03877552,0 V 19.17449 C 44.54796,19.17551 80.77551,55.437756 80.77551,100 H 100 C 100,44.87653 55.15102,0 0.03877552,0 z"></path></svg></a></li>
+  
+</ul>
+  
+  
+  
+  
+  
+<ul class="subscribe">
+  <li><a href="https://github.com/KevinColemanInc" rel="subscribe-github" title="@KevinColemanInc on GitHub"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" viewbox="0 0 100 100"><path class="social" d="M 50,0 C 22.385714,0 0,22.385714 0,50 0,77.614286 22.385714,100 50,100 77.614286,100 100,77.614286 100,50 100,22.385714 77.614286,0 50,0 z m 29.692858,79.692858 c -3.859184,3.859182 -8.351022,6.887754 -13.35,9.00306 -1.27041,0.536736 -2.560204,1.009184 -3.867348,1.415306 v -7.493878 c 0,-3.938774 -1.35102,-6.835714 -4.053062,-8.690816 1.692858,-0.163264 3.24694,-0.390816 4.663266,-0.683672 1.416326,-0.292858 2.913266,-0.716328 4.491838,-1.27041 1.57857,-0.55408 2.994896,-1.213264 4.247958,-1.97755 1.253062,-0.765306 2.458164,-1.758164 3.613266,-2.978572 1.155102,-1.220408 2.12449,-2.604082 2.905102,-4.15 0.780612,-1.545918 1.4,-3.40204 1.855102,-5.566326 0.455102,-2.164286 0.683674,-4.54898 0.683674,-7.153062 0,-5.045918 -1.643878,-9.341836 -4.931634,-12.890816 C 77.44796,33.35 77.285714,29.10204 75.463266,24.512244 l -1.22143,-0.145918 c -0.845918,-0.09796 -2.368366,0.260204 -4.565306,1.07449 -2.196938,0.814286 -4.663264,2.14796 -7.396938,4.004082 -3.87449,-1.07449 -7.893878,-1.611224 -12.061224,-1.611224 -4.19898,0 -8.203062,0.536734 -12.012246,1.611224 -1.72449,-1.17245 -3.361224,-2.139796 -4.907142,-2.905102 C 31.753062,25.77449 30.516326,25.254082 29.587756,24.97653 28.660204,24.7 27.79796,24.528572 27,24.463266 c -0.79796,-0.0653 -1.310204,-0.08062 -1.537756,-0.04898 -0.22755,0.03164 -0.390816,0.0653 -0.487754,0.09796 -1.82347,4.62245 -1.985714,8.87143 -0.487756,12.743878 -3.287754,3.54796 -4.931632,7.844898 -4.931632,12.890816 0,2.604082 0.227552,4.988776 0.683674,7.153062 0.456122,2.164286 1.07449,4.020408 1.855102,5.566326 0.780612,1.545918 1.75,2.929592 2.905102,4.15 1.155102,1.220408 2.360204,2.213266 3.613264,2.978572 1.253062,0.766326 2.669388,1.42449 4.24796,1.97755 1.578572,0.554082 3.07551,0.976532 4.491836,1.27041 1.416328,0.292856 2.970408,0.521428 4.663266,0.683672 -2.669388,1.82347 -4.004082,4.720408 -4.004082,8.690816 v 7.639796 C 36.536734,89.818368 35.083674,89.3 33.656122,88.695918 c -4.99898,-2.115306 -9.490816,-5.143878 -13.35,-9.00306 -3.859184,-3.859184 -6.887754,-8.351022 -9.00306,-13.35 C 9.1163263,61.171428 8.0071428,55.67347 8.0071428,50 c 0,-5.67347 1.1091835,-11.171428 3.2969392,-16.342858 2.115306,-4.998978 5.143878,-9.490816 9.00306,-13.35 3.859184,-3.859182 8.351022,-6.887754 13.35,-9.00306 C 38.828572,9.1163266 44.32653,8.0071428 50,8.0071428 c 5.67347,0 11.171428,1.1091838 16.342858,3.2969392 5,2.115306 9.490816,5.143878 13.35,9.00306 3.859182,3.859184 6.887754,8.351022 9.00306,13.35 2.186736,5.17245 3.295918,10.67041 3.295918,16.342858 0,5.672448 -1.109182,11.171428 -3.296938,16.342858 -2.115306,4.998978 -5.143878,9.490816 -9.00204,13.35 l 0,0 z"></path></svg></a></li>
+</ul>
+  
+  
+  
+  
+  
+<ul class="subscribe">
+  <li><a href="https://plus.google.com/+KevinColemanInc" rel="publisher" title="Google+ Profile"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" viewbox="0 0 100 100"><path class="social" d="M 23.03264,55.19021 C 32.01805,55.457578 38.046082,46.137447 36.495958,34.370183 34.943794,22.603939 26.398215,13.161349 17.411784,12.89296 8.4253533,12.625592 2.3973217,21.630392 3.9494863,33.400718 5.5006303,45.164921 14.043148,54.921821 23.03264,55.19021 z M 99.99898,24.999027 100,0 -0.00797206,0 0.0052943,16.202408 C 5.7047282,11.184661 13.611481,6.9914696 21.771315,6.9914696 c 8.721103,0 34.888495,0 34.888495,0 l -7.807765,6.6035874 -11.062106,0 c 7.33732,2.81349 11.246815,11.3407 11.246815,20.090377 0,7.348545 -4.082979,13.667416 -9.852826,18.161652 -5.629021,4.385043 -6.696453,6.220904 -6.696453,9.948752 0,3.180866 6.030073,8.594563 9.183386,10.81923 9.217061,6.498477 12.199952,12.530591 12.199952,22.603843 0,1.604209 -0.198996,3.206378 -0.591884,4.780993 L 100,100 c 0,0 0,-46.594917 0,-68.751495 l -18.750474,0 0,18.750475 -6.250499,0 0,-18.750475 -18.750474,0 0,-6.250498 18.750474,0 0,-18.7494538 6.250499,0 0,18.7494538 18.750474,0 z M 18.147557,74.798916 c 2.111393,0 4.04522,-0.05817 6.048441,-0.05817 -2.651232,-2.571634 -4.749358,-5.722905 -4.749358,-9.606889 0,-2.305285 0.738834,-4.52485 1.77157,-6.496436 -1.053145,0.0745 -2.127721,0.09695 -3.234952,0.09695 -7.261803,0 -13.4286215,-2.351208 -17.99020957,-6.236212 l 0,6.56685 0.00102048,19.70055 C 5.2128523,76.28781 11.409265,74.798916 18.147557,74.798916 z M 44.474145,93.051391 C 43.002599,87.308076 37.788918,84.46091 30.518951,79.420713 c -2.644088,-0.85313 -5.556565,-1.35521 -8.681304,-1.387866 -8.752739,-0.09389 -17.2452523,3.525266 -21.84561906,8.743028 l 0,13.224125 44.64641606,-0.0011 c 0,0 0.263286,-2.21038 0.263286,-3.362512 -10e-4,-1.222547 -0.151032,-2.419581 -0.427585,-3.58498 z"></path></svg></a></li>
+</ul>
+  
+  
+  
+    
+      <form action="http://google.com/search" method="get">
+        <fieldset role="search">
+          <input type="hidden" name="q" value="site:www.kcoleman.me" />
+    
+          <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+        </fieldset>
+      </form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/projects">Projects</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/coleman-laws">Coleman Laws</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      
+        <h1 class="entry-title">NodeJS Chat Guide</h1>
+      
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-04-30T12:40:07-04:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:40 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>How I built the chat application for my blog.</h2>
+
+<p>I have been chatting on wizpert offering technical support for questions and I was inspired to add a chatting aspect to my blog.  Feel free to hit me up on any Javascript, Ruby on Rails, or general programming questions.</p>
+
+<h2>Installing NodeJS v0.10.26 on OSX Maverick 10.9</h2>
+
+<p>I recommend installing this application with homebrew, so you can easily update it as you need to.</p>
+
+<figure class='code'><figcaption><span>install nodejs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">brew update</span>
+</span><span class='line'><span class="go">brew doctor</span>
+</span><span class='line'><span class="go">brew install node</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Create a folder called <code>Chat</code> and create a file in that called <code>main.js</code></p>
+
+<figure class='code'><figcaption><span>create a git repo</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">git init</span>
+</span><span class='line'><span class="go">git add .</span>
+</span><span class='line'><span class="go">git commit -m &quot;first!&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Creating the NodeJS chat server</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">xmpp</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;node-xmpp&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">cl</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">xmpp</span><span class="p">.</span><span class="nx">Client</span><span class="p">({</span> <span class="nx">jid</span><span class="o">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">jid</span><span class="p">,</span>  <span class="nx">password</span><span class="o">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">password</span> <span class="p">})</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;express&#39;</span><span class="p">)()</span>
+</span><span class='line'>  <span class="p">,</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">).</span><span class="nx">createServer</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">,</span> <span class="nx">io</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;socket.io&#39;</span><span class="p">).</span><span class="nx">listen</span><span class="p">(</span><span class="nx">server</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">users</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">admins</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">adminXMPP</span> <span class="o">=</span> <span class="p">[</span> <span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PORT</span> <span class="o">||</span> <span class="mi">3000</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">io</span><span class="p">.</span><span class="nx">sockets</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;connection&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">socket</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;message_to_client&quot;</span><span class="p">,{</span> <span class="nx">message</span><span class="o">:</span> <span class="s2">&quot;Welcome to the chat&quot;</span><span class="p">,</span> <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Server&quot;</span><span class="p">,</span> <span class="s2">&quot;isAdminOnline&quot;</span> <span class="o">:</span> <span class="p">(</span><span class="nx">adminXMPP</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//Admin</span>
+</span><span class='line'>    <span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;admin_signin&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;register admin&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">admins</span><span class="p">[</span><span class="nx">socket</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">socket</span><span class="p">;</span>
+</span><span class='line'>      <span class="nx">users</span><span class="p">[</span><span class="nx">data</span><span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">]].</span><span class="nx">admin_connected</span> <span class="o">=</span> <span class="nx">socket</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;admin_to_server&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">users</span><span class="p">[</span><span class="nx">data</span><span class="p">[</span><span class="s2">&quot;socket_id&quot;</span><span class="p">]].</span><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;message_to_client&quot;</span><span class="p">,{</span> <span class="nx">message</span><span class="o">:</span> <span class="nx">data</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">],</span> <span class="nx">name</span> <span class="o">:</span> <span class="s2">&quot;Kevin&quot;</span> <span class="p">});</span>
+</span><span class='line'>        <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;message_to_client&quot;</span><span class="p">,{</span> <span class="nx">message</span><span class="o">:</span> <span class="nx">data</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">],</span> <span class="nx">name</span> <span class="o">:</span> <span class="s2">&quot;Kevin&quot;</span> <span class="p">});</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//Client</span>
+</span><span class='line'>    <span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;message_to_server&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">users</span><span class="p">[</span><span class="nx">socket</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span>
+</span><span class='line'>          <span class="nx">users</span><span class="p">[</span><span class="nx">socket</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nx">socket</span><span class="o">:</span> <span class="nx">socket</span><span class="p">,</span> <span class="nx">name</span><span class="o">:</span> <span class="nx">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="nx">admin_connected</span><span class="o">:</span> <span class="kc">null</span> <span class="p">};</span>
+</span><span class='line'>        <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;message_to_client&quot;</span><span class="p">,{</span> <span class="nx">message</span><span class="o">:</span> <span class="nx">data</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">],</span> <span class="nx">name</span> <span class="o">:</span> <span class="nx">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">users</span><span class="p">[</span><span class="nx">socket</span><span class="p">.</span><span class="nx">id</span><span class="p">].</span><span class="nx">admin_connected</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>          <span class="kd">var</span> <span class="nx">stanza</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">xmpp</span><span class="p">.</span><span class="nx">Element</span><span class="p">(</span>
+</span><span class='line'>            <span class="s1">&#39;message&#39;</span><span class="p">,</span>
+</span><span class='line'>              <span class="p">{</span> <span class="nx">to</span><span class="o">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">email</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;chat&#39;</span> <span class="p">}</span>
+</span><span class='line'>          <span class="p">).</span><span class="nx">c</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">).</span><span class="nx">t</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; says &quot;</span> <span class="o">+</span><span class="nx">data</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; to talk with them click here: http://ss-chat-p.herokuapp.com/admin#&quot;</span> <span class="o">+</span> <span class="nx">socket</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="nx">cl</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">stanza</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">else</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>          <span class="nx">users</span><span class="p">[</span><span class="nx">socket</span><span class="p">.</span><span class="nx">id</span><span class="p">].</span><span class="nx">admin_connected</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;message_to_client&quot;</span><span class="p">,{</span> <span class="nx">message</span><span class="o">:</span> <span class="nx">data</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">],</span> <span class="nx">name</span> <span class="o">:</span> <span class="nx">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="p">});</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">cl</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;stanza&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">stanza</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">stanza</span><span class="p">.</span><span class="nx">name</span> <span class="o">==</span> <span class="s1">&#39;presence&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">stanza</span><span class="p">.</span><span class="nx">attrs</span><span class="p">.</span><span class="nx">type</span> <span class="o">==</span> <span class="s1">&#39;unavailable&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">stanza</span><span class="p">.</span><span class="nx">attrs</span><span class="p">.</span><span class="nx">from</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;c.programer@gmail.com&#39;</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;c.programer@gmail.com&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">adminXMPP</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="nx">adminXMPP</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">==</span> <span class="nx">stanza</span><span class="p">.</span><span class="nx">attrs</span><span class="p">.</span><span class="nx">from</span><span class="p">)</span>
+</span><span class='line'>          <span class="p">{</span>
+</span><span class='line'>            <span class="nx">adminXMPP</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">stanza</span><span class="p">.</span><span class="nx">attrs</span><span class="p">.</span><span class="nx">type</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nx">stanza</span><span class="p">.</span><span class="nx">attrs</span><span class="p">.</span><span class="nx">from</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;c.programer@gmail.com&#39;</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;c.programer@gmail.com&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">adminXMPP</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">stanza</span><span class="p">.</span><span class="nx">attrs</span><span class="p">.</span><span class="nx">from</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">cl</span><span class="p">.</span><span class="nx">addListener</span><span class="p">(</span><span class="s1">&#39;online&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">set_status_message</span><span class="p">(</span><span class="s2">&quot;SparkBot is ready&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Connected as &#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">jid</span><span class="p">.</span><span class="nx">user</span> <span class="o">+</span> <span class="s1">&#39;@&#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">jid</span><span class="p">.</span><span class="nx">domain</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">jid</span><span class="p">.</span><span class="nx">resource</span><span class="p">)</span>
+</span><span class='line'><span class="p">})</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">cl</span><span class="p">.</span><span class="nx">addListener</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span>
+</span><span class='line'>    <span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="p">})</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">set_status_message</span><span class="p">(</span><span class="nx">status_message</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>   <span class="kd">var</span> <span class="nx">presence_elem</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">xmpp</span><span class="p">.</span><span class="nx">Element</span><span class="p">(</span><span class="s1">&#39;presence&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="p">})</span>
+</span><span class='line'>                               <span class="p">.</span><span class="nx">c</span><span class="p">(</span><span class="s1">&#39;show&#39;</span><span class="p">).</span><span class="nx">t</span><span class="p">(</span><span class="s1">&#39;chat&#39;</span><span class="p">).</span><span class="nx">up</span><span class="p">()</span>
+</span><span class='line'>                               <span class="p">.</span><span class="nx">c</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">).</span><span class="nx">t</span><span class="p">(</span><span class="nx">status_message</span><span class="p">);</span>
+</span><span class='line'>   <span class="nx">cl</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">presence_elem</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I create all of the singleton variables at the top of the nodejs file. <code>xmpp</code> is used for connecting to Google Talk.  <code>app</code>, <code>server</code>, and <code>io</code> are used to host the server and talk with the client via sockets.io.</p>
+
+<p>I need to keep track of what <code>admins</code> are connected and what <code>users</code> are connected.  While there will only be one admin account, they can be logged into multiple locations.  For users, I need to keep track of their socket and their names to send to the client.  These will both be hash arrays keyed on their <code>socket.id</code>.</p>
+
+<p><code>server.listen(process.env.PORT || 3000);</code> tells the server to listen to the hosting port.  Heroku wants to set its own report, so you must try to environment report before you use the development port (3000).</p>
+
+<p>Once a socket has connected, we send them a welcome message via chat.  This also contains where or not the admin is available to talk.</p>
+
+<p>When an admin connects, we add them to the registered admins list and set the admin socket on the users hash to the admin socket so when a client messages, we will know which admin socket to send it to.  Each socket represents its own chat session with a client.</p>
+
+<p>When the server gets a message from the admin, it runs the <code>admin_to_server</code> event and it transmits the message to the client and back to the admin.  This way both users can see the message.</p>
+
+<p>Clients trigger the <code>message_to_server</code> action when they want to send a chat message to the admin.  If we haven&rsquo;t seen this user before, we add them to the users hash and spit their message back to them.  If the admin hasn&rsquo;t connected yet, it sends a xmpp message to the admin&rsquo;s gmail account notifying them that they someone is interested in talking with them.  The URL in the message contains the user&rsquo;s socket so the server will know what admin socket is intended for what user.</p>
+
+<p>If the admin has connected, then it transmits it to their socket.</p>
+
+<p>We need to keep track of when the admin is available for contact.  When the server starts, it initiates an xmpp connection and starts getting notifications about contact statuses.  If a user changes status or logs in, we add the admin to the <code>adminXMPP</code> so we know who to contact when a client arrives.  If they log out, they are removed from <code>adminXMPP</code>.  If the length of the array is 0, no admins are available and we report that to clients.</p>
+
+<p>The status message is set to &lsquo;SparkBot is ready&rsquo; when the xmpp client connects and it displays their user information in the logs.</p>
+
+<p>If there are any errors with the xmpp client, they are displayed in the logs and the process is killed.</p>
+
+<p>The <code>set_status_method</code> function wraps the xmpp request to set the status message for the Google Talk client.sdfsdf</p>
+
+<h2>Creating the Client view</h2>
+
+<p>This blog is hosted on Github Pages and talks with my server on a different subdomain (chat.kcoleman.me).  I loved the style of Google Talk&rsquo;s chat window with the speech boxes pointing to a profile pic.  Since I don&rsquo;t have a profile pic to use, I replaced that with a name.  You can style this code to your hearts content, but the Javascript I used looks like this.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="kd">var</span> <span class="nx">socketio</span> <span class="o">=</span> <span class="nx">io</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">&quot;ss-chat-p.herokuapp.com&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">socketio</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;message_to_client&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">msgHTML</span> <span class="o">=</span> <span class="s2">&quot;&lt;div class=&#39;avatar&#39;&gt;&lt;b&gt;&lt;span&gt;&quot;</span> <span class="o">+</span>
+</span><span class='line'>        <span class="nx">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;&lt;/span&gt;&lt;/b&gt;&quot;</span> <span class="o">+</span> <span class="s2">&quot;&lt;/div&gt;&lt;div class=&#39;messages&#39;&gt;&quot;</span><span class="o">+</span> <span class="nx">data</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;&lt;/div&gt;&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">).</span><span class="nx">value</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>          <span class="nx">msgHTML</span> <span class="o">=</span> <span class="s2">&quot;&lt;li class=&#39;self&#39;&gt;&quot;</span> <span class="o">+</span>  <span class="nx">msgHTML</span> <span class="o">+</span> <span class="s2">&quot;&lt;/li&gt;&quot;</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">else</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>          <span class="nx">msgHTML</span> <span class="o">=</span> <span class="s2">&quot;&lt;li class=&#39;other&#39;&gt;&quot;</span> <span class="o">+</span>  <span class="nx">msgHTML</span> <span class="o">+</span> <span class="s2">&quot;&lt;/li&gt;&quot;</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;discussion&quot;</span><span class="p">).</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;discussion&quot;</span><span class="p">).</span><span class="nx">innerHTML</span> <span class="o">+</span> <span class="nx">msgHTML</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#discussion&quot;</span><span class="p">).</span><span class="nx">prop</span><span class="p">({</span> <span class="nx">scrollTop</span><span class="o">:</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#discussion&quot;</span><span class="p">).</span><span class="nx">prop</span><span class="p">(</span><span class="s2">&quot;scrollHeight&quot;</span><span class="p">)</span> <span class="p">});</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">sendMessage</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">msg</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;message_input&quot;</span><span class="p">).</span><span class="nx">value</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">).</span><span class="nx">value</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">socketio</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;message_to_server&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">message</span> <span class="o">:</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">name</span> <span class="o">:</span> <span class="nx">name</span> <span class="p">});</span>
+</span><span class='line'>        <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;message_input&quot;</span><span class="p">).</span><span class="nx">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It first tries to connect to the server.  When it receives a message to display, the <code>message_to_client</code> action is triggered.  Here I format the HTML as a string based off of the data payload.  Then it adds into the discussion window.</p>
+
+<p>When a user clicks the submit button, I get the values of the input name and message box and send them to the server as &ldquo;message_to_server&rdquo; and then clear the box for the next message.</p>
+
+<p>Because this uses Sockets.io, we need to include their library in the client as well.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;http://ss-chat-p.herokuapp.com/socket.io/socket.io.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Creating the Admin View</h2>
+
+<p>This code should look pretty similar to the client, except we need the admin to register right when it connects so we can start sending him the client messages.</p>
+
+<figure class='code'><figcaption><span>admin page</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">socketio</span> <span class="o">=</span> <span class="nx">io</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">&quot;chat.kcoleman.me&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">register</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">target_user</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'><span class="nx">socketio</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;message_to_client&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;chatlog&quot;</span><span class="p">).</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;&lt;hr/&gt;&lt;b&gt;&quot;</span> <span class="o">+</span>
+</span><span class='line'>    <span class="nx">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;&lt;/b&gt;: &quot;</span><span class="o">+</span> <span class="nx">data</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;chatlog&quot;</span><span class="p">).</span><span class="nx">innerHTML</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">register</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">socketio</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;admin_signin&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">user_id</span><span class="o">:</span> <span class="nx">target_user</span> <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">sendMessage</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">msg</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;message_input&quot;</span><span class="p">).</span><span class="nx">value</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">socketio</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;admin_to_server&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">message</span> <span class="o">:</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">socket_id</span> <span class="o">:</span> <span class="nx">target_user</span><span class="p">});</span>
+</span><span class='line'>    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;message_input&quot;</span><span class="p">).</span><span class="nx">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When the client connects, it immediately tries to register itself so that the system will know it is available to receive messages.</p>
+
+<h2>In the Future</h2>
+
+<p>I want to be able to retrieve the client&rsquo;s user agent so if there are any browser compatibility errors, I can easily see what browser they have.  If there is a strong need, I may look at implementing a co-browsing solution so I will be able to follow along with them as they navigate my website.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+  
+
+
+  <span class="byline author vcard">Authored by <span class="fn">
+  
+    <a href="https://plus.google.com/+kevincolemaninc" rel="author">Kevin Coleman</a>
+  
+  </span></span>
+
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-04-30T12:40:07-04:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:40 pm</span></time>
+      
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.kcoleman.me/blog/2014/04/30/nodejs-chat-guide/" data-via="KevinColemanInc" data-counturl="http://www.kcoleman.me/blog/2014/04/30/nodejs-chat-guide/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/04/16/rapid-fire-ticket-purchasing-and-the-extendable-web/" title="Previous Post: Rapid Ticket Purchasing and the extendable web">&laquo; Rapid Ticket Purchasing and the extendable web</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/05/15/custom-environements-with-rails-4/" title="Next Post: Custom Environments with Rails 4">Custom Environments with Rails 4 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+
+</div>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Kevin Coleman -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> | Themed with <a href="https://github.com/lucaslew/whitespace">Whitespace</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
