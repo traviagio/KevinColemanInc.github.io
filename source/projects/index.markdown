@@ -7,6 +7,9 @@ footer: true
 ---
 Try some things I've built recently like…
 
+## eThor Gem [link](https://github.com/Ampersand-Labs/ethor)
+Ruby gem for communicating with the [eThor](http://www.ethor.com) API
+
 ## SparkLink [link](http://www.SparkLink.io/)
 App store linking service for small businesses trying to increase downloads
 
