@@ -7,6 +7,12 @@ footer: true
 ---
 Try some things I've built recently like…
 
+## SparkLink [link](http://www.SparkLink.io/)
+App store linking service for small businesses trying to increase downloads
+
+## HappyBeam [link](http://www.happybeamapp.com/)
+Android app to help you develop your meditation skills
+
 ## Gathercam [link](https://gathercam.co)
 First place Startup Weekend 2014
 Photo aggregator via social media and hashtags for weddings and events
