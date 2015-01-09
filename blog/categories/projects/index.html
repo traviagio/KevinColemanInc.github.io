@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Gem Configuration Defaults - Kevin Coleman</title>
+  <title>Category: Projects - Kevin Coleman</title>
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="Recently I have been working on connecting to social media websites via oAuth gems like twitter and koala. I discovered a neat trick for initializing &hellip;">
+  <meta name="description" content="Category: projects">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.kcoleman.me/blog/2014/05/16/gem-configuration-defaults">
+  <link rel="canonical" href="http://www.kcoleman.me/blog/categories/projects">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Kevin Coleman" type="application/atom+xml">
@@ -101,150 +101,46 @@
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
+<article role="article">
   
   <header>
-    
-      
-        <h1 class="entry-title">Gem Configuration Defaults</h1>
-      
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-05-16T22:48:09-04:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:48 pm</span></time>
-        
-        
-      </p>
+    <h1 class="entry-title">Category: Projects</h1>
     
   </header>
+  
+  <div id="blog-archives" class="category">
 
 
-<div class="entry-content"><p>Recently I have been working on connecting to social media websites via oAuth gems like twitter and koala.  I discovered a neat trick for initializing these gems with environment variables so that you don&rsquo;t have to be passing in the variables every time you want to create a new instance of them.</p>
 
-<p>For this example, I am going to use the twitter gem.  Out of the box, its initializer looks like this taken from their docs:</p>
+  
+  <h2>2015</h2>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">client</span> <span class="o">=</span> <span class="no">Twitter</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">consumer_key</span>        <span class="o">=</span> <span class="s2">&quot;YOUR_CONSUMER_KEY&quot;</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">consumer_secret</span>     <span class="o">=</span> <span class="s2">&quot;YOUR_CONSUMER_SECRET&quot;</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token</span>        <span class="o">=</span> <span class="s2">&quot;YOUR_ACCESS_TOKEN&quot;</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token_secret</span> <span class="o">=</span> <span class="s2">&quot;YOUR_ACCESS_SECRET&quot;</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+<article>
+  
+<h1><a href="/blog/2015/01/08/happybeam/">SideProject: HappyBeam - Meditate and Improve</a></h1>
+<time datetime="2015-01-08T13:11:59-05:00" pubdate><span class='month'>Jan</span> <span class='day'>08</span> <span class='year'>2015</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/projects/'>projects</a></span>
+</footer>
 
 
-<p>This is pretty clunky if you ask me, especially if you plan on accessing your users data in a variety of different places in your code.  We can make this more DRY by doing setting the consumer key and consumer secret in an initializer override like this</p>
+</article>
 
-<figure class='code'><figcaption><span>initializers/twitter.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Twitter</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">class_eval</span> <span class="k">do</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize_with_default_settings</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
-</span><span class='line'>    <span class="n">options</span><span class="o">[</span><span class="ss">:consumer_key</span><span class="o">]</span> <span class="o">||=</span> <span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">fb_app_id</span>
-</span><span class='line'>    <span class="n">options</span><span class="o">[</span><span class="ss">:consumer_secret</span><span class="o">]</span> <span class="o">||=</span> <span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">fb_secret</span>
-</span><span class='line'>    <span class="n">initialize_without_default_settings</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">alias_method_chain</span> <span class="ss">:initialize</span><span class="p">,</span> <span class="ss">:default_settings</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Using the <a href="http://weblog.rubyonrails.org/2006/4/26/new-in-rails-module-alias_method_chain/">alias_method_chain</a>, we can sneak in some behaviors into the twitter client that weren&rsquo;t originally there, thus allowing us to not need to supply the consumer key every time we want to create a new client.  Now we can do things like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">client</span> <span class="o">=</span> <span class="no">Twitter</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token</span>        <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">access_token</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token_secret</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">access_token_secret</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Since the consumer key never changes across calls, this keeps our code that much simpler.
-lowing us to not need to supply the consumer key every time we want to create a new client.  Now we can do things like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">client</span> <span class="o">=</span> <span class="no">Twitter</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token</span>        <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">access_token</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token_secret</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">access_token_secret</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Since the consumer key never changes across calls, this keeps our code that much simpler.</p>
 </div>
 
-
-  <footer>
-    <p class="meta">
-      
   
-
-
-  
-
-
-  <span class="byline author vcard">Authored by <span class="fn">
-  
-    <a href="https://plus.google.com/+kevincolemaninc" rel="author">Kevin Coleman</a>
-  
-  </span></span>
-
-
-      
-
-
-
-
-<time class='entry-date' datetime='2014-05-16T22:48:09-04:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:48 pm</span></time>
-      
-      
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.kcoleman.me/blog/2014/05/16/gem-configuration-defaults/" data-via="KevinColemanInc" data-counturl="http://www.kcoleman.me/blog/2014/05/16/gem-configuration-defaults/" >Tweet</a>
-  
-  
-  <div class="g-plusone" data-size="medium"></div>
-  
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2014/05/15/custom-environements-with-rails-4/" title="Previous Post: Custom Environments with Rails 4">&laquo; Custom Environments with Rails 4</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2014/05/17/tagging-models/" title="Next Post: Tagging Models">Tagging Models &raquo;</a>
-      
-    </p>
-  </footer>
 </article>
 
 
 </div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
 
     </div>
   </div>

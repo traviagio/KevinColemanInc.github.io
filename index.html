@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="I have been to a few hackathons and startup weekends over the last few years and I have a pretty good prize rate (I have placed at more than 50% of &hellip;">
+  <meta name="description" content="Please Vote for us!! Happiness Apps Challenge Side projects are some of the best way for developers to learn new skills and maybe a little cash &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -102,6 +102,66 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/01/08/happybeam/">SideProject: HappyBeam - Meditate and Improve</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-01-08T13:11:59-05:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:11 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/HappyBeam-feature-graphic.png" title="SideProject: HappyBeam - Meditate and improve" class="banner-img"  /></p>
+
+<h3>Please Vote for us!!</h3>
+
+<h1>Happiness Apps Challenge</h1>
+
+<p>Side projects are some of the best way for developers to learn new skills and maybe a little cash :-).  I really enjoy attending <a href="/blog/2014/10/26/how-to-win-a-hackathon/">Hackathon&rsquo;s</a>, because they really push my skillset as a developer.</p>
+
+<p>Most of my recently hackathons have required I learned android development, so I decided for my next project to buckle down and make a nicely designed, complicated android app.  The HappinessApps challenge was the perfect excuse for me to build an app worthy of my portfolio.</p>
+
+<p>For the HappinessApps hackathon, <a href="http://kcoleman.me">Kevin Coleman</a> and Haider Khan interviewed 57 unhappy people via Mechanical Turk that used to meditate.  We wanted to know why they stopped meditating.  32 users felt frustrated with meditation, because they never felt like they were getting any better and weren&rsquo;t confident that meditation was improving their happiness.</p>
+
+<h1>Enter <a href="http://www.happybeamapp.com">HappyBeam</a></h1>
+
+<p>&ldquo;If you can&rsquo;t measure it, you can&rsquo;t improve it.&rdquo; -Peter Drucker</p>
+
+<p>HappyBeam is the first app that is specifically designed to measure your inner peace by building up the bridge between physical movements and mental fluctuations. It helps you have a peaceful mind, reduce stress and depression, and improves your meditations. The less movement and lower the score that HappyBeam detects, the more you improve.</p>
+
+<p>HappyBeam runs alongside meditation apps to measure how a user moves during a meditation.  The app calculates a movement score using a cutting-edge algorithm. Happy-peaceful scores are marked green, not-so-good scores are yellow, high-anxiety scores are red.</p>
+
+<p>In the &ldquo;Your Meditations Chart&rdquo;, users see their improving meditation scores across all their meditations. The history list shows a list of each session with a chart displaying when and how long they moved.</p>
+
+<p>Currently, there is no other meditation apps that shows how a user is improving.</p>
+
+<p>HappyBeam leverages the latest Android Wear technology so that users can measure motion with their smartwatch.  This delivers a better reading of their meditation.</p>
+
+<p>HappyBeam was built in 3 weeks for the Happiness Apps challenge.</p>
+
+<p><a href="http://www.happybeamapp.com">Website</a></p>
+
+<p><a href="https://play.google.com/store/apps/details?id=zkhaider.com.happinessproject">Android Play Store</a>​</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -994,87 +1054,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/06/05/rails-4-dot-1-enums-how-not-to-handle-states/">Rails 4.1 Enums: How Not to Handle States</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-06-05T13:08:29-04:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:08 pm</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/road.jpg" title="Rails 4.1 enums: How not to handle stats" class="banner-img"/></p>
-
-<p>I subscribe to the <a href="http://rubyweekly.com/">Ruby Weekly</a> news blog, so I can stay updated with the latest rails practices and gems.  90% of the time, there is some really good information in there.  But occasionally, sometime catches my eye that just feels wrong.</p>
-
-<p>In this weeks email, there was a post linking to <a href="https://www.youtube.com/watch?v=UbOkNduhCfw">An introduction to Rails 4.1&rsquo;s Enum</a> where he talks about how you should use enums to handle your model states.</p>
-
-<p><em>This upset me.</em></p>
-
-<p>You really shouldn&rsquo;t be using enums for variables that don&rsquo;t have a strong numerical meaning (like in the example below), because it obscures the meaning of the variable&rsquo;s value.</p>
-
-<h2>What are Enums</h2>
-
-<p>For those that don&rsquo;t know what enums are, they essentially allow you to give names to integers.  This is really cool, because I can do things like:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">enum</span> <span class="ss">http_code</span><span class="p">:</span> <span class="p">{</span> <span class="ss">continue</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="ss">ok</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="ss">accepted</span><span class="p">:</span> <span class="mi">202</span><span class="p">,</span> <span class="ss">redirection_perm</span><span class="p">:</span> <span class="mi">301</span> <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now I can have named response codes to http codes.   I can do things like <code>response.http_code == :ok</code> to see if the response was valid.  Now I wont have to remember all of those http numbers, I can just remember the names of them.</p>
-
-<p>That is what enums are good for.  State is what enums are bad for. Unfortunately the <a href="https://github.com/codemy/blogmenow/pull/3/files">example code</a> for using them in rails suggests that you use them for state.</p>
-
-<h2>Why enums are bad</h2>
-
-<p>Yeah, its great to have name attributes for numbers, but this gets bad when you start putting them in the database and the numbers don&rsquo;t really mean much by themselves, which is how you would look at them if you were to hit the database directly with a query.</p>
-
-<h3>Only exist inside of the application</h3>
-
-<p>So if my states are like so with the order being pending => processing => accepted => complete</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">enum</span> <span class="ss">state</span><span class="p">:</span> <span class="p">{</span> <span class="ss">pending</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">processing</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">accepted</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="ss">complete</span><span class="p">:</span> <span class="mi">4</span> <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I will only see numbers in the database.  If I do an export of the db to hand to my data analyst, he is going to have no idea what those numbers mean.  Now I have to include my db dump and my .rb file with the enums spelled out.</p>
-
-<p>Or perhaps, you have a <a href="http://nodejs.org/">nodejs</a> application powering your chat service that also accesses the same db.  In the nodejs world, you would have to maintain a similar enum list so it can read from the states.  Your nodejs developer would have to reference your .rb file to determine what number really means what.</p>
-
-<h3>Growth causes confusion</h3>
-
-<p>This will also get confusing as your application grows you may want to add more states. You may end up with something like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">enum</span> <span class="ss">state</span><span class="p">:</span> <span class="p">{</span> <span class="ss">pending</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">processing</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">accepted</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="ss">complete</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="ss">shipping</span><span class="p">:</span> <span class="mi">5</span> <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The new order would be pending => processing => accepted => shipping => complete.  Which is awkward, because in the database, it looks like 1 => 2 => 3 => 5 => 4.  Which can feel a bit weird if you don&rsquo;t know what is going on.</p>
-
-<p>If you had just left your states as named strings, you wouldn&rsquo;t have this odd ordering issue or this ambiguity of what number resides with what state.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -1092,7 +1071,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - Kevin Coleman -
+  Copyright &copy; 2015 - Kevin Coleman -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> | Themed with <a href="https://github.com/lucaslew/whitespace">Whitespace</a></span>
 </p>
 
