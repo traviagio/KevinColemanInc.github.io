@@ -8,7 +8,7 @@ footer: true
 Try some things I've built recently like…
 
 ## Craftia [link](https://github.com/Ampersand-Labs/ethor)
-ProtoHack top 5 finalist
+ProtoHack Austin 1st place '15
 Craft social platform for Indian women
 
 ## eThor Gem [link](https://github.com/Ampersand-Labs/ethor)
