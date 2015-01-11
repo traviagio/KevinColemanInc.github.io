@@ -7,6 +7,10 @@ footer: true
 ---
 Try some things I've built recently like…
 
+## Craftia [link](https://github.com/Ampersand-Labs/ethor)
+ProtoHack top 5 finalist
+Craft social platform for Indian women
+
 ## eThor Gem [link](https://github.com/Ampersand-Labs/ethor)
 Ruby gem for communicating with the [eThor](http://www.ethor.com) API
 
