@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="This is version two of my reporting schema used for Focused Care Solutions reporting to case managers. This pattern follows contains a lot of the &hellip;">
+  <meta name="description" content="A great way to extend rails functionality is by using Rails gems. These libraries are easily plugged into existing ruby projects and allow for quick &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -108,6 +108,207 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2014/03/23/how-to-make-a-gem/">Extending Active Record in Rails 4.1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-03-23T23:40:48-04:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>11:40 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>A great way to extend rails functionality is by using Rails gems.  These libraries are easily plugged into existing ruby projects and allow for quick integration of complicated features.</p>
+
+<p>I noticed that for my side projects that are still growing, that I would like to be notified whenever a new user signs up, so I can reach out to them to get feedback on the product.</p>
+
+<p>Here I will go through step by step on how I created <a href="https://github.com/KevinColemanInc/Angora">Angora</a>, email notifications on model creation</p>
+
+<h1>The art of naming</h1>
+
+<p>Firstly, select a name.  This name should be unique to other gems so other developers can easily find it.  Check <a href="http://github.com">Github</a> and <a href="http://rubygems.org">RubyGems</a> to verify that there aren&rsquo;t any other gems with the same name.</p>
+
+<p>RubyGems provides a excellent <a href="http://guides.rubygems.org/name-your-gem/">table</a> for describing how to name a gem.</p>
+
+<h1>Creating the gem</h1>
+
+<p>We are going to use the bundler tool to generate the gem files.  Since my gem name is angora, I type this in:</p>
+
+<figure class='code'><figcaption><span>Creating gem with bundler</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ bundle gem angora</span>
+</span><span class='line'><span class="go">    create  angora/Gemfile</span>
+</span><span class='line'><span class="go">    create  angora/Rakefile</span>
+</span><span class='line'><span class="go">    create  angora/LICENSE.txt</span>
+</span><span class='line'><span class="go">    create  angora/README.md</span>
+</span><span class='line'><span class="go">    create  angora/.gitignore</span>
+</span><span class='line'><span class="go">    create  angora/angora.gemspec</span>
+</span><span class='line'><span class="go">    create  angora/lib/angora.rb</span>
+</span><span class='line'><span class="go">    create  angora/lib/angora/version.rb</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>Upload to github</h1>
+
+<p>Lets add this project to github and start tracking it with git.  This will also give us a homepage to link to, which we will get to next.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ git init</span>
+</span><span class='line'><span class="go">  $ git add -all</span>
+</span><span class='line'><span class="go">  $ git commit -m &quot;first commit!&quot;</span>
+</span><span class='line'><span class="go">  $ git remote add origin &lt;git url&gt;</span>
+</span><span class='line'><span class="go">  $ git push origin master</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>The basics</h1>
+
+<p>Now we are going to edit the basic attributes of angora.  Open up <code>angora.gemspec</code> to see all of the generated defaults.  Change all of the attributes to what is relevant for your project.</p>
+
+<figure class='code'><figcaption><span>angora.gemspec</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">authors</span>       <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;Kevin Coleman&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">email</span>         <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;kevin.coleman@gatech.edu&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">summary</span>       <span class="o">=</span> <span class="sx">%q{TODO: Get notifications when a new object is created.}</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">description</span>   <span class="o">=</span> <span class="sx">%q{TODO: Angora hooks into ActiveMailer to send off an email notification with all of the</span>
+</span><span class='line'><span class="sx">  spec.homepage      = &quot;https://github.com/KevinColemanInc/angora&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>Dependencies</h1>
+
+<p>Because this gem depends on active record, I need to add that as a dependency to the gem.  We will also be using rspec to test the gem.</p>
+
+<figure class='code'><figcaption><span>angora.gemspec</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_dependency</span> <span class="s2">&quot;activerecord&quot;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s2">&quot;rspec&quot;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s2">&quot;sqlite3&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and I need to require it in the gem file, so it loads with the gem.</p>
+
+<figure class='code'><figcaption><span>lib/angora.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="nb">require</span> <span class="s2">&quot;active_record&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>First Test</h1>
+
+<p>Following TDD practices, we must first write our tests before we start writing feature code.  I am going to use rspec.</p>
+
+<figure class='code'><figcaption><span>spec/lib/angora_spec.rb linenos:true</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;spec_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">describe</span> <span class="s2">&quot;angora_spec&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">context</span> <span class="s2">&quot;send notification&quot;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">it</span> <span class="s2">&quot;should send a notification message&quot;</span> <span class="k">do</span>
+</span><span class='line'>        <span class="no">User</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">&quot;Kevin&quot;</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will verify that a notification has been sent when the user is created.  For this test to run, we will need to create the <code>spec_helper.rb</code> file.</p>
+
+<figure class='code'><figcaption><span>spec/lib/angora_spec.rb linenos:true</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;angora&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">establish_connection</span><span class="p">(</span><span class="ss">:adapter</span> <span class="o">=&gt;</span> <span class="s2">&quot;sqlite3&quot;</span><span class="p">,</span>
+</span><span class='line'>                                       <span class="ss">:database</span> <span class="o">=&gt;</span> <span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/angora.sqlite3&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nb">load</span> <span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/support/schema.rb&#39;</span>
+</span><span class='line'>  <span class="nb">load</span> <span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/support/models.rb&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>require 'angora'</code> will add references to our gem and active_record that our tests will need to run.  We will need a database to test our gem against, so I am establishing a connection to a local sqlite3 database.</p>
+
+<p>After the database is loaded, we will need to load up a schema file so rails can use that schema.</p>
+
+<figure class='code'><figcaption><span>spec/support/schema.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Schema</span><span class="o">.</span><span class="n">define</span> <span class="k">do</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="kp">false</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">create_table</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:force</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:name</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Create the schema file like above.  Because this is just for testing, I am only creating one model and only giving it one attribute, name.</p>
+
+<p>We will also have to create the user model class.</p>
+
+<figure class='code'><figcaption><span>spec/support/schema.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2014/03/18/reporting-with-rails-part-1/">Reporting With Rails Part 2</a></h1>
     
     
@@ -117,7 +318,7 @@
 
 
 
-<time class='entry-date' datetime='2014-03-18T00:49:55-05:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:49 am</span></time>
+<time class='entry-date' datetime='2014-03-18T01:49:55-04:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:49 am</span></time>
         
         
       </p>
@@ -353,7 +554,7 @@
 
 
 
-<time class='entry-date' datetime='2014-03-11T12:05:11-05:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:05 pm</span></time>
+<time class='entry-date' datetime='2014-03-11T13:05:11-04:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:05 pm</span></time>
         
         
       </p>
@@ -506,7 +707,7 @@
 
 
 
-<time class='entry-date' datetime='2014-02-14T00:21:15-06:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:21 am</span></time>
+<time class='entry-date' datetime='2014-02-14T01:21:15-05:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:21 am</span></time>
         
         
       </p>

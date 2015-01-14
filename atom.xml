@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Coleman]]></title>
   <link href="http://www.kcoleman.me/atom.xml" rel="self"/>
   <link href="http://www.kcoleman.me/"/>
-  <updated>2015-01-10T22:02:56-06:00</updated>
+  <updated>2015-01-13T20:14:02-05:00</updated>
   <id>http://www.kcoleman.me/</id>
   <author>
     <name><![CDATA[Kevin Coleman]]></name>
@@ -14,9 +14,38 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Atlanta Startup Jobs - Scratch Your Own Itch]]></title>
+    <link href="http://www.kcoleman.me/blog/2015/01/12/atlanta-startup-jobs/"/>
+    <updated>2015-01-12T20:52:21-05:00</updated>
+    <id>http://www.kcoleman.me/blog/2015/01/12/atlanta-startup-jobs</id>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/park.jpg" title="Atlanta Startup Jobs - Scratch your own itch" class="banner-img"  /></p>
+
+<p>I have always wanted to start my own business, ever since I was in high school.  Since then, I have been struggling to find an idea that I am truly passionate enough to invest my time or resources to execute on my own.</p>
+
+<p>So I decided I graduated from Georgia Tech in &lsquo;11, I decided I should do the second best thing: work for someone that is starting their own business.  This is a great technique, because it reduces your risk (get paid a /mostly/ competitive salary) and gives you an opportunity to learn (make mistakes on someone else&rsquo;s dollar :-))</p>
+
+<p>While Atlanta has an awesome startup culture, unless you are familiar with the big players (co-working spaces, syndications, meetup groups), it can be difficult finding what companies are hiring.  The Georgia Tech BuzzBoard only has postings by big name companies that can afford the hefty price tag.  Same can be said about the popular job board sites like CareerBuilder.com or Monster.com.</p>
+
+<p>Fast forward a few years and I finally figured out who to talk to and where to look for a startup job postings.  But the experience was still frustrating, because now I was checking 3-5 different job board websites for the various co-working and syndication websites.</p>
+
+<p>There was no one place to find these jobs.</p>
+
+<p>So I made <a href="http://www.atlantastartupjobs.com">Atlanta Startup Jobs</a></p>
+
+<p>Atlanta Startup Jobs aggregates job postings from all of Atlanta&rsquo;s job board websites automatically each night.  Then every Friday, it emails out to the subscriber list all of the jobs it found over the last week.</p>
+
+<p>The app is written in Ruby on Rails and hosted for free on Heroku.  I use a separate application instance on heroku (still free tier) to crawl the websites so the crawler gets its own set of dyno ours from the web application.</p>
+
+<p>Since its launch 3 months ago, it has found over 350 job postings and gets on average 100 hits per day with a list of 60 subscribers.</p>
+
+<p>If you are looking for a job in Atlanta&rsquo;s startup community, Atlanta Startup Jobs is the place to start.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[SideProject: HappyBeam - Meditate and Improve]]></title>
     <link href="http://www.kcoleman.me/blog/2015/01/08/happybeam/"/>
-    <updated>2015-01-08T12:11:59-06:00</updated>
+    <updated>2015-01-08T13:11:59-05:00</updated>
     <id>http://www.kcoleman.me/blog/2015/01/08/happybeam</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/HappyBeam-feature-graphic.png" title="SideProject: HappyBeam - Meditate and improve" class="banner-img"  /></p>
 
@@ -55,7 +84,7 @@
   <entry>
     <title type="html"><![CDATA[How to Win a Hackathon]]></title>
     <link href="http://www.kcoleman.me/blog/2014/10/26/how-to-win-a-hackathon/"/>
-    <updated>2014-10-26T19:14:40-05:00</updated>
+    <updated>2014-10-26T20:14:40-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/10/26/how-to-win-a-hackathon</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/cooking.jpg" title="How to win a hackathon" class="banner-img"  /></p>
 
@@ -151,7 +180,7 @@
   <entry>
     <title type="html"><![CDATA[One Rails App Two Web Applications]]></title>
     <link href="http://www.kcoleman.me/blog/2014/10/09/one-rails-app-two-web-applications/"/>
-    <updated>2014-10-09T19:11:45-05:00</updated>
+    <updated>2014-10-09T20:11:45-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/10/09/one-rails-app-two-web-applications</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/mountains.jpeg" title="One Rails App Two Web Applications" class="banner-img"  /></p>
 
@@ -299,7 +328,7 @@
   <entry>
     <title type="html"><![CDATA[Angularjs Rails and SEO Part 2]]></title>
     <link href="http://www.kcoleman.me/blog/2014/10/07/angularjs-rails-and-seo-part-2/"/>
-    <updated>2014-10-07T19:26:43-05:00</updated>
+    <updated>2014-10-07T20:26:43-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/10/07/angularjs-rails-and-seo-part-2</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/beach.jpeg" title="Angularjs Rails and SEO Part 2" class="banner-img"  /></p>
 
@@ -371,7 +400,7 @@
   <entry>
     <title type="html"><![CDATA[Angularjs Rails and SEO Part 1]]></title>
     <link href="http://www.kcoleman.me/blog/2014/10/03/angularjs-rails-seo/"/>
-    <updated>2014-10-03T11:05:45-05:00</updated>
+    <updated>2014-10-03T12:05:45-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/10/03/angularjs-rails-seo</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/mountain.jpeg" title="Angularjs Rails and SEO Part 1" class="banner-img"  /></p>
 
@@ -595,7 +624,7 @@
   <entry>
     <title type="html"><![CDATA[Buying My First Real Estate Investment]]></title>
     <link href="http://www.kcoleman.me/blog/2014/07/28/new-house/"/>
-    <updated>2014-07-28T11:46:17-05:00</updated>
+    <updated>2014-07-28T12:46:17-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/07/28/new-house</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/city-houses.jpg" title="First Real Estate Investment Property" class="banner-img"  /></p>
 
@@ -634,7 +663,7 @@
   <entry>
     <title type="html"><![CDATA[How to Get OSX Git Branch Name in Console]]></title>
     <link href="http://www.kcoleman.me/blog/2014/07/23/how-to-get-osx-git-branch-name-in-console/"/>
-    <updated>2014-07-23T14:13:52-05:00</updated>
+    <updated>2014-07-23T15:13:52-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/07/23/how-to-get-osx-git-branch-name-in-console</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/hills.jpg" title="How to get OSX git branch name in console" class="banner-img"  /></p>
 
@@ -667,7 +696,7 @@
   <entry>
     <title type="html"><![CDATA[How to Start Web Consulting]]></title>
     <link href="http://www.kcoleman.me/blog/2014/07/05/web-consulting/"/>
-    <updated>2014-07-05T10:46:57-05:00</updated>
+    <updated>2014-07-05T11:46:57-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/07/05/web-consulting</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/ppl-skyline.jpg" title="How to start web consulting" class="banner-img"  /></p>
 
@@ -708,7 +737,7 @@
   <entry>
     <title type="html"><![CDATA[Goodie Hack #2]]></title>
     <link href="http://www.kcoleman.me/blog/2014/06/21/goodie-hack-number-2/"/>
-    <updated>2014-06-21T16:31:51-05:00</updated>
+    <updated>2014-06-21T17:31:51-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/06/21/goodie-hack-number-2</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/urban.jpg" title="Goodie Hack Atlanta 2014" class="banner-img" /></p>
 
@@ -725,7 +754,7 @@
   <entry>
     <title type="html"><![CDATA[What It Takes to Be Entry Level Rails Developers]]></title>
     <link href="http://www.kcoleman.me/blog/2014/06/13/entry-level-rails/"/>
-    <updated>2014-06-13T15:42:01-05:00</updated>
+    <updated>2014-06-13T16:42:01-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/06/13/entry-level-rails</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/bridge.jpg" title="What it takes to be entry level Rails developers" class="banner-img" /></p>
 
@@ -757,7 +786,7 @@
   <entry>
     <title type="html"><![CDATA[Rails 4.1 Enums: How Not to Handle States]]></title>
     <link href="http://www.kcoleman.me/blog/2014/06/05/rails-4-dot-1-enums-how-not-to-handle-states/"/>
-    <updated>2014-06-05T12:08:29-05:00</updated>
+    <updated>2014-06-05T13:08:29-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/06/05/rails-4-dot-1-enums-how-not-to-handle-states</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/road.jpg" title="Rails 4.1 enums: How not to handle stats" class="banner-img"/></p>
 
@@ -817,7 +846,7 @@
   <entry>
     <title type="html"><![CDATA[My Path to Success]]></title>
     <link href="http://www.kcoleman.me/blog/2014/06/04/path-to-success/"/>
-    <updated>2014-06-04T16:50:34-05:00</updated>
+    <updated>2014-06-04T17:50:34-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/06/04/path-to-success</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/escalator.jpg" title="My path to success" class="banner-img" /></p>
 
@@ -853,9 +882,9 @@
   
   <entry>
     <title type="html"><![CDATA[Twitter Bot on Heroku]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/05/31/twitter-bot-on-heroku/"/>
-    <updated>2014-05-31T23:05:08-05:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/05/31/twitter-bot-on-heroku</id>
+    <link href="http://www.kcoleman.me/blog/2014/06/01/twitter-bot-on-heroku/"/>
+    <updated>2014-06-01T00:05:08-04:00</updated>
+    <id>http://www.kcoleman.me/blog/2014/06/01/twitter-bot-on-heroku</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/alley.jpg" title="Twitter bot v1 on Heroku" class="banner-img" /></p>
 
 <p>Inspired by the Technology Review article, <a href="http://www.technologyreview.com/view/527746/how-advanced-socialbots-have-infiltrated-twitter/">How Advanced Social bots Have Infiltrated Twitter</a>, I thought it would be an interesting to see how difficult it is to write a bot to generate followers over a given topic.</p>
@@ -1032,7 +1061,7 @@
   <entry>
     <title type="html"><![CDATA[Rails and Redis URL Shortener in Same Application]]></title>
     <link href="http://www.kcoleman.me/blog/2014/05/31/url-shorter-with-redis-and-rails/"/>
-    <updated>2014-05-31T13:22:47-05:00</updated>
+    <updated>2014-05-31T14:22:47-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/05/31/url-shorter-with-redis-and-rails</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/locks.jpg" title="Redis key value storage" class="banner-img" /></p>
 
@@ -1209,7 +1238,7 @@
   <entry>
     <title type="html"><![CDATA[Tagging Models]]></title>
     <link href="http://www.kcoleman.me/blog/2014/05/17/tagging-models/"/>
-    <updated>2014-05-17T10:14:24-05:00</updated>
+    <updated>2014-05-17T11:14:24-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/05/17/tagging-models</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/music_slider.jpg" title="Tagging Models" class="banner-img"/></p>
 
@@ -1353,7 +1382,7 @@
   <entry>
     <title type="html"><![CDATA[Gem Configuration Defaults]]></title>
     <link href="http://www.kcoleman.me/blog/2014/05/16/gem-configuration-defaults/"/>
-    <updated>2014-05-16T21:48:09-05:00</updated>
+    <updated>2014-05-16T22:48:09-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/05/16/gem-configuration-defaults</id>
     <content type="html"><![CDATA[<p>Recently I have been working on connecting to social media websites via oAuth gems like twitter and koala.  I discovered a neat trick for initializing these gems with environment variables so that you don&rsquo;t have to be passing in the variables every time you want to create a new instance of them.</p>
 
@@ -1427,7 +1456,7 @@ lowing us to not need to supply the consumer key every time we want to create a 
   <entry>
     <title type="html"><![CDATA[Custom Environments With Rails 4]]></title>
     <link href="http://www.kcoleman.me/blog/2014/05/15/custom-environements-with-rails-4/"/>
-    <updated>2014-05-15T09:41:53-05:00</updated>
+    <updated>2014-05-15T10:41:53-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/05/15/custom-environements-with-rails-4</id>
     <content type="html"><![CDATA[<p>Sometimes you may need to setup custom environments beyond the standard <code>test</code>, <code>development</code>, and <code>production</code> that rails comes with.  If you would like to have your staging server configured a little big differently than test and production (maybe higher logging levels for example), then you would need to create another environment for these configurations called <code>staging</code>.</p>
 
@@ -1500,7 +1529,7 @@ lowing us to not need to supply the consumer key every time we want to create a 
   <entry>
     <title type="html"><![CDATA[NodeJS Chat Guide]]></title>
     <link href="http://www.kcoleman.me/blog/2014/04/30/nodejs-chat-guide/"/>
-    <updated>2014-04-30T11:40:07-05:00</updated>
+    <updated>2014-04-30T12:40:07-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/04/30/nodejs-chat-guide</id>
     <content type="html"><![CDATA[<h2>How I built the chat application for my blog.</h2>
 
@@ -1869,7 +1898,7 @@ lowing us to not need to supply the consumer key every time we want to create a 
   <entry>
     <title type="html"><![CDATA[Rapid Ticket Purchasing and the Extendable Web]]></title>
     <link href="http://www.kcoleman.me/blog/2014/04/16/rapid-fire-ticket-purchasing-and-the-extendable-web/"/>
-    <updated>2014-04-16T11:30:31-05:00</updated>
+    <updated>2014-04-16T12:30:31-04:00</updated>
     <id>http://www.kcoleman.me/blog/2014/04/16/rapid-fire-ticket-purchasing-and-the-extendable-web</id>
     <content type="html"><![CDATA[<h2>Backstory</h2>
 
@@ -2064,7 +2093,7 @@ lowing us to not need to supply the consumer key every time we want to create a 
 
 <h3>Quick tip: One gmail for multiple accounts</h3>
 
-<p>If you use gmail, you can use their wild card feature to have different emails that point to your email.  For example my email is <a href="&#109;&#x61;&#105;&#x6c;&#x74;&#x6f;&#58;&#99;&#46;&#112;&#x72;&#x6f;&#103;&#114;&#97;&#109;&#x65;&#x72;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#99;&#x6f;&#x6d;&#x2e;">&#x63;&#x2e;&#x70;&#114;&#x6f;&#103;&#x72;&#x61;&#109;&#x65;&#x72;&#64;&#x67;&#x6d;&#x61;&#x69;&#x6c;&#x2e;&#x63;&#111;&#109;&#x2e;</a>  I can create a different brown paper tickets account with this email <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#58;&#x63;&#x2e;&#x70;&#114;&#111;&#103;&#114;&#x61;&#x6d;&#x65;&#x72;&#x2b;&#98;&#112;&#116;&#x40;&#x67;&#x6d;&#97;&#105;&#108;&#x2e;&#x63;&#x6f;&#x6d;">&#99;&#x2e;&#112;&#114;&#111;&#103;&#114;&#x61;&#x6d;&#101;&#114;&#x2b;&#98;&#x70;&#x74;&#x40;&#103;&#109;&#97;&#105;&#108;&#x2e;&#x63;&#x6f;&#109;</a> and all of the emails going to that new email go to my main inbox.  This way I don&rsquo;t have to keep creating emails to make new accounts.  Anything between the + and the @ symbols are ignored in gmail only.</p>
+<p>If you use gmail, you can use their wild card feature to have different emails that point to your email.  For example my email is <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#111;&#x3a;&#x63;&#x2e;&#112;&#114;&#111;&#x67;&#x72;&#x61;&#x6d;&#101;&#x72;&#x40;&#x67;&#x6d;&#97;&#x69;&#x6c;&#46;&#x63;&#x6f;&#x6d;&#x2e;">&#99;&#x2e;&#112;&#x72;&#x6f;&#x67;&#x72;&#x61;&#109;&#101;&#114;&#x40;&#x67;&#x6d;&#97;&#105;&#108;&#46;&#x63;&#x6f;&#x6d;&#46;</a>  I can create a different brown paper tickets account with this email <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#111;&#58;&#x63;&#x2e;&#x70;&#x72;&#x6f;&#103;&#114;&#97;&#109;&#x65;&#x72;&#43;&#x62;&#112;&#x74;&#64;&#103;&#109;&#97;&#105;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;">&#x63;&#46;&#112;&#x72;&#111;&#x67;&#114;&#x61;&#109;&#x65;&#x72;&#43;&#x62;&#x70;&#116;&#64;&#103;&#x6d;&#97;&#105;&#108;&#46;&#x63;&#111;&#x6d;</a> and all of the emails going to that new email go to my main inbox.  This way I don&rsquo;t have to keep creating emails to make new accounts.  Anything between the + and the @ symbols are ignored in gmail only.</p>
 
 <h3>Lets scale this further (8 to infinite and beyond!)</h3>
 
@@ -2083,186 +2112,6 @@ lowing us to not need to supply the consumer key every time we want to create a 
 <p>This currently attempts to grab the maximum amount of tickets (2).</p>
 
 <h1>PLEASE PLEASE PLEASE check back with the project an hour before tickets become avaliable.  I plan on releasing an updated version of the project to handle any issues that may arise.</h1>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Extending Active Record in Rails 4.1]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/03/23/how-to-make-a-gem/"/>
-    <updated>2014-03-23T22:40:48-05:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/03/23/how-to-make-a-gem</id>
-    <content type="html"><![CDATA[<p>A great way to extend rails functionality is by using Rails gems.  These libraries are easily plugged into existing ruby projects and allow for quick integration of complicated features.</p>
-
-<p>I noticed that for my side projects that are still growing, that I would like to be notified whenever a new user signs up, so I can reach out to them to get feedback on the product.</p>
-
-<p>Here I will go through step by step on how I created <a href="https://github.com/KevinColemanInc/Angora">Angora</a>, email notifications on model creation</p>
-
-<h1>The art of naming</h1>
-
-<p>Firstly, select a name.  This name should be unique to other gems so other developers can easily find it.  Check <a href="http://github.com">Github</a> and <a href="http://rubygems.org">RubyGems</a> to verify that there aren&rsquo;t any other gems with the same name.</p>
-
-<p>RubyGems provides a excellent <a href="http://guides.rubygems.org/name-your-gem/">table</a> for describing how to name a gem.</p>
-
-<h1>Creating the gem</h1>
-
-<p>We are going to use the bundler tool to generate the gem files.  Since my gem name is angora, I type this in:</p>
-
-<figure class='code'><figcaption><span>Creating gem with bundler</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ bundle gem angora</span>
-</span><span class='line'><span class="go">    create  angora/Gemfile</span>
-</span><span class='line'><span class="go">    create  angora/Rakefile</span>
-</span><span class='line'><span class="go">    create  angora/LICENSE.txt</span>
-</span><span class='line'><span class="go">    create  angora/README.md</span>
-</span><span class='line'><span class="go">    create  angora/.gitignore</span>
-</span><span class='line'><span class="go">    create  angora/angora.gemspec</span>
-</span><span class='line'><span class="go">    create  angora/lib/angora.rb</span>
-</span><span class='line'><span class="go">    create  angora/lib/angora/version.rb</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h1>Upload to github</h1>
-
-<p>Lets add this project to github and start tracking it with git.  This will also give us a homepage to link to, which we will get to next.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ git init</span>
-</span><span class='line'><span class="go">  $ git add -all</span>
-</span><span class='line'><span class="go">  $ git commit -m &quot;first commit!&quot;</span>
-</span><span class='line'><span class="go">  $ git remote add origin &lt;git url&gt;</span>
-</span><span class='line'><span class="go">  $ git push origin master</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h1>The basics</h1>
-
-<p>Now we are going to edit the basic attributes of angora.  Open up <code>angora.gemspec</code> to see all of the generated defaults.  Change all of the attributes to what is relevant for your project.</p>
-
-<figure class='code'><figcaption><span>angora.gemspec</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">authors</span>       <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;Kevin Coleman&quot;</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">email</span>         <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;kevin.coleman@gatech.edu&quot;</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">summary</span>       <span class="o">=</span> <span class="sx">%q{TODO: Get notifications when a new object is created.}</span>
-</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">description</span>   <span class="o">=</span> <span class="sx">%q{TODO: Angora hooks into ActiveMailer to send off an email notification with all of the</span>
-</span><span class='line'><span class="sx">  spec.homepage      = &quot;https://github.com/KevinColemanInc/angora&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h1>Dependencies</h1>
-
-<p>Because this gem depends on active record, I need to add that as a dependency to the gem.  We will also be using rspec to test the gem.</p>
-
-<figure class='code'><figcaption><span>angora.gemspec</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_dependency</span> <span class="s2">&quot;activerecord&quot;</span>
-</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s2">&quot;rspec&quot;</span>
-</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s2">&quot;sqlite3&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>and I need to require it in the gem file, so it loads with the gem.</p>
-
-<figure class='code'><figcaption><span>lib/angora.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="nb">require</span> <span class="s2">&quot;active_record&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h1>First Test</h1>
-
-<p>Following TDD practices, we must first write our tests before we start writing feature code.  I am going to use rspec.</p>
-
-<figure class='code'><figcaption><span>spec/lib/angora_spec.rb linenos:true</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;spec_helper&#39;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">describe</span> <span class="s2">&quot;angora_spec&quot;</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">context</span> <span class="s2">&quot;send notification&quot;</span> <span class="k">do</span>
-</span><span class='line'>      <span class="n">it</span> <span class="s2">&quot;should send a notification message&quot;</span> <span class="k">do</span>
-</span><span class='line'>        <span class="no">User</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s2">&quot;Kevin&quot;</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This will verify that a notification has been sent when the user is created.  For this test to run, we will need to create the <code>spec_helper.rb</code> file.</p>
-
-<figure class='code'><figcaption><span>spec/lib/angora_spec.rb linenos:true</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;angora&#39;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">establish_connection</span><span class="p">(</span><span class="ss">:adapter</span> <span class="o">=&gt;</span> <span class="s2">&quot;sqlite3&quot;</span><span class="p">,</span>
-</span><span class='line'>                                       <span class="ss">:database</span> <span class="o">=&gt;</span> <span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/angora.sqlite3&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nb">load</span> <span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/support/schema.rb&#39;</span>
-</span><span class='line'>  <span class="nb">load</span> <span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/support/models.rb&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>require 'angora'</code> will add references to our gem and active_record that our tests will need to run.  We will need a database to test our gem against, so I am establishing a connection to a local sqlite3 database.</p>
-
-<p>After the database is loaded, we will need to load up a schema file so rails can use that schema.</p>
-
-<figure class='code'><figcaption><span>spec/support/schema.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Schema</span><span class="o">.</span><span class="n">define</span> <span class="k">do</span>
-</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="kp">false</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">create_table</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:force</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:name</span>
-</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Create the schema file like above.  Because this is just for testing, I am only creating one model and only giving it one attribute, name.</p>
-
-<p>We will also have to create the user model class.</p>
-
-<figure class='code'><figcaption><span>spec/support/schema.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 ]]></content>
   </entry>
   
