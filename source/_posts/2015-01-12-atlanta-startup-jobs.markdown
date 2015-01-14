@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-# Atlanta Startup Jobs - Scratch your own itch
+<img src="/images/park.jpg" title="Atlanta Startup Jobs - Scratch your own itch" class="banner-img"  />
 
 I have always wanted to start my own business, ever since I was in high school.  Since then, I have been struggling to find an idea that I am truly passionate enough to invest my time or resources to execute on my own.
 
@@ -18,12 +18,12 @@ Fast forward a few years and I finally figured out who to talk to and where to l
 
 There was no one place to find these jobs.
 
-So I made [Atlanta Startup Jobs](http://www.atlantastartupjobs.com) :-)
+So I made [Atlanta Startup Jobs](http://www.atlantastartupjobs.com)
 
 Atlanta Startup Jobs aggregates job postings from all of Atlanta's job board websites automatically each night.  Then every Friday, it emails out to the subscriber list all of the jobs it found over the last week.
 
 The app is written in Ruby on Rails and hosted for free on Heroku.  I use a separate application instance on heroku (still free tier) to crawl the websites so the crawler gets its own set of dyno ours from the web application.
 
-Since its launch 3 months ago, it has found over 300 job postings and gets on average 100 hits per day with a list of 60 subscribers.
+Since its launch 3 months ago, it has found over 350 job postings and gets on average 100 hits per day with a list of 60 subscribers.
 
 If you are looking for a job in Atlanta's startup community, Atlanta Startup Jobs is the place to start.
