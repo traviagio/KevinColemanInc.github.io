@@ -1,0 +1,150 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', 'gulp', '-g' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.33
+4 verbose cache add [ 'gulp', null ]
+5 verbose cache add name=undefined spec="gulp" args=["gulp",null]
+6 verbose parsed url { protocol: null,
+6 verbose parsed url   slashes: null,
+6 verbose parsed url   auth: null,
+6 verbose parsed url   host: null,
+6 verbose parsed url   port: null,
+6 verbose parsed url   hostname: null,
+6 verbose parsed url   hash: null,
+6 verbose parsed url   search: null,
+6 verbose parsed url   query: null,
+6 verbose parsed url   pathname: 'gulp',
+6 verbose parsed url   path: 'gulp',
+6 verbose parsed url   href: 'gulp' }
+7 silly lockFile 9750c68d-gulp gulp
+8 verbose lock gulp /Users/kcoleman/.npm/9750c68d-gulp.lock
+9 silly lockFile 9750c68d-gulp gulp
+10 silly lockFile 9750c68d-gulp gulp
+11 verbose addNamed [ 'gulp', '' ]
+12 verbose addNamed [ null, '*' ]
+13 silly lockFile 72f4391e-gulp gulp@
+14 verbose lock gulp@ /Users/kcoleman/.npm/72f4391e-gulp.lock
+15 silly addNameRange { name: 'gulp', range: '*', hasData: false }
+16 verbose request where is /gulp
+17 verbose request registry https://registry.npmjs.org/
+18 verbose request id 97b22535957ca5bf
+19 verbose url raw /gulp
+20 verbose url resolving [ 'https://registry.npmjs.org/', './gulp' ]
+21 verbose url resolved https://registry.npmjs.org/gulp
+22 verbose request where is https://registry.npmjs.org/gulp
+23 info trying registry request attempt 1 at 18:13:11
+24 http GET https://registry.npmjs.org/gulp
+25 http 200 https://registry.npmjs.org/gulp
+26 silly registry.get cb [ 200,
+26 silly registry.get   { date: 'Fri, 16 Jan 2015 23:13:12 GMT',
+26 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+26 silly registry.get     etag: '"C0PV03WWDRAI8MD2L0UVJYJB8"',
+26 silly registry.get     'content-type': 'application/json',
+26 silly registry.get     'cache-control': 'max-age=60',
+26 silly registry.get     'content-length': '96930',
+26 silly registry.get     'accept-ranges': 'bytes',
+26 silly registry.get     via: '1.1 varnish',
+26 silly registry.get     age: '54',
+26 silly registry.get     'x-served-by': 'cache-atl6226-ATL',
+26 silly registry.get     'x-cache': 'HIT',
+26 silly registry.get     'x-cache-hits': '2',
+26 silly registry.get     'x-timer': 'S1421449992.304002,VS0,VE0',
+26 silly registry.get     vary: 'Accept',
+26 silly registry.get     'keep-alive': 'timeout=10, max=50',
+26 silly registry.get     connection: 'Keep-Alive' } ]
+27 silly addNameRange number 2 { name: 'gulp', range: '*', hasData: true }
+28 silly addNameRange versions [ 'gulp',
+28 silly addNameRange   [ '0.0.1',
+28 silly addNameRange     '0.0.2',
+28 silly addNameRange     '0.0.3',
+28 silly addNameRange     '0.0.4',
+28 silly addNameRange     '0.0.5',
+28 silly addNameRange     '0.0.7',
+28 silly addNameRange     '0.0.8',
+28 silly addNameRange     '0.0.9',
+28 silly addNameRange     '0.1.0',
+28 silly addNameRange     '0.2.0',
+28 silly addNameRange     '1.0.0',
+28 silly addNameRange     '1.1.0',
+28 silly addNameRange     '1.2.0',
+28 silly addNameRange     '1.2.1',
+28 silly addNameRange     '2.0.0',
+28 silly addNameRange     '2.0.1',
+28 silly addNameRange     '2.1.0',
+28 silly addNameRange     '2.2.0',
+28 silly addNameRange     '2.3.0',
+28 silly addNameRange     '2.4.0',
+28 silly addNameRange     '2.4.1',
+28 silly addNameRange     '2.6.0',
+28 silly addNameRange     '2.6.1',
+28 silly addNameRange     '2.7.0',
+28 silly addNameRange     '3.0.0',
+28 silly addNameRange     '3.1.1',
+28 silly addNameRange     '3.1.2',
+28 silly addNameRange     '3.1.3',
+28 silly addNameRange     '3.1.4',
+28 silly addNameRange     '3.2.0',
+28 silly addNameRange     '3.2.1',
+28 silly addNameRange     '3.2.2',
+28 silly addNameRange     '3.2.3',
+28 silly addNameRange     '3.2.4',
+28 silly addNameRange     '3.2.5',
+28 silly addNameRange     '3.3.0',
+28 silly addNameRange     '3.3.1',
+28 silly addNameRange     '3.3.2',
+28 silly addNameRange     '3.3.4',
+28 silly addNameRange     '3.4.0',
+28 silly addNameRange     '3.5.0',
+28 silly addNameRange     '3.5.1',
+28 silly addNameRange     '3.5.2',
+28 silly addNameRange     '3.5.5',
+28 silly addNameRange     '3.5.6',
+28 silly addNameRange     '3.6.0',
+28 silly addNameRange     '3.6.1',
+28 silly addNameRange     '3.6.2',
+28 silly addNameRange     '3.7.0',
+28 silly addNameRange     '3.8.0',
+28 silly addNameRange     '3.8.1',
+28 silly addNameRange     '3.8.2',
+28 silly addNameRange     '3.8.3',
+28 silly addNameRange     '3.8.4',
+28 silly addNameRange     '3.8.5',
+28 silly addNameRange     '3.8.6',
+28 silly addNameRange     '3.8.7',
+28 silly addNameRange     '3.8.8',
+28 silly addNameRange     '3.8.9',
+28 silly addNameRange     '3.8.10' ] ]
+29 verbose addNamed [ 'gulp', '3.8.10' ]
+30 verbose addNamed [ '3.8.10', '3.8.10' ]
+31 silly lockFile f843d0d7-gulp-3-8-10 gulp@3.8.10
+32 verbose lock gulp@3.8.10 /Users/kcoleman/.npm/f843d0d7-gulp-3-8-10.lock
+33 silly lockFile b3287162-y-npmjs-org-gulp-gulp-3-8-10-tgz https://registry.npmjs.org/gulp/-/gulp-3.8.10.tgz
+34 verbose lock https://registry.npmjs.org/gulp/-/gulp-3.8.10.tgz /Users/kcoleman/.npm/b3287162-y-npmjs-org-gulp-gulp-3-8-10-tgz.lock
+35 verbose addRemoteTarball [ 'https://registry.npmjs.org/gulp/-/gulp-3.8.10.tgz',
+35 verbose addRemoteTarball   'bfb8fc156be97820f02a7f8b3af61a86666f9e31' ]
+36 info retry fetch attempt 1 at 18:13:16
+37 verbose fetch to= /var/folders/l0/b0bh8scx4zz8lm1px4hfc_zh0000gn/T/npm-98036-pXHPtTty/registry.npmjs.org/gulp/-/gulp-3.8.10.tgz
+38 http GET https://registry.npmjs.org/gulp/-/gulp-3.8.10.tgz
+39 http 200 https://registry.npmjs.org/gulp/-/gulp-3.8.10.tgz
+40 silly lockFile b3287162-y-npmjs-org-gulp-gulp-3-8-10-tgz https://registry.npmjs.org/gulp/-/gulp-3.8.10.tgz
+41 silly lockFile b3287162-y-npmjs-org-gulp-gulp-3-8-10-tgz https://registry.npmjs.org/gulp/-/gulp-3.8.10.tgz
+42 silly lockFile f843d0d7-gulp-3-8-10 gulp@3.8.10
+43 silly lockFile f843d0d7-gulp-3-8-10 gulp@3.8.10
+44 silly lockFile 72f4391e-gulp gulp@
+45 silly lockFile 72f4391e-gulp gulp@
+46 error Error: EACCES, mkdir '/Users/kcoleman/.npm/gulp/3.8.10'
+46 error  { [Error: EACCES, mkdir '/Users/kcoleman/.npm/gulp/3.8.10']
+46 error   errno: 3,
+46 error   code: 'EACCES',
+46 error   path: '/Users/kcoleman/.npm/gulp/3.8.10' }
+47 error Please try running this command again as root/Administrator.
+48 error System Darwin 14.0.0
+49 error command "node" "/usr/local/bin/npm" "install" "gulp" "-g"
+50 error cwd /Users/kcoleman/Sites/KevinColemanInc.github.io
+51 error node -v v0.10.33
+52 error npm -v 1.4.28
+53 error path /Users/kcoleman/.npm/gulp/3.8.10
+54 error code EACCES
+55 error errno 3
+56 error stack Error: EACCES, mkdir '/Users/kcoleman/.npm/gulp/3.8.10'
+57 verbose exit [ 3, true ]

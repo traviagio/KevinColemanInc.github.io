@@ -21,6 +21,10 @@ subscribe_email:
 # RSS feeds can list your email address if you like
 email:
 
+portfolio_root: /portfolio
+portfolio_path: /source/images/portfolio
+portfolio_img_root: /images/pages/portfolio
+
 navigation:
 - text: Home
   url: /

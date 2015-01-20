@@ -8,13 +8,12 @@ footer: true
 ## Who am I?
 I am Kevin Coleman.  Based in Atlanta, Ga, I am a jack of all trades software developer that specializes in web applications.  I graduated from Georgia Tech with a B.S. in Electrical Engineering.  
 
-## What I do
-I currently work as a freelance developer.  My main gig currently is developing a health platform for insurance companies to connect to their members.
+## Are you avaliable for consulting?
+Sort of.  I am mostly focusing on my own projects, but I do take on consulting projects.  I charge weekly and your budet should be at least in the low five figures.  My favorite topics to consult on are ruby on rails development and android development.
 
 ## Talk to me about
 * Start ups
 * Traveling
 * Technology
 * Real Estate Investment
-* Beer
-* Anime Conventions
+
