@@ -7,6 +7,10 @@ footer: true
 ---
 Try some things I've built recently like…
 
+## Sentimas [link](http://challengepost.com/software/sentimus-edegx)
+Natural Language Processing algorithm for improving Sear's Review recommendations
+Built on Apigee and NodeJs
+
 ## Craftia [link](https://github.com/Ampersand-Labs/ethor)
 ProtoHack Austin 1st place '15
 Craft social platform for Indian women
