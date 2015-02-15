@@ -19,7 +19,7 @@ I try to avoid grouping with people that I already know, because I want to find 
 
 # Winning the competition
 
-<img src="/images/att.jpg" title="Winning Team at the ATT hackathon" style="display: block; margin-left: auto; margin-right: auto; width:35%;" />
+<img src="/images/att.jpg" title="Winning Team at the ATT hackathon" style="display: block; margin-left: auto; margin-right: auto;" />
 
 ## The Team
 First and foremost, as with starting a company, building a software product, or pretty much any other group activity, you need to have a solid team.
