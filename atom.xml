@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Coleman]]></title>
   <link href="http://www.kcoleman.me/atom.xml" rel="self"/>
   <link href="http://www.kcoleman.me/"/>
-  <updated>2015-02-14T21:09:01-05:00</updated>
+  <updated>2015-04-07T01:28:22-07:00</updated>
   <id>http://www.kcoleman.me/</id>
   <author>
     <name><![CDATA[Kevin Coleman]]></name>
@@ -14,38 +14,198 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Otto Meet Retrofit: How to Build a Scalable and Performant Android Application]]></title>
+    <link href="http://www.kcoleman.me/blog/2015/03/12/android-app-architecture/"/>
+    <updated>2015-03-12T12:46:43-07:00</updated>
+    <id>http://www.kcoleman.me/blog/2015/03/12/android-app-architecture</id>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/beach2.jpg" title="Otto meet Retrofit: How to build a scalable and performant Android application" class="banner-img"  /></p>
+
+<p>Unlike Ruby on Rails, Android app development does not have as definitive of an opinion on how apps should be developed and so we have designed our own pattern leveraging open source tools like <a href="http://square.github.io/otto/">Otto</a> and <a href="http://square.github.io/retrofit/">Retrofit</a> to design our applications.</p>
+
+<p>After much research, we at <a href="http://sparkstart.io">Spark Start</a> invested in developing a design pattern for our client applications that leverages the best practices.  Jumping right in here:</p>
+
+<h2>Consuming a RESTful API</h2>
+
+<p>Following Object Oriented Programming&rsquo;s best practices, all objects should each only have one job.  With the start of a new api, create a folder with the name of the API you are trying to consume.</p>
+
+<p>Inside of your client.java file, you will include your retrofit interface classes.  This file will specify how your app will be calling the API.</p>
+
+<figure class='code'><figcaption><span>APIClient.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">APIClient</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">interface</span> <span class="nc">IUser</span> <span class="o">{</span>
+</span><span class='line'>        <span class="nd">@GET</span><span class="o">(</span><span class="s">&quot;/users/Me.json&quot;</span><span class="o">)</span>
+</span><span class='line'>        <span class="kt">void</span> <span class="nf">getMe</span><span class="o">(</span><span class="n">Callback</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">callback</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nd">@GET</span><span class="o">(</span><span class="s">&quot;/users.json&quot;</span><span class="o">)</span>
+</span><span class='line'>        <span class="kt">void</span> <span class="nf">getUsers</span><span class="o">(</span><span class="n">Callback</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;&gt;</span> <span class="n">callback</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This keeps all of our API information in one small maintainable file.  Notice how we are always using the retrofit callback method instead of the async call.  This will allow our code to start a web request on any thread.  Now the code consuming this will never have to worry about thread locking.</p>
+
+<figure class='code'><figcaption><span>APIManager.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">APIManager</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">Bus</span> <span class="n">mBus</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">CooleafAPIManager</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">,</span> <span class="n">Bus</span> <span class="n">bus</span><span class="o">)</span>
+</span><span class='line'>    <span class="o">{</span>
+</span><span class='line'>        <span class="n">mBus</span> <span class="o">=</span> <span class="n">bus</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">mAsyncRestAdapter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RestAdapter</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">setEndpoint</span><span class="o">(</span><span class="n">API_URL</span><span class="o">)</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">setRequestInterceptor</span><span class="o">(</span><span class="n">getCookieInterceptor</span><span class="o">())</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">setLogLevel</span><span class="o">(</span><span class="n">RestAdapter</span><span class="o">.</span><span class="na">LogLevel</span><span class="o">.</span><span class="na">BASIC</span><span class="o">)</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Subscribe</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onLoadAuthenticateEvent</span><span class="o">(</span><span class="n">LoadAuthenticateEvent</span> <span class="n">loadAuthenticateEvent</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">String</span> <span class="n">email</span> <span class="o">=</span> <span class="n">loadAuthenticateEvent</span><span class="o">.</span><span class="na">getEmail</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">String</span> <span class="n">password</span> <span class="o">=</span> <span class="n">loadAuthenticateEvent</span><span class="o">.</span><span class="na">getPassword</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">Callback</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">callback</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Callback</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;()</span> <span class="o">{</span>
+</span><span class='line'>            <span class="nd">@Override</span>
+</span><span class='line'>            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">success</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">,</span> <span class="n">Response</span> <span class="n">response</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">mBus</span><span class="o">.</span><span class="na">post</span><span class="o">(</span><span class="k">new</span> <span class="nf">LoadedMeEvent</span><span class="o">(</span><span class="n">user</span><span class="o">));</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="nd">@Override</span>
+</span><span class='line'>            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">failure</span><span class="o">(</span><span class="n">RetrofitError</span> <span class="n">retrofitError</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">mBus</span><span class="o">.</span><span class="na">post</span><span class="o">(</span><span class="k">new</span> <span class="nf">LoadedErrorEvent</span><span class="o">(</span><span class="n">retrofitError</span><span class="o">));</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">};</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">sClient</span><span class="o">.</span><span class="na">authenticate</span><span class="o">(</span><span class="n">email</span><span class="o">,</span> <span class="n">password</span><span class="o">,</span> <span class="n">deviceID</span><span class="o">,</span> <span class="n">callback</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The manager class acts as a middleware between the client and the rest of our application.  For our <a href="http://cooleaf.com">most recent application</a>, authentication is handled by cookies, so we had to create our own cookie interceptor to handle authentication.</p>
+
+<p>The manager class subscribes to the bus and watches for events that request an API call.  When a user needs to authenticate, it catches the event, creates a callback which will intern fire off a new event once the response is finished.</p>
+
+<h2>Hooking in Otto into the controller classes</h2>
+
+<p>Otto is a great tool for managing async task events.  It has an event bus that you subscribe and unsubscribe your fragments and activities to, so when a callback (e.g. Retrofit is finished with a request), they can process the response.</p>
+
+<figure class='code'><figcaption><span>LoginFragment.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onResume</span><span class="o">()</span>
+</span><span class='line'>    <span class="o">{</span>
+</span><span class='line'>       <span class="kd">super</span><span class="o">.</span><span class="na">onResume</span><span class="o">();</span>
+</span><span class='line'>       <span class="n">BusProvider</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">register</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPause</span><span class="o">()</span>
+</span><span class='line'>    <span class="o">{</span>
+</span><span class='line'>        <span class="kd">super</span><span class="o">.</span><span class="na">onPause</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">BusProvider</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">unregister</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">onLoginClick</span><span class="o">()</span>
+</span><span class='line'>    <span class="o">{</span>
+</span><span class='line'>        <span class="n">BusProvider</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">post</span><span class="o">(</span><span class="k">new</span> <span class="nf">LoadAuthenticateEvent</span><span class="o">(</span><span class="n">userName</span><span class="o">,</span><span class="n">password</span><span class="o">));</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When the login fragment is resumed, otto automatically subscribes the fragment to the bus.  When it is paused, it unsubscribes.  This is awesome, because if a request is initiated to the API, but then the fragment is closed before the rest api responds, we don&rsquo;t have the fragment still listening for that response.</p>
+
+<h2>Conclusion</h2>
+
+<p>Otto and retrofit play really nicely together and are great tools for building an android app.  Managing all of the events can get a bit ugly, so be careful how you name them and organize them in the project.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Atlanta Startup Jobs - Scratch Your Own Itch]]></title>
     <link href="http://www.kcoleman.me/blog/2015/01/12/atlanta-startup-jobs/"/>
-    <updated>2015-01-12T20:52:21-05:00</updated>
+    <updated>2015-01-12T17:52:21-08:00</updated>
     <id>http://www.kcoleman.me/blog/2015/01/12/atlanta-startup-jobs</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/park.jpg" title="Atlanta Startup Jobs - Scratch your own itch" class="banner-img"  /></p>
 
-<p>I have always wanted to start my own business, ever since I was in high school.  Since then, I have been struggling to find an idea that I am truly passionate enough to invest my time or resources to execute on my own.</p>
+<p>I have always wanted to start my own business, ever since I was in high school. Since then, I have been struggling to find an idea that I am truly passionate enough to invest my time or resources to execute on my own.</p>
 
-<p>So I decided I graduated from Georgia Tech in &lsquo;11, I decided I should do the second best thing: work for someone that is starting their own business.  This is a great technique, because it reduces your risk (get paid a /mostly/ competitive salary) and gives you an opportunity to learn (make mistakes on someone else&rsquo;s dollar :-))</p>
+<p>So I decided I graduated from Georgia Tech in ‘11, I decided I should do the second best thing: work for someone that is starting their own business. This is a great technique because it reduces your risk (get paid a /mostly/ competitive salary) and gives you an opportunity to learn (make mistakes on someone else’s dollar :-))</p>
 
-<p>While Atlanta has an awesome startup culture, unless you are familiar with the big players (co-working spaces, syndications, meetup groups), it can be difficult finding what companies are hiring.  The Georgia Tech BuzzBoard only has postings by big name companies that can afford the hefty price tag.  Same can be said about the popular job board sites like CareerBuilder.com or Monster.com.</p>
+<p>While Atlanta has an awesome startup culture unless you are familiar with the big players (co-working spaces, syndications, meetup groups), it can be difficult finding what companies are hiring. The Georgia Tech BuzzBoard only has postings by big name companies that can afford the hefty price tag. Same can be said about the popular job board sites like CareerBuilder.com or Monster.com.</p>
 
-<p>Fast forward a few years and I finally figured out who to talk to and where to look for a startup job postings.  But the experience was still frustrating, because now I was checking 3-5 different job board websites for the various co-working and syndication websites.</p>
+<p>Fast forward a few years and I finally figured out who to talk to and where to look for a startup job postings. But the experience was still frustrating because now I was checking 3-5 different job board websites for the various co-working and syndication websites.</p>
 
 <p>There was no one place to find these jobs.</p>
 
 <p>So I made <a href="http://www.atlantastartupjobs.com">Atlanta Startup Jobs</a></p>
 
-<p>Atlanta Startup Jobs aggregates job postings from all of Atlanta&rsquo;s job board websites automatically each night.  Then every Friday, it emails out to the subscriber list all of the jobs it found over the last week.</p>
+<p>Atlanta Startup Jobs aggregates job postings from all of Atlanta’s job board websites automatically each night. Then every Friday, it emails out to the subscriber list all of the jobs it found over the last week.</p>
 
-<p>The app is written in Ruby on Rails and hosted for free on Heroku.  I use a separate application instance on heroku (still free tier) to crawl the websites so the crawler gets its own set of dyno ours from the web application.</p>
+<p>The app is written in Ruby on Rails and hosted for free on Heroku. I use a separate application instance on Heroku (still free tier) to crawl the websites so the crawler gets its own set of dyno ours from the web application.</p>
 
 <p>Since its launch 3 months ago, it has found over 350 job postings and gets on average 100 hits per day with a list of 60 subscribers.</p>
 
-<p>If you are looking for a job in Atlanta&rsquo;s startup community, Atlanta Startup Jobs is the place to start.</p>
+<p>If you are looking for a job in Atlanta’s startup community, Atlanta Startup Jobs is the place to start.</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[SideProject: HappyBeam - Meditate and Improve]]></title>
     <link href="http://www.kcoleman.me/blog/2015/01/08/happybeam/"/>
-    <updated>2015-01-08T13:11:59-05:00</updated>
+    <updated>2015-01-08T10:11:59-08:00</updated>
     <id>http://www.kcoleman.me/blog/2015/01/08/happybeam</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/HappyBeam-feature-graphic.png" title="SideProject: HappyBeam - Meditate and improve" class="banner-img"  /></p>
 
@@ -84,7 +244,7 @@
   <entry>
     <title type="html"><![CDATA[How to Win a Hackathon]]></title>
     <link href="http://www.kcoleman.me/blog/2014/10/26/how-to-win-a-hackathon/"/>
-    <updated>2014-10-26T20:14:40-04:00</updated>
+    <updated>2014-10-26T17:14:40-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/10/26/how-to-win-a-hackathon</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/cooking.jpg" title="How to win a hackathon" class="banner-img"  /></p>
 
@@ -180,7 +340,7 @@
   <entry>
     <title type="html"><![CDATA[One Rails App Two Web Applications]]></title>
     <link href="http://www.kcoleman.me/blog/2014/10/09/one-rails-app-two-web-applications/"/>
-    <updated>2014-10-09T20:11:45-04:00</updated>
+    <updated>2014-10-09T17:11:45-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/10/09/one-rails-app-two-web-applications</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/mountains.jpeg" title="One Rails App Two Web Applications" class="banner-img"  /></p>
 
@@ -328,7 +488,7 @@
   <entry>
     <title type="html"><![CDATA[Angularjs Rails and SEO Part 2]]></title>
     <link href="http://www.kcoleman.me/blog/2014/10/07/angularjs-rails-and-seo-part-2/"/>
-    <updated>2014-10-07T20:26:43-04:00</updated>
+    <updated>2014-10-07T17:26:43-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/10/07/angularjs-rails-and-seo-part-2</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/beach.jpeg" title="Angularjs Rails and SEO Part 2" class="banner-img"  /></p>
 
@@ -400,7 +560,7 @@
   <entry>
     <title type="html"><![CDATA[Angularjs Rails and SEO Part 1]]></title>
     <link href="http://www.kcoleman.me/blog/2014/10/03/angularjs-rails-seo/"/>
-    <updated>2014-10-03T12:05:45-04:00</updated>
+    <updated>2014-10-03T09:05:45-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/10/03/angularjs-rails-seo</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/mountain.jpeg" title="Angularjs Rails and SEO Part 1" class="banner-img"  /></p>
 
@@ -624,7 +784,7 @@
   <entry>
     <title type="html"><![CDATA[Buying My First Real Estate Investment]]></title>
     <link href="http://www.kcoleman.me/blog/2014/07/28/new-house/"/>
-    <updated>2014-07-28T12:46:17-04:00</updated>
+    <updated>2014-07-28T09:46:17-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/07/28/new-house</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/city-houses.jpg" title="First Real Estate Investment Property" class="banner-img"  /></p>
 
@@ -663,7 +823,7 @@
   <entry>
     <title type="html"><![CDATA[How to Get OSX Git Branch Name in Console]]></title>
     <link href="http://www.kcoleman.me/blog/2014/07/23/how-to-get-osx-git-branch-name-in-console/"/>
-    <updated>2014-07-23T15:13:52-04:00</updated>
+    <updated>2014-07-23T12:13:52-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/07/23/how-to-get-osx-git-branch-name-in-console</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/hills.jpg" title="How to get OSX git branch name in console" class="banner-img"  /></p>
 
@@ -696,7 +856,7 @@
   <entry>
     <title type="html"><![CDATA[How to Start Web Consulting]]></title>
     <link href="http://www.kcoleman.me/blog/2014/07/05/web-consulting/"/>
-    <updated>2014-07-05T11:46:57-04:00</updated>
+    <updated>2014-07-05T08:46:57-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/07/05/web-consulting</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/ppl-skyline.jpg" title="How to start web consulting" class="banner-img"  /></p>
 
@@ -737,7 +897,7 @@
   <entry>
     <title type="html"><![CDATA[Goodie Hack #2]]></title>
     <link href="http://www.kcoleman.me/blog/2014/06/21/goodie-hack-number-2/"/>
-    <updated>2014-06-21T17:31:51-04:00</updated>
+    <updated>2014-06-21T14:31:51-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/06/21/goodie-hack-number-2</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/urban.jpg" title="Goodie Hack Atlanta 2014" class="banner-img" /></p>
 
@@ -754,7 +914,7 @@
   <entry>
     <title type="html"><![CDATA[What It Takes to Be Entry Level Rails Developers]]></title>
     <link href="http://www.kcoleman.me/blog/2014/06/13/entry-level-rails/"/>
-    <updated>2014-06-13T16:42:01-04:00</updated>
+    <updated>2014-06-13T13:42:01-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/06/13/entry-level-rails</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/bridge.jpg" title="What it takes to be entry level Rails developers" class="banner-img" /></p>
 
@@ -786,7 +946,7 @@
   <entry>
     <title type="html"><![CDATA[Rails 4.1 Enums: How Not to Handle States]]></title>
     <link href="http://www.kcoleman.me/blog/2014/06/05/rails-4-dot-1-enums-how-not-to-handle-states/"/>
-    <updated>2014-06-05T13:08:29-04:00</updated>
+    <updated>2014-06-05T10:08:29-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/06/05/rails-4-dot-1-enums-how-not-to-handle-states</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/road.jpg" title="Rails 4.1 enums: How not to handle stats" class="banner-img"/></p>
 
@@ -846,7 +1006,7 @@
   <entry>
     <title type="html"><![CDATA[My Path to Success]]></title>
     <link href="http://www.kcoleman.me/blog/2014/06/04/path-to-success/"/>
-    <updated>2014-06-04T17:50:34-04:00</updated>
+    <updated>2014-06-04T14:50:34-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/06/04/path-to-success</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/escalator.jpg" title="My path to success" class="banner-img" /></p>
 
@@ -882,9 +1042,9 @@
   
   <entry>
     <title type="html"><![CDATA[Twitter Bot on Heroku]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/06/01/twitter-bot-on-heroku/"/>
-    <updated>2014-06-01T00:05:08-04:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/06/01/twitter-bot-on-heroku</id>
+    <link href="http://www.kcoleman.me/blog/2014/05/31/twitter-bot-on-heroku/"/>
+    <updated>2014-05-31T21:05:08-07:00</updated>
+    <id>http://www.kcoleman.me/blog/2014/05/31/twitter-bot-on-heroku</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/alley.jpg" title="Twitter bot v1 on Heroku" class="banner-img" /></p>
 
 <p>Inspired by the Technology Review article, <a href="http://www.technologyreview.com/view/527746/how-advanced-socialbots-have-infiltrated-twitter/">How Advanced Social bots Have Infiltrated Twitter</a>, I thought it would be an interesting to see how difficult it is to write a bot to generate followers over a given topic.</p>
@@ -1061,7 +1221,7 @@
   <entry>
     <title type="html"><![CDATA[Rails and Redis URL Shortener in Same Application]]></title>
     <link href="http://www.kcoleman.me/blog/2014/05/31/url-shorter-with-redis-and-rails/"/>
-    <updated>2014-05-31T14:22:47-04:00</updated>
+    <updated>2014-05-31T11:22:47-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/05/31/url-shorter-with-redis-and-rails</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/locks.jpg" title="Redis key value storage" class="banner-img" /></p>
 
@@ -1238,7 +1398,7 @@
   <entry>
     <title type="html"><![CDATA[Tagging Models]]></title>
     <link href="http://www.kcoleman.me/blog/2014/05/17/tagging-models/"/>
-    <updated>2014-05-17T11:14:24-04:00</updated>
+    <updated>2014-05-17T08:14:24-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/05/17/tagging-models</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/music_slider.jpg" title="Tagging Models" class="banner-img"/></p>
 
@@ -1382,7 +1542,7 @@
   <entry>
     <title type="html"><![CDATA[Gem Configuration Defaults]]></title>
     <link href="http://www.kcoleman.me/blog/2014/05/16/gem-configuration-defaults/"/>
-    <updated>2014-05-16T22:48:09-04:00</updated>
+    <updated>2014-05-16T19:48:09-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/05/16/gem-configuration-defaults</id>
     <content type="html"><![CDATA[<p>Recently I have been working on connecting to social media websites via oAuth gems like twitter and koala.  I discovered a neat trick for initializing these gems with environment variables so that you don&rsquo;t have to be passing in the variables every time you want to create a new instance of them.</p>
 
@@ -1456,7 +1616,7 @@ lowing us to not need to supply the consumer key every time we want to create a 
   <entry>
     <title type="html"><![CDATA[Custom Environments With Rails 4]]></title>
     <link href="http://www.kcoleman.me/blog/2014/05/15/custom-environements-with-rails-4/"/>
-    <updated>2014-05-15T10:41:53-04:00</updated>
+    <updated>2014-05-15T07:41:53-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/05/15/custom-environements-with-rails-4</id>
     <content type="html"><![CDATA[<p>Sometimes you may need to setup custom environments beyond the standard <code>test</code>, <code>development</code>, and <code>production</code> that rails comes with.  If you would like to have your staging server configured a little big differently than test and production (maybe higher logging levels for example), then you would need to create another environment for these configurations called <code>staging</code>.</p>
 
@@ -1529,7 +1689,7 @@ lowing us to not need to supply the consumer key every time we want to create a 
   <entry>
     <title type="html"><![CDATA[NodeJS Chat Guide]]></title>
     <link href="http://www.kcoleman.me/blog/2014/04/30/nodejs-chat-guide/"/>
-    <updated>2014-04-30T12:40:07-04:00</updated>
+    <updated>2014-04-30T09:40:07-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/04/30/nodejs-chat-guide</id>
     <content type="html"><![CDATA[<h2>How I built the chat application for my blog.</h2>
 
@@ -1892,226 +2052,6 @@ lowing us to not need to supply the consumer key every time we want to create a 
 <h2>In the Future</h2>
 
 <p>I want to be able to retrieve the client&rsquo;s user agent so if there are any browser compatibility errors, I can easily see what browser they have.  If there is a strong need, I may look at implementing a co-browsing solution so I will be able to follow along with them as they navigate my website.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Rapid Ticket Purchasing and the Extendable Web]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/04/16/rapid-fire-ticket-purchasing-and-the-extendable-web/"/>
-    <updated>2014-04-16T12:30:31-04:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/04/16/rapid-fire-ticket-purchasing-and-the-extendable-web</id>
-    <content type="html"><![CDATA[<h2>Backstory</h2>
-
-<p>Last month, I was interested in attending a camping event with my girlfriend.  The event organizers release the tickets in two phases with each phase releasing 1000 tickets.  Despite my wicked fast internet connection at Panera Bread, I was unable to purchase the released tickets before they sold out.</p>
-
-<p>In an effort to learn new things, I put my hand towards creating an auto-buy Chrome extension to significantly increase my chances of a ticket purchase.  I also intended to open source the project so anyone would be able to contribute.  Enter <a href="https://github.com/KevinColemanInc/rapid_fire_tickets">rapid_fire_tickets</a>.</p>
-
-<h2>Building the Chrome Extension</h2>
-
-<p>If you get lost, feel free to download the source code for this extension at <a href="https://github.com/KevinColemanInc/rapid_fire_tickets">https://github.com/KevinColemanInc/rapid_fire_tickets</a></p>
-
-<p>Chrome extensions allow you to inject javascript on the page for DOM manipulation.  Firstly, you should create a directory and with our project name as the title.</p>
-
-<p>Now create a <code>manifest.json</code> file.  This file contains all of the high level descriptive information about your project like the name, description, what permissions it wants, what version it is, etc.</p>
-
-<figure class='code'><figcaption><span>manifest.json</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="nt">&quot;manifest_version&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rapid fire tickets for Transformus&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;This extension automatically keeps trying to buy tickets for Transformus.&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nt">&quot;content_scripts&quot;</span><span class="p">:</span> <span class="p">[</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>      <span class="nt">&quot;matches&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;http://www.brownpapertickets.com/event/614931*&quot;</span><span class="p">],</span>
-</span><span class='line'>      <span class="nt">&quot;js&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;jquery.js&quot;</span><span class="p">,</span> <span class="s2">&quot;home.js&quot;</span><span class="p">],</span>
-</span><span class='line'>      <span class="nt">&quot;run_at&quot;</span><span class="p">:</span> <span class="s2">&quot;document_start&quot;</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>      <span class="nt">&quot;matches&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;http://www.brownpapertickets.com/viewcart.html&quot;</span><span class="p">],</span>
-</span><span class='line'>      <span class="nt">&quot;js&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;jquery.js&quot;</span><span class="p">,</span> <span class="s2">&quot;checkout.js&quot;</span><span class="p">],</span>
-</span><span class='line'>      <span class="nt">&quot;run_at&quot;</span><span class="p">:</span> <span class="s2">&quot;document_end&quot;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">]</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The first part is very self explanatory, but the <code>content_scripts</code> attribute is much more interesting.  Here you can request Chrome to run javascript files if the URL pattern matches the string provided.  Since I know that the ticketing website’s URL is such, I included that in the matches string.  The asterisk at the end of the string protects me against any strange URL parameters that might present themselves.</p>
-
-<p>The <code>js</code> attribute tells Chrome to run the included js files when that URL is hit.  I included <code>jQuery</code> in this extension so make life easier.  Then I put my custom js file that will be used to refresh the page and select tickets.</p>
-
-<p>The <code>run_at</code> attribute requests that chrome run the JS at document start.  I did this because I wanted the JS to run before all of the attributes to load so it will behave faster.</p>
-
-<p>Next I will go download <code>jQuery</code> and save it into this folder.  Be sure to name the file the same as how you named it the manifest file.</p>
-
-<p>Next I will create my home.js file.  The idea here is to have it refresh the page until the we see the drop down for ticket selection.  Once that appears we need to set that to a value of 2 and click the submit button on the form.</p>
-
-<h2>Testing</h2>
-
-<p>From that link, we have no idea what the HTML looks and thus don’t know how to sculpt the jQuery selectors to target the correct form elements.  I created a test event and modeled it to behave exactly like the tfus event will when the tickets are released.  This way I can test my software before aiming it at the first event.</p>
-
-<h2>Refresh and check to see if tickets are available</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">(</span> <span class="nb">document</span> <span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.bpt_orangebutton&quot;</span><span class="p">).</span><span class="nx">length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>    <span class="c1">//buy tickets</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="k">else</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>    <span class="nx">location</span><span class="p">.</span><span class="nx">reload</span><span class="p">();</span> <span class="c1">//reload</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>On my test page I noticed that the orange submit button appears on the page when tickets are available.  For this tool, I am going to look for all orange buttons on the page.  If one appears, then tickets are ready to be purchased.  If they are not, then we need to reload the page to check again.</p>
-
-<h2>Select the number of tickets you want</h2>
-
-<p>Now that I can detect when the tickets are available.  I am need to select the drop down and select the number of tickets.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#bpt_date_prices_1017125 .bpt_widget_price_table tr:nth-child(4) select&quot;</span><span class="p">).</span><span class="nx">val</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.bpt_orangebutton&quot;</span><span class="p">).</span><span class="nx">click</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Using Chrome development tools, I found that this selector worked nicely at accomplishing that.  The id of the first element changes event to event, so if I wish to use this against other events, this will need to change.</p>
-
-<p>Putting it all together we get this:</p>
-
-<figure class='code'><figcaption><span>home.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">(</span> <span class="nb">document</span> <span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.bpt_orangebutton&quot;</span><span class="p">).</span><span class="nx">length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#bpt_date_prices_1017125 .bpt_widget_price_table tr:nth-child(4) select&quot;</span><span class="p">).</span><span class="nx">val</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.bpt_orangebutton&quot;</span><span class="p">).</span><span class="nx">click</span><span class="p">();</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="k">else</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>    <span class="nx">location</span><span class="p">.</span><span class="nx">reload</span><span class="p">();</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>A super simple auto add to cart ticket file.</p>
-
-<h2>One step further</h2>
-
-<p>After the tickets have been added to cart, it displays a page asking if you would like to check out now.  Under most circumstances, this scenario is yes.  To speed up the ticket purchasing process, I added another script to auto-click this button.  We can just skip that page and go to directly to the credit card input page.</p>
-
-<p>The script that handles this is similar to the last one and looks like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">parent</span><span class="p">.</span><span class="nx">location</span><span class="o">=</span><span class="s1">&#39;https://www.brownpapertickets.com/checkout.html&#39;</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Rather than locating that button and click it.  I recognized that button is just a link to the checkout page so I ask the browser to relocate to this page.  If there are an cosmetic changes to this page and they change how the page is displayed, it may break any selectors I use on finding that button.  This solution is much more elegant and simple.</p>
-
-<h2>Installation</h2>
-
-<ol>
-<li>In Chrome to <a href="chrome://extensions/">chrome://extensions/</a> and click &ldquo;Load unpacked extensions&rdquo;</li>
-<li>Navigate to the location of the folder you created with the manifest.</li>
-<li>Sign into your <a href="http://www.brownpapertickets.com">http://www.brownpapertickets.com</a> account</li>
-<li>Open a bunch of tabs in chrome and navigate them all to: <a href="http://www.brownpapertickets.com/event/614931">http://www.brownpapertickets.com/event/614931</a></li>
-</ol>
-
-
-<h3>Alternative installation (using my source code on <a href="https://github.com/KevinColemanInc/rapid_fire_tickets">github</a>).</h3>
-
-<ol>
-<li>Download the <a href="https://github.com/KevinColemanInc/rapid_fire_tickets/archive/master.zip">zip file</a></li>
-<li>Unzip it</li>
-<li>In Chrome to <a href="chrome://extensions/">chrome://extensions/</a> and click &ldquo;Load unpacked extensions&rdquo;</li>
-<li>Navigate to the unziped location of the file.</li>
-<li>Sign into your <a href="http://www.brownpapertickets.com">http://www.brownpapertickets.com</a> account</li>
-<li>Open a bunch of tabs in chrome and navigate them all to: <a href="http://www.brownpapertickets.com/event/614931">http://www.brownpapertickets.com/event/614931</a></li>
-</ol>
-
-
-<h2>Buying more than two tickets</h2>
-
-<p>This extension will only purchase two tickets per installation of Chrome.  If you are interested in using this to accumulate more, then here are my recommendations.</p>
-
-<p>In <a href="chrome://extensions/">chrome://extensions/</a>, scroll down to the rapid_fire_tickets and select &ldquo;Allow in incognito mode.&rdquo;  Incognito mode allows you to login to Brown Paper Tickets from another account (thus giving you an additional 2 more tickets).</p>
-
-<p>Now press <code>Ctrl+Shift+N</code> to open a new incognito window, login to a different account and navigate to the event page.  Now you buy 4 tickets!</p>
-
-<p>Next, we should install a couple copies of Chrome.  Chrome only allows one version to be installed on a computer at a given time.  So lets grab other builds!  Go to <a href="http://www.chromium.org/getting-involved/dev-channel">http://www.chromium.org/getting-involved/dev-channel</a> and download and install their canary release.  This version runs seperately from what you have on your computer, because it can be less stable.</p>
-
-<p>Configure the extension like you did before and now you have 8 tickets you can purchase!  Remember, only two tickets can be purchased at once per account so be sure to use different accounts.</p>
-
-<h3>Quick tip: One gmail for multiple accounts</h3>
-
-<p>If you use gmail, you can use their wild card feature to have different emails that point to your email.  For example my email is <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#99;&#x2e;&#112;&#x72;&#x6f;&#x67;&#x72;&#97;&#109;&#x65;&#x72;&#x40;&#x67;&#109;&#97;&#x69;&#108;&#x2e;&#99;&#x6f;&#x6d;&#46;">&#x63;&#x2e;&#x70;&#x72;&#x6f;&#x67;&#x72;&#97;&#x6d;&#x65;&#x72;&#x40;&#103;&#109;&#97;&#105;&#108;&#46;&#x63;&#x6f;&#109;&#46;</a>  I can create a different brown paper tickets account with this email <a href="&#109;&#97;&#105;&#108;&#x74;&#111;&#x3a;&#99;&#x2e;&#x70;&#114;&#111;&#103;&#x72;&#x61;&#109;&#x65;&#114;&#x2b;&#98;&#112;&#116;&#64;&#103;&#109;&#x61;&#x69;&#x6c;&#46;&#x63;&#111;&#109;">&#x63;&#46;&#x70;&#114;&#111;&#103;&#x72;&#x61;&#x6d;&#x65;&#x72;&#43;&#98;&#112;&#116;&#64;&#x67;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#109;</a> and all of the emails going to that new email go to my main inbox.  This way I don&rsquo;t have to keep creating emails to make new accounts.  Anything between the + and the @ symbols are ignored in gmail only.</p>
-
-<h3>Lets scale this further (8 to infinite and beyond!)</h3>
-
-<p>We can apply this technique to multiple computers.  Each computer earns you 8 tickets. So if you are like myself that has a laptop and a desktop and a gf&rsquo;s computer, then I would have the opportunity to purchase 24 tickets!  This scales at 8 tickets per computer.  So 10 computers allows you to purchase 80 tickets (or 8% of all tickets avaliable!).</p>
-
-<p>For those with more resources, you can go to a public library or a college&rsquo;s computer lab to install an apply this extension to an even larger number of computers.</p>
-
-<h2>Conclusion</h2>
-
-<p>Feel free to hack and fork this tool as much as you would like.  I really hope that everyone enjoyed reading this as much I as I enjoyed writing it. Best of luck to everyone buying tickets this weekend!</p>
-
-<h2>Notes</h2>
-
-<p>I would be careful about opening too many tabs, because they may actually slow down the process.  In experimentation, I was able to grab 2 tickets to an event I created with 12 tabs within 10 seconds of the release.</p>
-
-<p>This currently attempts to grab the maximum amount of tickets (2).</p>
-
-<h1>PLEASE PLEASE PLEASE check back with the project an hour before tickets become avaliable.  I plan on releasing an updated version of the project to handle any issues that may arise.</h1>
 ]]></content>
   </entry>
   
