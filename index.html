@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="Unlike Ruby on Rails, Android app development does not have as definitive of an opinion on how apps should be developed and so we have designed our &hellip;">
+  <meta name="description" content="Ruby on Rails is a very powerful framework that is awesome at building RESTful APIs. Using vanilla rails to build an API, while completely possible &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -102,6 +102,67 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/04/07/Ruby-on-Rails-Grape-gem/">Ruby on Rails Grape Gem: Pros and Cons</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-04-07T01:36:51-07:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:36 am</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/grapes.jpeg" title="Ruby on Rails Grape gem" class="banner-img" /></p>
+
+<p>Ruby on Rails is a very powerful framework that is awesome at building RESTful APIs.  Using vanilla rails to build an API, while completely possible, is not always the best way to go.  <a href="https://github.com/intridea/grape">Grape</a> is micro-api framework design to work along side rails for developing an RESTful API.</p>
+
+<p>Grape has some very <a href="https://github.com/intridea/grape/blob/master/README.md">expansive documentation</a> describing how the gem works, so I am not going to dive too deeply into that</p>
+
+<h2>Pros</h2>
+
+<p>Starting off with the positives: grape is great a creating and maintaining documentation.  I love the <a href="https://github.com/tim-vandecasteele/grape-swagger">grape-swagger</a> gem allows you to easily generate documentation from you existing code base.  Since the documentation is generated, all of the code is self-documenting and you don&rsquo;t have to maintain <a href="http://raml.org/">separate API documentation files</a>.</p>
+
+<p>Because grape has its own <a href="https://en.wikipedia.org/wiki/Domain-specific_language">DSL</a>, it makes creating APIs easy to read and understand.  This makes the code base easier to maintain for future improvements.  Plus it has its own opinion for how to create an API, which really help keep your codebase consistent.</p>
+
+<p>grape gives you a uniform way to control API HTTP Headers.  Rather than having to roll your own classes to manage the response headers, grape makes it easy to set them.</p>
+
+<h2>Cons</h2>
+
+<p>Because grape is independent of rails, it takes a bit of finagling for it to play well with rails.  You have to manually include rails libraries like ActiveRecord or ActiveSupport.  Since there is no ActiveSupport, it makes caching responses more difficult than it should be.</p>
+
+<p>Because grape has its own DSL, there is a bit of a learning curve to understand how it wants you to create an API.  If you have a firm understanding of ruby, it shouldn&rsquo;t be that difficult for you to pick up, but it definitely takes a bit of getting used to.</p>
+
+<p>While grape makes it easier to read and write your api, it does add another layer of complexity to your rails application.</p>
+
+<h2>Conclusion</h2>
+
+<p>For now, I am going to stick with rolling my own APIs using &ldquo;just&rdquo;* the rails framework.  Being more pure rails, gives me more control over the api had has less &ldquo;magic.&rdquo;  If I need to bring on a new developer, they will not have to spend as much time getting up to speed on this new library.</p>
+
+<p>Plus, vanilla rails has an awesome caching tools that don&rsquo;t need to be arm wrestled into the framework.</p>
+
+<ul>
+<li>By &ldquo;just&rdquo; I mean, standard gem stack provided in rails 4.2 with typical basic additions I would use in both grape and vanilla rails.</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1125,68 +1186,6 @@
 
 
 <p>Cheers.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/07/05/web-consulting/">How to Start Web Consulting</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-07-05T08:46:57-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:46 am</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/ppl-skyline.jpg" title="How to start web consulting" class="banner-img"  /></p>
-
-<p>I have lots of advice for you. I just moved from a corporate job to rails consulting 2-4mo ago, because someone offered me more money than I could say no to.</p>
-
-<h1>Types of consultants</h1>
-
-<p>This is my paradigm of freelance web/mobile consulting. There are 4 types of developers that do this.</p>
-
-<ol>
-<li><p>The developer that is 30+ years old and has worked in a consulting corporate job for many years. He has a strong relationship with a handful of clients, and he leaves his job, takes the clients and now he has 2-3 companies that love him and will always give him work every year. They only do work that they want to do and at the rate they want (Usually $120+/hr).</p></li>
-<li><p>There are the developers that hopefully know coding really well, but they don&rsquo;t have a strong network of clients. They are probably looking online at oDesk/Freelancer, <a href="http://twitter.com">Twitter</a>, or maybe posting on <a href="https://news.ycombinator.com/item?id=7970372">HN</a>. They probably have a website and maybe their SEO rank is super awesome for a &ldquo;{technology} {city}&rdquo; search in Google.</p>
-
-<p> This type may even pay for services like LeadSugar. I have never subscribed to websites like that, but I feel like the most profitable awesome contracts are not going to be found posted publicly online.</p></li>
-<li><p>This would be a graduate of type two, where they have 2-3 companies that love them, that will always put food on the table, and hopefully pay them what they want to get paid. I feel like there is a bit of luck to get here, but not impossible. I do not know a single developer in this type.</p></li>
-<li><p>The last type is a type 2 developer, that a type 1 person is giving extra work to that they don&rsquo;t want to do or can&rsquo;t do. They share a piece of the pie with you, because they want to grow their consultancies into a developer shop, or maybe they just want to work on other things, but they still want to capitalize on their network.</p></li>
-</ol>
-
-
-<p>I am a type 2 developer, that knows several type 1 developers, and thus ended up in type 4. I have found that most of the jobs posted publicly, where type 2s look for work, are low paying and terrible. The clients posting them look at development as a commodity and aim for the lowest bidder. There are tons (corporate full timers looking to augment income, college kids, 3rd world, etc.) of type 2 developers looking to fill these gigs. Most of these gigs pay low. They want to spend $500 to build Facebook.com for puppies and they will have at least 8 people bidding on their project.</p>
-
-<h1>Actionable Advice</h1>
-
-<ol>
-<li><p>If you have a terrible portfolio, look at doing a few bad jobs off of <a href="https://www.odesk.com">oDesk</a> to build that out. Write super awesome code and get good at what you do. You need to set yourself apart, skill wise, from all of the other developers.</p></li>
-<li><p>Riches are in the niches. I met a developer last week that started programming at age 28, 4 years ago, and he has gotten really good at <a href="http://www.webrtc.org">WebRTC</a>. He is one of a very few &lsquo;experts&rsquo; on the stack in South East USA and anyone that wants WebRTC consulting has to talk with him. I am sure he is terrible at programming, but if he is the only webrtc pro, then that is all that matters. Find a niche.</p></li>
-<li><p>Attend tech (ruby on rails, android, etc) meetups. I have a pretty strong network of developers and one of them took me under his wing and has been handing me his client work. He is taking money off the top, but I am still making my rate (which is at least 2x what I would expect from oDesk jobs), so I am happy. You will not find direct clients at tech meet ups, but you might can find mentors or other consultants that have too much on their plate.</p></li>
-<li><p>Attend non-tech events in industries known to need and use technology (marketing, sales, small business, etc.). You want industries that make a lot of money, and already pay for technology. Hopefully you will find projects here like: &ldquo;I need my sales force account hooked into my <a href="http://www.infusionsoft.com">Infusionsoft</a> account with <a href="http://www.twilio.com">Twilio</a> integration so that I can be notified about new clients.&rdquo;</p>
-
-<p> I have talked <a href="/blog/2014/06/21/goodie-hack-number-2/">before about my experiences</a> at <a href="http://goodiehack.com">Goodie Hack</a>.  There were very few developers there and lots of people looking for them.</p></li>
-<li><p>Reverse sale recruiters. I get hit up by recruiters weekly asking if I want to work at the &ldquo;hottest start up in ___.&rdquo; I say, &ldquo;Hey, I am not looking for a position right now, but I am looking to take on new contracts. I will give you $500 gift card, if you refer a client to me and we seal a +1 month contract.&rdquo; Now I got a little team of people interested in helping me out.</p></li>
-<li><p>Attend <a href="http://www.atlsuds.com/">startup</a> events. There are lots of people that have ideas, raised millions of dollars, but don&rsquo;t have the tech talent to build what they want to build. You need to find these people. Build relationships with VC firms. There are lots of startups with a $200,000 tech budget and no one to spend it on.</p></li>
-</ol>
-
 </div>
   
   

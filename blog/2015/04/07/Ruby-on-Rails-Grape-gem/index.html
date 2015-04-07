@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - Kevin Coleman</title>
+  <title>Ruby on Rails Grape Gem: Pros and Cons - Kevin Coleman</title>
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="Blog Archive 2015 Ruby on Rails Grape Gem: Pros and Cons
-Apr 07 2015 Otto Meet Retrofit: How to Build a Scalable and Performant Android Application &hellip;">
+  <meta name="description" content="Ruby on Rails is a very powerful framework that is awesome at building RESTful APIs. Using vanilla rails to build an API, while completely possible &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +18,7 @@ Apr 07 2015 Otto Meet Retrofit: How to Build a Scalable and Performant Android A
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.kcoleman.me/blog/archives">
+  <link rel="canonical" href="http://www.kcoleman.me/blog/2015/04/07/Ruby-on-Rails-Grape-gem">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Kevin Coleman" type="application/atom+xml">
@@ -102,311 +101,114 @@ Apr 07 2015 Otto Meet Retrofit: How to Build a Scalable and Performant Android A
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      
+        <h1 class="entry-title">Ruby on Rails Grape Gem: Pros and Cons</h1>
+      
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-04-07T01:36:51-07:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:36 am</span></time>
+        
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives">
 
 
+<div class="entry-content"><p><img src="/images/grapes.jpeg" title="Ruby on Rails Grape gem" class="banner-img" /></p>
 
-  
-  <h2>2015</h2>
+<p>Ruby on Rails is a very powerful framework that is awesome at building RESTful APIs.  Using vanilla rails to build an API, while completely possible, is not always the best way to go.  <a href="https://github.com/intridea/grape">Grape</a> is micro-api framework design to work along side rails for developing an RESTful API.</p>
 
-<article>
-  
-<h1><a href="/blog/2015/04/07/Ruby-on-Rails-Grape-gem/">Ruby on Rails Grape Gem: Pros and Cons</a></h1>
-<time datetime="2015-04-07T01:36:51-07:00" pubdate><span class='month'>Apr</span> <span class='day'>07</span> <span class='year'>2015</span></time>
+<p>Grape has some very <a href="https://github.com/intridea/grape/blob/master/README.md">expansive documentation</a> describing how the gem works, so I am not going to dive too deeply into that</p>
 
+<h2>Pros</h2>
 
-</article>
+<p>Starting off with the positives: grape is great a creating and maintaining documentation.  I love the <a href="https://github.com/tim-vandecasteele/grape-swagger">grape-swagger</a> gem allows you to easily generate documentation from you existing code base.  Since the documentation is generated, all of the code is self-documenting and you don&rsquo;t have to maintain <a href="http://raml.org/">separate API documentation files</a>.</p>
 
+<p>Because grape has its own <a href="https://en.wikipedia.org/wiki/Domain-specific_language">DSL</a>, it makes creating APIs easy to read and understand.  This makes the code base easier to maintain for future improvements.  Plus it has its own opinion for how to create an API, which really help keep your codebase consistent.</p>
 
+<p>grape gives you a uniform way to control API HTTP Headers.  Rather than having to roll your own classes to manage the response headers, grape makes it easy to set them.</p>
 
-<article>
-  
-<h1><a href="/blog/2015/03/12/android-app-architecture/">Otto Meet Retrofit: How to Build a Scalable and Performant Android Application</a></h1>
-<time datetime="2015-03-12T12:46:43-07:00" pubdate><span class='month'>Mar</span> <span class='day'>12</span> <span class='year'>2015</span></time>
+<h2>Cons</h2>
 
+<p>Because grape is independent of rails, it takes a bit of finagling for it to play well with rails.  You have to manually include rails libraries like ActiveRecord or ActiveSupport.  Since there is no ActiveSupport, it makes caching responses more difficult than it should be.</p>
 
-</article>
+<p>Because grape has its own DSL, there is a bit of a learning curve to understand how it wants you to create an API.  If you have a firm understanding of ruby, it shouldn&rsquo;t be that difficult for you to pick up, but it definitely takes a bit of getting used to.</p>
 
+<p>While grape makes it easier to read and write your api, it does add another layer of complexity to your rails application.</p>
 
+<h2>Conclusion</h2>
 
-<article>
-  
-<h1><a href="/blog/2015/01/12/atlanta-startup-jobs/">Atlanta Startup Jobs - Scratch Your Own Itch</a></h1>
-<time datetime="2015-01-12T17:52:21-08:00" pubdate><span class='month'>Jan</span> <span class='day'>12</span> <span class='year'>2015</span></time>
+<p>For now, I am going to stick with rolling my own APIs using &ldquo;just&rdquo;* the rails framework.  Being more pure rails, gives me more control over the api had has less &ldquo;magic.&rdquo;  If I need to bring on a new developer, they will not have to spend as much time getting up to speed on this new library.</p>
 
+<p>Plus, vanilla rails has an awesome caching tools that don&rsquo;t need to be arm wrestled into the framework.</p>
 
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2015/01/08/happybeam/">SideProject: HappyBeam - Meditate and Improve</a></h1>
-<time datetime="2015-01-08T10:11:59-08:00" pubdate><span class='month'>Jan</span> <span class='day'>08</span> <span class='year'>2015</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/projects/'>projects</a></span>
-</footer>
-
-
-</article>
-
-
-
-  
-  <h2>2014</h2>
-
-<article>
-  
-<h1><a href="/blog/2014/10/26/how-to-win-a-hackathon/">How to Win a Hackathon</a></h1>
-<time datetime="2014-10-26T17:14:40-07:00" pubdate><span class='month'>Oct</span> <span class='day'>26</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/10/09/one-rails-app-two-web-applications/">One Rails App Two Web Applications</a></h1>
-<time datetime="2014-10-09T17:11:45-07:00" pubdate><span class='month'>Oct</span> <span class='day'>09</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/10/07/angularjs-rails-and-seo-part-2/">Angularjs Rails and SEO Part 2</a></h1>
-<time datetime="2014-10-07T17:26:43-07:00" pubdate><span class='month'>Oct</span> <span class='day'>07</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/10/03/angularjs-rails-seo/">Angularjs Rails and SEO Part 1</a></h1>
-<time datetime="2014-10-03T09:05:45-07:00" pubdate><span class='month'>Oct</span> <span class='day'>03</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/07/28/new-house/">Buying My First Real Estate Investment</a></h1>
-<time datetime="2014-07-28T09:46:17-07:00" pubdate><span class='month'>Jul</span> <span class='day'>28</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/real-estate/'>real_estate</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/07/23/how-to-get-osx-git-branch-name-in-console/">How to Get OSX Git Branch Name in Console</a></h1>
-<time datetime="2014-07-23T12:13:52-07:00" pubdate><span class='month'>Jul</span> <span class='day'>23</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/07/05/web-consulting/">How to Start Web Consulting</a></h1>
-<time datetime="2014-07-05T08:46:57-07:00" pubdate><span class='month'>Jul</span> <span class='day'>05</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/06/21/goodie-hack-number-2/">Goodie Hack #2</a></h1>
-<time datetime="2014-06-21T14:31:51-07:00" pubdate><span class='month'>Jun</span> <span class='day'>21</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/06/13/entry-level-rails/">What It Takes to Be Entry Level Rails Developers</a></h1>
-<time datetime="2014-06-13T13:42:01-07:00" pubdate><span class='month'>Jun</span> <span class='day'>13</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/06/05/rails-4-dot-1-enums-how-not-to-handle-states/">Rails 4.1 Enums: How Not to Handle States</a></h1>
-<time datetime="2014-06-05T10:08:29-07:00" pubdate><span class='month'>Jun</span> <span class='day'>05</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/06/04/path-to-success/">My Path to Success</a></h1>
-<time datetime="2014-06-04T14:50:34-07:00" pubdate><span class='month'>Jun</span> <span class='day'>04</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/05/31/twitter-bot-on-heroku/">Twitter Bot on Heroku</a></h1>
-<time datetime="2014-05-31T21:05:08-07:00" pubdate><span class='month'>May</span> <span class='day'>31</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/05/31/url-shorter-with-redis-and-rails/">Rails and Redis URL Shortener in Same Application</a></h1>
-<time datetime="2014-05-31T11:22:47-07:00" pubdate><span class='month'>May</span> <span class='day'>31</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/05/17/tagging-models/">Tagging Models</a></h1>
-<time datetime="2014-05-17T08:14:24-07:00" pubdate><span class='month'>May</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/05/16/gem-configuration-defaults/">Gem Configuration Defaults</a></h1>
-<time datetime="2014-05-16T19:48:09-07:00" pubdate><span class='month'>May</span> <span class='day'>16</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/05/15/custom-environements-with-rails-4/">Custom Environments With Rails 4</a></h1>
-<time datetime="2014-05-15T07:41:53-07:00" pubdate><span class='month'>May</span> <span class='day'>15</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/04/30/nodejs-chat-guide/">NodeJS Chat Guide</a></h1>
-<time datetime="2014-04-30T09:40:07-07:00" pubdate><span class='month'>Apr</span> <span class='day'>30</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/04/16/rapid-fire-ticket-purchasing-and-the-extendable-web/">Rapid Ticket Purchasing and the Extendable Web</a></h1>
-<time datetime="2014-04-16T09:30:31-07:00" pubdate><span class='month'>Apr</span> <span class='day'>16</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/chrome/'>chrome</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/03/23/how-to-make-a-gem/">Extending Active Record in Rails 4.1</a></h1>
-<time datetime="2014-03-23T20:40:48-07:00" pubdate><span class='month'>Mar</span> <span class='day'>23</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/03/17/reporting-with-rails-part-1/">Reporting With Rails Part 2</a></h1>
-<time datetime="2014-03-17T22:49:55-07:00" pubdate><span class='month'>Mar</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/03/11/reporting-with-rails-p1/">Reporting With Rails Part 1</a></h1>
-<time datetime="2014-03-11T10:05:11-07:00" pubdate><span class='month'>Mar</span> <span class='day'>11</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/02/13/setting-up-a-ruby-on-rails-4-dot-0-1beta1-with-osx-mavericks-10-dot-9/">Setting Up a Ruby on Rails 4.0.1beta1 With OSX Mavericks 10.9</a></h1>
-<time datetime="2014-02-13T22:21:15-08:00" pubdate><span class='month'>Feb</span> <span class='day'>13</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ruby-on-rails/'>ruby on rails</a></span>
-</footer>
-
-
-</article>
+<ul>
+<li>By &ldquo;just&rdquo; I mean, standard gem stack provided in rails 4.2 with typical basic additions I would use in both grape and vanilla rails.</li>
+</ul>
 
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
-</article>
 
 
-</div>
-
-<aside class="sidebar">
   
+
+
+  <span class="byline author vcard">Authored by <span class="fn">
+  
+    <a href="https://plus.google.com/+kevincolemaninc" rel="author">Kevin Coleman</a>
+  
+  </span></span>
+
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-04-07T01:36:51-07:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:36 am</span></time>
+      
+      
+
+
+    </p>
     
+      <div class="sharing">
   
-</aside>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.kcoleman.me/blog/2015/04/07/Ruby-on-Rails-Grape-gem/" data-via="KevinColemanInc" data-counturl="http://www.kcoleman.me/blog/2015/04/07/Ruby-on-Rails-Grape-gem/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/03/12/android-app-architecture/" title="Previous Post: Otto meet Retrofit: How to build a scalable and performant Android application">&laquo; Otto meet Retrofit: How to build a scalable and performant Android application</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+
+</div>
 
     </div>
   </div>
