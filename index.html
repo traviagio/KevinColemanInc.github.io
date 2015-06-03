@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="Ruby on Rails is a very powerful framework that is awesome at building RESTful APIs. Using vanilla rails to build an API, while completely possible &hellip;">
+  <meta name="description" content="A huge problem with ruby on rails apps is many of them end with overly cluttered models and controller methods. An attempt to solve this would be to &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -108,6 +108,148 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2015/06/03/rails-patterns-builders-and-models/">Rails Patterns: Builders and Models</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-06-03T09:23:38+02:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>9:23 am</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/sf-bridge.jpg" title="Rails Patterns: Builders and Models" class="banner-img"/></p>
+
+<p>A huge problem with ruby on rails apps is many of them end with overly cluttered models and controller methods. An attempt to solve this would be to move what you can to your active record models, but then you end up with heavily bloated model classes that extend way beyond their intended active record design patterns.  Active record models should just manage the communication between the rails app and the database.  Anything else is just code smell.</p>
+
+<p>In all of my experience with rails projects, I found that my active record models typically ended up having a group of methods that helped me create the model itself (think when you create a user, you also need to create a user_profile or if you want to find or create a model).</p>
+
+<h1>Builders</h1>
+
+<p>You can easily break this type of code away from the model by following a builder pattern. Builder patterns are great for creating objects with business logic based on given parameters.  It adds an easy way to add business logic to model creation without adding bloat to your active record model class.</p>
+
+<p>To follow this pattern, create a directory called <code>builders</code> in the <code>/models</code> directory.</p>
+
+<p>Here is an example of my user class before and after a refactor with the builder pattern.</p>
+
+<p>before:</p>
+
+<figure class='code'><figcaption><span>user.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_admin_user</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span>
+</span><span class='line'>    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_or_create_by</span> <span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span> <span class="ss">password</span><span class="p">:</span> <span class="n">password</span>
+</span><span class='line'>    <span class="n">user</span><span class="o">.</span><span class="n">add_role</span> <span class="ss">:admin</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_staff_user</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span>
+</span><span class='line'>    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_or_create_by</span> <span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span> <span class="ss">password</span><span class="p">:</span> <span class="n">password</span>
+</span><span class='line'>    <span class="n">user</span><span class="o">.</span><span class="n">add_role</span> <span class="ss">:staff</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_user_with_invite</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span>
+</span><span class='line'>    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_or_create_by</span> <span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span> <span class="ss">password</span><span class="p">:</span> <span class="n">password</span>
+</span><span class='line'>    <span class="n">user</span><span class="o">.</span><span class="n">send_invitation</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>after:</p>
+
+<figure class='code'><figcaption><span>user.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="c1"># nothing to see here</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>/builders/user_builder.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">class</span> <span class="nc">Builders</span><span class="o">::</span><span class="no">UserBuilder</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_admin_user</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span>
+</span><span class='line'>      <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_or_create_by</span> <span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span> <span class="ss">password</span><span class="p">:</span> <span class="n">password</span>
+</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="n">add_role</span> <span class="ss">:admin</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_staff_user</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span>
+</span><span class='line'>      <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_or_create_by</span> <span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span> <span class="ss">password</span><span class="p">:</span> <span class="n">password</span>
+</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="n">add_role</span> <span class="ss">:staff</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_user_with_invite</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span>
+</span><span class='line'>      <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_or_create_by</span> <span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span> <span class="ss">password</span><span class="p">:</span> <span class="n">password</span>
+</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="n">send_invitation</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>Non-AR models</h1>
+
+<p>Models also can get bloated with controller-like actions that have groups of methods that should be broken out into their own classes that the controllers will leverage.  An example of this type of class would be one that manages to send an email to a user.  These models don&rsquo;t extend active record, because they focus is performing business logic on active_record models, not storing them in the database.  Models take in a limited scope of the Params of a request, perform their function, and then return their results to the controller.</p>
+
+<p>Before breaking out email sending, active record models would end up with a collection of email sending methods (send_password_reset, send_notification, etc). All of these should be moved to a model classes because classes have one purpose and active record models are for Savin data, not sending emails.</p>
+
+<p>An example of this could be:</p>
+
+<figure class='code'><figcaption><span>user_invitor.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">class</span> <span class="nc">UserInvitor</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">invite_email</span> <span class="n">email</span>
+</span><span class='line'>      <span class="no">Invitation</span><span class="o">.</span><span class="n">create</span> <span class="ss">email</span><span class="p">:</span> <span class="n">email</span>
+</span><span class='line'>      <span class="no">UserMailer</span><span class="o">.</span><span class="n">invite_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">deliver_later</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2015/04/07/Ruby-on-Rails-Grape-gem/">Ruby on Rails Grape Gem: Pros and Cons</a></h1>
     
     
@@ -117,7 +259,7 @@
 
 
 
-<time class='entry-date' datetime='2015-04-07T01:36:51-07:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:36 am</span></time>
+<time class='entry-date' datetime='2015-04-07T10:36:51+02:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:36 am</span></time>
         
         
       </p>
@@ -178,7 +320,7 @@
 
 
 
-<time class='entry-date' datetime='2015-03-12T12:46:43-07:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>12:46 pm</span></time>
+<time class='entry-date' datetime='2015-03-12T20:46:43+01:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:46 pm</span></time>
         
         
       </p>
@@ -350,7 +492,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2015/01/12/atlanta-startup-jobs/">Atlanta Startup Jobs - Scratch Your Own Itch</a></h1>
+      <h1 class="entry-title"><a href="/blog/2015/01/13/atlanta-startup-jobs/">Atlanta Startup Jobs - Scratch Your Own Itch</a></h1>
     
     
       <p class="meta">
@@ -359,7 +501,7 @@
 
 
 
-<time class='entry-date' datetime='2015-01-12T17:52:21-08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:52 pm</span></time>
+<time class='entry-date' datetime='2015-01-13T02:52:21+01:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:52 am</span></time>
         
         
       </p>
@@ -409,7 +551,7 @@
 
 
 
-<time class='entry-date' datetime='2015-01-08T10:11:59-08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:11 am</span></time>
+<time class='entry-date' datetime='2015-01-08T19:11:59+01:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:11 pm</span></time>
         
         
       </p>
@@ -460,7 +602,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/10/26/how-to-win-a-hackathon/">How to Win a Hackathon</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/10/27/how-to-win-a-hackathon/">How to Win a Hackathon</a></h1>
     
     
       <p class="meta">
@@ -469,7 +611,7 @@
 
 
 
-<time class='entry-date' datetime='2014-10-26T17:14:40-07:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:14 pm</span></time>
+<time class='entry-date' datetime='2014-10-27T01:14:40+01:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:14 am</span></time>
         
         
       </p>
@@ -577,7 +719,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/10/09/one-rails-app-two-web-applications/">One Rails App Two Web Applications</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/10/10/one-rails-app-two-web-applications/">One Rails App Two Web Applications</a></h1>
     
     
       <p class="meta">
@@ -586,7 +728,7 @@
 
 
 
-<time class='entry-date' datetime='2014-10-09T17:11:45-07:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:11 pm</span></time>
+<time class='entry-date' datetime='2014-10-10T02:11:45+02:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:11 am</span></time>
         
         
       </p>
@@ -746,7 +888,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/10/07/angularjs-rails-and-seo-part-2/">Angularjs Rails and SEO Part 2</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/10/08/angularjs-rails-and-seo-part-2/">Angularjs Rails and SEO Part 2</a></h1>
     
     
       <p class="meta">
@@ -755,7 +897,7 @@
 
 
 
-<time class='entry-date' datetime='2014-10-07T17:26:43-07:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:26 pm</span></time>
+<time class='entry-date' datetime='2014-10-08T02:26:43+02:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:26 am</span></time>
         
         
       </p>
@@ -848,7 +990,7 @@
 
 
 
-<time class='entry-date' datetime='2014-10-03T09:05:45-07:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>9:05 am</span></time>
+<time class='entry-date' datetime='2014-10-03T18:05:45+02:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>6:05 pm</span></time>
         
         
       </p>
@@ -1093,7 +1235,7 @@
 
 
 
-<time class='entry-date' datetime='2014-07-28T09:46:17-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>9:46 am</span></time>
+<time class='entry-date' datetime='2014-07-28T18:46:17+02:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:46 pm</span></time>
         
         
       </p>
@@ -1132,60 +1274,6 @@
 <li>While I agree that <a href="http://Zillow.com">Zillow</a> doesn&rsquo;t know what it is talking about when it comes to home values.  I also think that the people buying the homes would not want to purchase a house too far off the price listed online.  The house I bought Zillow thinks is worth $115k and I purchased it for $47k.</li>
 </ul>
 
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/07/23/how-to-get-osx-git-branch-name-in-console/">How to Get OSX Git Branch Name in Console</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-07-23T12:13:52-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>12:13 pm</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/hills.jpg" title="How to get OSX git branch name in console" class="banner-img"  /></p>
-
-<p>I have always had a problem of forgetting which git branch I was on and committing my changes to the wrong branch.  The best way I have found to solve this problem is to have the branch name printed in the console prompt.</p>
-
-<p>You can modify the prompt message in OSX by setting the PS1 variable in <code>~/.bash_profile</code></p>
-
-<p>First you need to parse the git branch name by using this function</p>
-
-<figure class='code'><figcaption><span>.bash_profile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">parse_git_branch() {</span>
-</span><span class='line'><span class="go">    git branch 2&gt; /dev/null | sed -e &#39;/^[^*]/d&#39; -e &#39;s/* \(.*\)/ (\1)/&#39;</span>
-</span><span class='line'><span class="go">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now you need to set your PS1 variable so that it shows the parse branch I added a bit of color to mine so I can see it more clearly.</p>
-
-<figure class='code'><figcaption><span>.bash_profile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">export PS1=&quot;\# \u \w\[\033[32m\]\$(parse_git_branch)\[\033[00m\] $ &quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Cheers.</p>
 </div>
   
   

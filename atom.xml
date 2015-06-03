@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Coleman]]></title>
   <link href="http://www.kcoleman.me/atom.xml" rel="self"/>
   <link href="http://www.kcoleman.me/"/>
-  <updated>2015-04-07T02:11:11-07:00</updated>
+  <updated>2015-06-03T10:22:14+02:00</updated>
   <id>http://www.kcoleman.me/</id>
   <author>
     <name><![CDATA[Kevin Coleman]]></name>
@@ -14,9 +14,130 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Rails Patterns: Builders and Models]]></title>
+    <link href="http://www.kcoleman.me/blog/2015/06/03/rails-patterns-builders-and-models/"/>
+    <updated>2015-06-03T09:23:38+02:00</updated>
+    <id>http://www.kcoleman.me/blog/2015/06/03/rails-patterns-builders-and-models</id>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/sf-bridge.jpg" title="Rails Patterns: Builders and Models" class="banner-img"/></p>
+
+<p>A huge problem with ruby on rails apps is many of them end with overly cluttered models and controller methods. An attempt to solve this would be to move what you can to your active record models, but then you end up with heavily bloated model classes that extend way beyond their intended active record design patterns.  Active record models should just manage the communication between the rails app and the database.  Anything else is just code smell.</p>
+
+<p>In all of my experience with rails projects, I found that my active record models typically ended up having a group of methods that helped me create the model itself (think when you create a user, you also need to create a user_profile or if you want to find or create a model).</p>
+
+<h1>Builders</h1>
+
+<p>You can easily break this type of code away from the model by following a builder pattern. Builder patterns are great for creating objects with business logic based on given parameters.  It adds an easy way to add business logic to model creation without adding bloat to your active record model class.</p>
+
+<p>To follow this pattern, create a directory called <code>builders</code> in the <code>/models</code> directory.</p>
+
+<p>Here is an example of my user class before and after a refactor with the builder pattern.</p>
+
+<p>before:</p>
+
+<figure class='code'><figcaption><span>user.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_admin_user</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span>
+</span><span class='line'>    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_or_create_by</span> <span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span> <span class="ss">password</span><span class="p">:</span> <span class="n">password</span>
+</span><span class='line'>    <span class="n">user</span><span class="o">.</span><span class="n">add_role</span> <span class="ss">:admin</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_staff_user</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span>
+</span><span class='line'>    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_or_create_by</span> <span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span> <span class="ss">password</span><span class="p">:</span> <span class="n">password</span>
+</span><span class='line'>    <span class="n">user</span><span class="o">.</span><span class="n">add_role</span> <span class="ss">:staff</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_user_with_invite</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span>
+</span><span class='line'>    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_or_create_by</span> <span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span> <span class="ss">password</span><span class="p">:</span> <span class="n">password</span>
+</span><span class='line'>    <span class="n">user</span><span class="o">.</span><span class="n">send_invitation</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>after:</p>
+
+<figure class='code'><figcaption><span>user.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="c1"># nothing to see here</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>/builders/user_builder.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">class</span> <span class="nc">Builders</span><span class="o">::</span><span class="no">UserBuilder</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_admin_user</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span>
+</span><span class='line'>      <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_or_create_by</span> <span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span> <span class="ss">password</span><span class="p">:</span> <span class="n">password</span>
+</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="n">add_role</span> <span class="ss">:admin</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_staff_user</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span>
+</span><span class='line'>      <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_or_create_by</span> <span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span> <span class="ss">password</span><span class="p">:</span> <span class="n">password</span>
+</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="n">add_role</span> <span class="ss">:staff</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_user_with_invite</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span>
+</span><span class='line'>      <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_or_create_by</span> <span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span> <span class="ss">password</span><span class="p">:</span> <span class="n">password</span>
+</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="n">send_invitation</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>Non-AR models</h1>
+
+<p>Models also can get bloated with controller-like actions that have groups of methods that should be broken out into their own classes that the controllers will leverage.  An example of this type of class would be one that manages to send an email to a user.  These models don&rsquo;t extend active record, because they focus is performing business logic on active_record models, not storing them in the database.  Models take in a limited scope of the Params of a request, perform their function, and then return their results to the controller.</p>
+
+<p>Before breaking out email sending, active record models would end up with a collection of email sending methods (send_password_reset, send_notification, etc). All of these should be moved to a model classes because classes have one purpose and active record models are for Savin data, not sending emails.</p>
+
+<p>An example of this could be:</p>
+
+<figure class='code'><figcaption><span>user_invitor.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">class</span> <span class="nc">UserInvitor</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">invite_email</span> <span class="n">email</span>
+</span><span class='line'>      <span class="no">Invitation</span><span class="o">.</span><span class="n">create</span> <span class="ss">email</span><span class="p">:</span> <span class="n">email</span>
+</span><span class='line'>      <span class="no">UserMailer</span><span class="o">.</span><span class="n">invite_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">deliver_later</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Ruby on Rails Grape Gem: Pros and Cons]]></title>
     <link href="http://www.kcoleman.me/blog/2015/04/07/Ruby-on-Rails-Grape-gem/"/>
-    <updated>2015-04-07T01:36:51-07:00</updated>
+    <updated>2015-04-07T10:36:51+02:00</updated>
     <id>http://www.kcoleman.me/blog/2015/04/07/Ruby-on-Rails-Grape-gem</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/grapes.jpeg" title="Ruby on Rails Grape gem" class="banner-img" /></p>
 
@@ -56,7 +177,7 @@
   <entry>
     <title type="html"><![CDATA[Otto Meet Retrofit: How to Build a Scalable and Performant Android Application]]></title>
     <link href="http://www.kcoleman.me/blog/2015/03/12/android-app-architecture/"/>
-    <updated>2015-03-12T12:46:43-07:00</updated>
+    <updated>2015-03-12T20:46:43+01:00</updated>
     <id>http://www.kcoleman.me/blog/2015/03/12/android-app-architecture</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/beach2.jpg" title="Otto meet Retrofit: How to build a scalable and performant Android application" class="banner-img"  /></p>
 
@@ -215,9 +336,9 @@
   
   <entry>
     <title type="html"><![CDATA[Atlanta Startup Jobs - Scratch Your Own Itch]]></title>
-    <link href="http://www.kcoleman.me/blog/2015/01/12/atlanta-startup-jobs/"/>
-    <updated>2015-01-12T17:52:21-08:00</updated>
-    <id>http://www.kcoleman.me/blog/2015/01/12/atlanta-startup-jobs</id>
+    <link href="http://www.kcoleman.me/blog/2015/01/13/atlanta-startup-jobs/"/>
+    <updated>2015-01-13T02:52:21+01:00</updated>
+    <id>http://www.kcoleman.me/blog/2015/01/13/atlanta-startup-jobs</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/park.jpg" title="Atlanta Startup Jobs - Scratch your own itch" class="banner-img"  /></p>
 
 <p>I have always wanted to start my own business, ever since I was in high school. Since then, I have been struggling to find an idea that I am truly passionate enough to invest my time or resources to execute on my own.</p>
@@ -245,7 +366,7 @@
   <entry>
     <title type="html"><![CDATA[SideProject: HappyBeam - Meditate and Improve]]></title>
     <link href="http://www.kcoleman.me/blog/2015/01/08/happybeam/"/>
-    <updated>2015-01-08T10:11:59-08:00</updated>
+    <updated>2015-01-08T19:11:59+01:00</updated>
     <id>http://www.kcoleman.me/blog/2015/01/08/happybeam</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/HappyBeam-feature-graphic.png" title="SideProject: HappyBeam - Meditate and improve" class="banner-img"  /></p>
 
@@ -283,9 +404,9 @@
   
   <entry>
     <title type="html"><![CDATA[How to Win a Hackathon]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/10/26/how-to-win-a-hackathon/"/>
-    <updated>2014-10-26T17:14:40-07:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/10/26/how-to-win-a-hackathon</id>
+    <link href="http://www.kcoleman.me/blog/2014/10/27/how-to-win-a-hackathon/"/>
+    <updated>2014-10-27T01:14:40+01:00</updated>
+    <id>http://www.kcoleman.me/blog/2014/10/27/how-to-win-a-hackathon</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/cooking.jpg" title="How to win a hackathon" class="banner-img"  /></p>
 
 <p>I have been to a few hackathons and startup weekends over the last few years and I have a pretty good prize rate (I have placed at more than 50% of the events).  After my back to back win of the ATT and FinApps hackathons, I want to share my thoughts on what it takes to be a winning team.</p>
@@ -379,9 +500,9 @@
   
   <entry>
     <title type="html"><![CDATA[One Rails App Two Web Applications]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/10/09/one-rails-app-two-web-applications/"/>
-    <updated>2014-10-09T17:11:45-07:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/10/09/one-rails-app-two-web-applications</id>
+    <link href="http://www.kcoleman.me/blog/2014/10/10/one-rails-app-two-web-applications/"/>
+    <updated>2014-10-10T02:11:45+02:00</updated>
+    <id>http://www.kcoleman.me/blog/2014/10/10/one-rails-app-two-web-applications</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/mountains.jpeg" title="One Rails App Two Web Applications" class="banner-img"  /></p>
 
 <p>When building a rails application, sometimes it is quicker to build one code base that is shared on two completely different frontend applications.  I am going to discuss the design approaches I used to segregate the two rails websites within a single rails application base.</p>
@@ -527,9 +648,9 @@
   
   <entry>
     <title type="html"><![CDATA[Angularjs Rails and SEO Part 2]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/10/07/angularjs-rails-and-seo-part-2/"/>
-    <updated>2014-10-07T17:26:43-07:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/10/07/angularjs-rails-and-seo-part-2</id>
+    <link href="http://www.kcoleman.me/blog/2014/10/08/angularjs-rails-and-seo-part-2/"/>
+    <updated>2014-10-08T02:26:43+02:00</updated>
+    <id>http://www.kcoleman.me/blog/2014/10/08/angularjs-rails-and-seo-part-2</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/beach.jpeg" title="Angularjs Rails and SEO Part 2" class="banner-img"  /></p>
 
 <p>This is a continuation post from <a href="http://www.kcoleman.me/blog/2014/10/03/angularjs-rails-seo/">Angularjs Rails and SEO Part 1</a>.</p>
@@ -600,7 +721,7 @@
   <entry>
     <title type="html"><![CDATA[Angularjs Rails and SEO Part 1]]></title>
     <link href="http://www.kcoleman.me/blog/2014/10/03/angularjs-rails-seo/"/>
-    <updated>2014-10-03T09:05:45-07:00</updated>
+    <updated>2014-10-03T18:05:45+02:00</updated>
     <id>http://www.kcoleman.me/blog/2014/10/03/angularjs-rails-seo</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/mountain.jpeg" title="Angularjs Rails and SEO Part 1" class="banner-img"  /></p>
 
@@ -824,7 +945,7 @@
   <entry>
     <title type="html"><![CDATA[Buying My First Real Estate Investment]]></title>
     <link href="http://www.kcoleman.me/blog/2014/07/28/new-house/"/>
-    <updated>2014-07-28T09:46:17-07:00</updated>
+    <updated>2014-07-28T18:46:17+02:00</updated>
     <id>http://www.kcoleman.me/blog/2014/07/28/new-house</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/city-houses.jpg" title="First Real Estate Investment Property" class="banner-img"  /></p>
 
@@ -863,7 +984,7 @@
   <entry>
     <title type="html"><![CDATA[How to Get OSX Git Branch Name in Console]]></title>
     <link href="http://www.kcoleman.me/blog/2014/07/23/how-to-get-osx-git-branch-name-in-console/"/>
-    <updated>2014-07-23T12:13:52-07:00</updated>
+    <updated>2014-07-23T21:13:52+02:00</updated>
     <id>http://www.kcoleman.me/blog/2014/07/23/how-to-get-osx-git-branch-name-in-console</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/hills.jpg" title="How to get OSX git branch name in console" class="banner-img"  /></p>
 
@@ -896,7 +1017,7 @@
   <entry>
     <title type="html"><![CDATA[How to Start Web Consulting]]></title>
     <link href="http://www.kcoleman.me/blog/2014/07/05/web-consulting/"/>
-    <updated>2014-07-05T08:46:57-07:00</updated>
+    <updated>2014-07-05T17:46:57+02:00</updated>
     <id>http://www.kcoleman.me/blog/2014/07/05/web-consulting</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/ppl-skyline.jpg" title="How to start web consulting" class="banner-img"  /></p>
 
@@ -937,7 +1058,7 @@
   <entry>
     <title type="html"><![CDATA[Goodie Hack #2]]></title>
     <link href="http://www.kcoleman.me/blog/2014/06/21/goodie-hack-number-2/"/>
-    <updated>2014-06-21T14:31:51-07:00</updated>
+    <updated>2014-06-21T23:31:51+02:00</updated>
     <id>http://www.kcoleman.me/blog/2014/06/21/goodie-hack-number-2</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/urban.jpg" title="Goodie Hack Atlanta 2014" class="banner-img" /></p>
 
@@ -954,7 +1075,7 @@
   <entry>
     <title type="html"><![CDATA[What It Takes to Be Entry Level Rails Developers]]></title>
     <link href="http://www.kcoleman.me/blog/2014/06/13/entry-level-rails/"/>
-    <updated>2014-06-13T13:42:01-07:00</updated>
+    <updated>2014-06-13T22:42:01+02:00</updated>
     <id>http://www.kcoleman.me/blog/2014/06/13/entry-level-rails</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/bridge.jpg" title="What it takes to be entry level Rails developers" class="banner-img" /></p>
 
@@ -986,7 +1107,7 @@
   <entry>
     <title type="html"><![CDATA[Rails 4.1 Enums: How Not to Handle States]]></title>
     <link href="http://www.kcoleman.me/blog/2014/06/05/rails-4-dot-1-enums-how-not-to-handle-states/"/>
-    <updated>2014-06-05T10:08:29-07:00</updated>
+    <updated>2014-06-05T19:08:29+02:00</updated>
     <id>http://www.kcoleman.me/blog/2014/06/05/rails-4-dot-1-enums-how-not-to-handle-states</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/road.jpg" title="Rails 4.1 enums: How not to handle stats" class="banner-img"/></p>
 
@@ -1046,7 +1167,7 @@
   <entry>
     <title type="html"><![CDATA[My Path to Success]]></title>
     <link href="http://www.kcoleman.me/blog/2014/06/04/path-to-success/"/>
-    <updated>2014-06-04T14:50:34-07:00</updated>
+    <updated>2014-06-04T23:50:34+02:00</updated>
     <id>http://www.kcoleman.me/blog/2014/06/04/path-to-success</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/escalator.jpg" title="My path to success" class="banner-img" /></p>
 
@@ -1082,9 +1203,9 @@
   
   <entry>
     <title type="html"><![CDATA[Twitter Bot on Heroku]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/05/31/twitter-bot-on-heroku/"/>
-    <updated>2014-05-31T21:05:08-07:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/05/31/twitter-bot-on-heroku</id>
+    <link href="http://www.kcoleman.me/blog/2014/06/01/twitter-bot-on-heroku/"/>
+    <updated>2014-06-01T06:05:08+02:00</updated>
+    <id>http://www.kcoleman.me/blog/2014/06/01/twitter-bot-on-heroku</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/alley.jpg" title="Twitter bot v1 on Heroku" class="banner-img" /></p>
 
 <p>Inspired by the Technology Review article, <a href="http://www.technologyreview.com/view/527746/how-advanced-socialbots-have-infiltrated-twitter/">How Advanced Social bots Have Infiltrated Twitter</a>, I thought it would be an interesting to see how difficult it is to write a bot to generate followers over a given topic.</p>
@@ -1261,7 +1382,7 @@
   <entry>
     <title type="html"><![CDATA[Rails and Redis URL Shortener in Same Application]]></title>
     <link href="http://www.kcoleman.me/blog/2014/05/31/url-shorter-with-redis-and-rails/"/>
-    <updated>2014-05-31T11:22:47-07:00</updated>
+    <updated>2014-05-31T20:22:47+02:00</updated>
     <id>http://www.kcoleman.me/blog/2014/05/31/url-shorter-with-redis-and-rails</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/locks.jpg" title="Redis key value storage" class="banner-img" /></p>
 
@@ -1438,7 +1559,7 @@
   <entry>
     <title type="html"><![CDATA[Tagging Models]]></title>
     <link href="http://www.kcoleman.me/blog/2014/05/17/tagging-models/"/>
-    <updated>2014-05-17T08:14:24-07:00</updated>
+    <updated>2014-05-17T17:14:24+02:00</updated>
     <id>http://www.kcoleman.me/blog/2014/05/17/tagging-models</id>
     <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/music_slider.jpg" title="Tagging Models" class="banner-img"/></p>
 
@@ -1581,9 +1702,9 @@
   
   <entry>
     <title type="html"><![CDATA[Gem Configuration Defaults]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/05/16/gem-configuration-defaults/"/>
-    <updated>2014-05-16T19:48:09-07:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/05/16/gem-configuration-defaults</id>
+    <link href="http://www.kcoleman.me/blog/2014/05/17/gem-configuration-defaults/"/>
+    <updated>2014-05-17T04:48:09+02:00</updated>
+    <id>http://www.kcoleman.me/blog/2014/05/17/gem-configuration-defaults</id>
     <content type="html"><![CDATA[<p>Recently I have been working on connecting to social media websites via oAuth gems like twitter and koala.  I discovered a neat trick for initializing these gems with environment variables so that you don&rsquo;t have to be passing in the variables every time you want to create a new instance of them.</p>
 
 <p>For this example, I am going to use the twitter gem.  Out of the box, its initializer looks like this taken from their docs:</p>
@@ -1650,79 +1771,6 @@ lowing us to not need to supply the consumer key every time we want to create a 
 
 
 <p>Since the consumer key never changes across calls, this keeps our code that much simpler.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Custom Environments With Rails 4]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/05/15/custom-environements-with-rails-4/"/>
-    <updated>2014-05-15T07:41:53-07:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/05/15/custom-environements-with-rails-4</id>
-    <content type="html"><![CDATA[<p>Sometimes you may need to setup custom environments beyond the standard <code>test</code>, <code>development</code>, and <code>production</code> that rails comes with.  If you would like to have your staging server configured a little big differently than test and production (maybe higher logging levels for example), then you would need to create another environment for these configurations called <code>staging</code>.</p>
-
-<h2>Changes, Additions and Edits</h2>
-
-<h3>Gemfile</h3>
-
-<p>In your <code>Gemfile</code>, you should add your new environment to the necessary groups.  If your environment is similar to <code>production</code>, you should add <code>staging</code> next to everywhere you see the <code>production</code> group lie below.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">group</span> <span class="ss">:development</span><span class="p">,</span> <span class="ss">:staging</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;log4r&#39;</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<h3>Update config/database.yml</h3>
-
-<p>You should create a new environment in your database.yml file.  This will look something like this</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">default</span><span class="p-Indicator">:</span> <span class="nl">&amp;default</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">adapter</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">postgresql</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">pool</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">5</span>
-</span><span class='line'>
-</span><span class='line'><span class="l-Scalar-Plain">staging</span><span class="p-Indicator">:</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">&lt;&lt;</span><span class="p-Indicator">:</span> <span class="nv">*default</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">w2w-staging</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Environment Config</h3>
-
-<p>In <code>config/environments/</code>, you should add <code>staging.rb</code>.  To make things easy, copy an existing environment that is most similar to the new one you are creating and make the adjustments you need from there.</p>
-
-<h3>Update Secrets.yml</h3>
-
-<p>If you are running rails 4.1, you will also need to update your <code>secrets.yml</code> file to handle new the new environment</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">staging</span><span class="p-Indicator">:</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">&lt;&lt;</span><span class="p-Indicator">:</span> <span class="nv">*default</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">secret_key_base</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">secrets_are_secretive_SALFJASFLKSAJFLSAFJOWERULSADFJLKSAFJD</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Misc</h3>
-
-<p>Do a quick find on your project directory for any environment specific code being run.  Look for things like <code>Rails.env.</code> and add your new environment to these conditionals like below</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="no">Rails</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">test?</span> <span class="o">||</span> <span class="no">Rails</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">development?</span> <span class="o">||</span> <span class="no">Rails</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">staging?</span>
-</span></code></pre></td></tr></table></div></figure>
-
 ]]></content>
   </entry>
   

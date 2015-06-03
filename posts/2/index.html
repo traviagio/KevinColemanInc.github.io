@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="I have lots of advice for you. I just moved from a corporate job to rails consulting 2-4mo ago, because someone offered me more money than I could &hellip;">
+  <meta name="description" content="I have always had a problem of forgetting which git branch I was on and committing my changes to the wrong branch. The best way I have found to &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -108,6 +108,60 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2014/07/23/how-to-get-osx-git-branch-name-in-console/">How to Get OSX Git Branch Name in Console</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-07-23T21:13:52+02:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>9:13 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/hills.jpg" title="How to get OSX git branch name in console" class="banner-img"  /></p>
+
+<p>I have always had a problem of forgetting which git branch I was on and committing my changes to the wrong branch.  The best way I have found to solve this problem is to have the branch name printed in the console prompt.</p>
+
+<p>You can modify the prompt message in OSX by setting the PS1 variable in <code>~/.bash_profile</code></p>
+
+<p>First you need to parse the git branch name by using this function</p>
+
+<figure class='code'><figcaption><span>.bash_profile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">parse_git_branch() {</span>
+</span><span class='line'><span class="go">    git branch 2&gt; /dev/null | sed -e &#39;/^[^*]/d&#39; -e &#39;s/* \(.*\)/ (\1)/&#39;</span>
+</span><span class='line'><span class="go">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now you need to set your PS1 variable so that it shows the parse branch I added a bit of color to mine so I can see it more clearly.</p>
+
+<figure class='code'><figcaption><span>.bash_profile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">export PS1=&quot;\# \u \w\[\033[32m\]\$(parse_git_branch)\[\033[00m\] $ &quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Cheers.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2014/07/05/web-consulting/">How to Start Web Consulting</a></h1>
     
     
@@ -117,7 +171,7 @@
 
 
 
-<time class='entry-date' datetime='2014-07-05T08:46:57-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:46 am</span></time>
+<time class='entry-date' datetime='2014-07-05T17:46:57+02:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:46 pm</span></time>
         
         
       </p>
@@ -179,7 +233,7 @@
 
 
 
-<time class='entry-date' datetime='2014-06-21T14:31:51-07:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>2:31 pm</span></time>
+<time class='entry-date' datetime='2014-06-21T23:31:51+02:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>11:31 pm</span></time>
         
         
       </p>
@@ -217,7 +271,7 @@
 
 
 
-<time class='entry-date' datetime='2014-06-13T13:42:01-07:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:42 pm</span></time>
+<time class='entry-date' datetime='2014-06-13T22:42:01+02:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:42 pm</span></time>
         
         
       </p>
@@ -270,7 +324,7 @@
 
 
 
-<time class='entry-date' datetime='2014-06-05T10:08:29-07:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:08 am</span></time>
+<time class='entry-date' datetime='2014-06-05T19:08:29+02:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:08 pm</span></time>
         
         
       </p>
@@ -351,7 +405,7 @@
 
 
 
-<time class='entry-date' datetime='2014-06-04T14:50:34-07:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:50 pm</span></time>
+<time class='entry-date' datetime='2014-06-04T23:50:34+02:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>11:50 pm</span></time>
         
         
       </p>
@@ -400,7 +454,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/05/31/twitter-bot-on-heroku/">Twitter Bot on Heroku</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/06/01/twitter-bot-on-heroku/">Twitter Bot on Heroku</a></h1>
     
     
       <p class="meta">
@@ -409,7 +463,7 @@
 
 
 
-<time class='entry-date' datetime='2014-05-31T21:05:08-07:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>9:05 pm</span></time>
+<time class='entry-date' datetime='2014-06-01T06:05:08+02:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>6:05 am</span></time>
         
         
       </p>
@@ -608,7 +662,7 @@
 
 
 
-<time class='entry-date' datetime='2014-05-31T11:22:47-07:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>11:22 am</span></time>
+<time class='entry-date' datetime='2014-05-31T20:22:47+02:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>8:22 pm</span></time>
         
         
       </p>
@@ -806,7 +860,7 @@
 
 
 
-<time class='entry-date' datetime='2014-05-17T08:14:24-07:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:14 am</span></time>
+<time class='entry-date' datetime='2014-05-17T17:14:24+02:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:14 pm</span></time>
         
         
       </p>
@@ -962,7 +1016,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/05/16/gem-configuration-defaults/">Gem Configuration Defaults</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/05/17/gem-configuration-defaults/">Gem Configuration Defaults</a></h1>
     
     
       <p class="meta">
@@ -971,7 +1025,7 @@
 
 
 
-<time class='entry-date' datetime='2014-05-16T19:48:09-07:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:48 pm</span></time>
+<time class='entry-date' datetime='2014-05-17T04:48:09+02:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:48 am</span></time>
         
         
       </p>
@@ -1045,100 +1099,6 @@ lowing us to not need to supply the consumer key every time we want to create a 
 
 
 <p>Since the consumer key never changes across calls, this keeps our code that much simpler.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/05/15/custom-environements-with-rails-4/">Custom Environments With Rails 4</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-05-15T07:41:53-07:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:41 am</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Sometimes you may need to setup custom environments beyond the standard <code>test</code>, <code>development</code>, and <code>production</code> that rails comes with.  If you would like to have your staging server configured a little big differently than test and production (maybe higher logging levels for example), then you would need to create another environment for these configurations called <code>staging</code>.</p>
-
-<h2>Changes, Additions and Edits</h2>
-
-<h3>Gemfile</h3>
-
-<p>In your <code>Gemfile</code>, you should add your new environment to the necessary groups.  If your environment is similar to <code>production</code>, you should add <code>staging</code> next to everywhere you see the <code>production</code> group lie below.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">group</span> <span class="ss">:development</span><span class="p">,</span> <span class="ss">:staging</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;log4r&#39;</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<h3>Update config/database.yml</h3>
-
-<p>You should create a new environment in your database.yml file.  This will look something like this</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">default</span><span class="p-Indicator">:</span> <span class="nl">&amp;default</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">adapter</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">postgresql</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">pool</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">5</span>
-</span><span class='line'>
-</span><span class='line'><span class="l-Scalar-Plain">staging</span><span class="p-Indicator">:</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">&lt;&lt;</span><span class="p-Indicator">:</span> <span class="nv">*default</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">w2w-staging</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Environment Config</h3>
-
-<p>In <code>config/environments/</code>, you should add <code>staging.rb</code>.  To make things easy, copy an existing environment that is most similar to the new one you are creating and make the adjustments you need from there.</p>
-
-<h3>Update Secrets.yml</h3>
-
-<p>If you are running rails 4.1, you will also need to update your <code>secrets.yml</code> file to handle new the new environment</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">staging</span><span class="p-Indicator">:</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">&lt;&lt;</span><span class="p-Indicator">:</span> <span class="nv">*default</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">secret_key_base</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">secrets_are_secretive_SALFJASFLKSAJFLSAFJOWERULSADFJLKSAFJD</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Misc</h3>
-
-<p>Do a quick find on your project directory for any environment specific code being run.  Look for things like <code>Rails.env.</code> and add your new environment to these conditionals like below</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="no">Rails</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">test?</span> <span class="o">||</span> <span class="no">Rails</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">development?</span> <span class="o">||</span> <span class="no">Rails</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">staging?</span>
-</span></code></pre></td></tr></table></div></figure>
-
 </div>
   
   
