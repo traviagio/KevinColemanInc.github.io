@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-<img src="/images/czech1.JPG" title="Adding search to Atlanta Startup Jobs" class="banner-img"/>
+<img src="/images/czech_1.jpg" title="Adding search to Atlanta Startup Jobs" class="banner-img"/>
 
 
 I found a few minutes today to finally add search to [Atlanta Startup Jobs](http://atlantastartupjobs.com).  I had been putting it off for a long time, thinking it would be a long laborous process, but I found it was shockingly easy.  Here is what I did:
