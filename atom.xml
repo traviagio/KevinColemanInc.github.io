@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Coleman]]></title>
   <link href="http://www.kcoleman.me/atom.xml" rel="self"/>
   <link href="http://www.kcoleman.me/"/>
-  <updated>2015-06-06T08:51:39-04:00</updated>
+  <updated>2015-06-06T08:56:31-04:00</updated>
   <id>http://www.kcoleman.me/</id>
   <author>
     <name><![CDATA[Kevin Coleman]]></name>
@@ -18,7 +18,7 @@
     <link href="http://www.kcoleman.me/blog/2015/06/06/adding-search-to-atlanta-startup-jobs/"/>
     <updated>2015-06-06T08:23:14-04:00</updated>
     <id>http://www.kcoleman.me/blog/2015/06/06/adding-search-to-atlanta-startup-jobs</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/czech1.jpg" title="Adding search to Atlanta Startup Jobs" class="banner-img"/></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/czech_1.jpg" title="Adding search to Atlanta Startup Jobs" class="banner-img"/></p>
 
 <p>I found a few minutes today to finally add search to <a href="http://atlantastartupjobs.com">Atlanta Startup Jobs</a>.  I had been putting it off for a long time, thinking it would be a long laborous process, but I found it was shockingly easy.  Here is what I did:</p>
 
