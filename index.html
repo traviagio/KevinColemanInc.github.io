@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="A huge problem with ruby on rails apps is many of them end with overly cluttered models and controller methods. An attempt to solve this would be to &hellip;">
+  <meta name="description" content="I found a few minutes today to finally add search to Atlanta Startup Jobs. I had been putting it off for a long time, thinking it would be a long &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -108,6 +108,80 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2015/06/06/adding-search-to-atlanta-startup-jobs/">Adding Search to Atlanta Startup Jobs</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-06-06T08:23:14-04:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:23 am</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/czech1.jpg" title="Adding search to Atlanta Startup Jobs" class="banner-img"/></p>
+
+<p>I found a few minutes today to finally add search to <a href="http://atlantastartupjobs.com">Atlanta Startup Jobs</a>.  I had been putting it off for a long time, thinking it would be a long laborous process, but I found it was shockingly easy.  Here is what I did:</p>
+
+<h2>Install pg_search</h2>
+
+<p>The two leading gems that drive postgress fulltext search are <a href="https://github.com/Casecommons/pg_search">pg_search</a> and <a href="https://github.com/textacular/textacular">textacular</a>.  I went with pg_search, because it has more love on github.</p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;pg_search&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and run bundle</p>
+
+<figure class='code'><figcaption><span>console</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  bundle</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Modify model</h2>
+
+<p>For the models you want to search, add <code>include PgSearch</code> to the top of them in order to enable the pg_search DSL.  Since <a href="http://atlantastartupjobs.com">Atlanta Startup Jobs</a> only has one searchable model (job_posts), I include this line in the model:</p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">pg_search_scope</span> <span class="ss">:search_generic</span><span class="p">,</span> <span class="ss">:against</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:title</span><span class="p">,</span> <span class="ss">:company_name</span><span class="p">,</span> <span class="ss">:description</span><span class="o">]</span><span class="p">,</span> <span class="ss">:order_within_rank</span> <span class="o">=&gt;</span> <span class="s2">&quot;created_at DESC&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I included the &ldquo;order_within_rank&rdquo;, to protect the order across different pages, since postgres randomly ranks items with equivalent rank score.</p>
+
+<h2>Modify controller</h2>
+
+<p>Here is what my search action looks like in my controller code:</p>
+
+<figure class='code'><figcaption><span>job_posts_controller</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">search</span>
+</span><span class='line'>  <span class="vi">@job_posts</span> <span class="o">=</span> <span class="no">JobPost</span><span class="o">.</span><span class="n">search_generic</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">page</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">render</span> <span class="ss">:index</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2015/06/03/rails-patterns-builders-and-models/">Rails Patterns: Builders and Models</a></h1>
     
     
@@ -117,7 +191,7 @@
 
 
 
-<time class='entry-date' datetime='2015-06-03T09:23:38+02:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>9:23 am</span></time>
+<time class='entry-date' datetime='2015-06-03T03:23:38-04:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>3:23 am</span></time>
         
         
       </p>
@@ -259,7 +333,7 @@
 
 
 
-<time class='entry-date' datetime='2015-04-07T10:36:51+02:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:36 am</span></time>
+<time class='entry-date' datetime='2015-04-07T04:36:51-04:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:36 am</span></time>
         
         
       </p>
@@ -320,7 +394,7 @@
 
 
 
-<time class='entry-date' datetime='2015-03-12T20:46:43+01:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:46 pm</span></time>
+<time class='entry-date' datetime='2015-03-12T15:46:43-04:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:46 pm</span></time>
         
         
       </p>
@@ -492,7 +566,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2015/01/13/atlanta-startup-jobs/">Atlanta Startup Jobs - Scratch Your Own Itch</a></h1>
+      <h1 class="entry-title"><a href="/blog/2015/01/12/atlanta-startup-jobs/">Atlanta Startup Jobs - Scratch Your Own Itch</a></h1>
     
     
       <p class="meta">
@@ -501,7 +575,7 @@
 
 
 
-<time class='entry-date' datetime='2015-01-13T02:52:21+01:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:52 am</span></time>
+<time class='entry-date' datetime='2015-01-12T20:52:21-05:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:52 pm</span></time>
         
         
       </p>
@@ -551,7 +625,7 @@
 
 
 
-<time class='entry-date' datetime='2015-01-08T19:11:59+01:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:11 pm</span></time>
+<time class='entry-date' datetime='2015-01-08T13:11:59-05:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:11 pm</span></time>
         
         
       </p>
@@ -602,7 +676,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/10/27/how-to-win-a-hackathon/">How to Win a Hackathon</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/10/26/how-to-win-a-hackathon/">How to Win a Hackathon</a></h1>
     
     
       <p class="meta">
@@ -611,7 +685,7 @@
 
 
 
-<time class='entry-date' datetime='2014-10-27T01:14:40+01:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:14 am</span></time>
+<time class='entry-date' datetime='2014-10-26T20:14:40-04:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:14 pm</span></time>
         
         
       </p>
@@ -719,7 +793,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/10/10/one-rails-app-two-web-applications/">One Rails App Two Web Applications</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/10/09/one-rails-app-two-web-applications/">One Rails App Two Web Applications</a></h1>
     
     
       <p class="meta">
@@ -728,7 +802,7 @@
 
 
 
-<time class='entry-date' datetime='2014-10-10T02:11:45+02:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:11 am</span></time>
+<time class='entry-date' datetime='2014-10-09T20:11:45-04:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:11 pm</span></time>
         
         
       </p>
@@ -888,7 +962,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/10/08/angularjs-rails-and-seo-part-2/">Angularjs Rails and SEO Part 2</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/10/07/angularjs-rails-and-seo-part-2/">Angularjs Rails and SEO Part 2</a></h1>
     
     
       <p class="meta">
@@ -897,7 +971,7 @@
 
 
 
-<time class='entry-date' datetime='2014-10-08T02:26:43+02:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:26 am</span></time>
+<time class='entry-date' datetime='2014-10-07T20:26:43-04:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:26 pm</span></time>
         
         
       </p>
@@ -990,7 +1064,7 @@
 
 
 
-<time class='entry-date' datetime='2014-10-03T18:05:45+02:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>6:05 pm</span></time>
+<time class='entry-date' datetime='2014-10-03T12:05:45-04:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>12:05 pm</span></time>
         
         
       </p>
@@ -1214,66 +1288,6 @@
 <p>Essentially this script takes in a URL, loads the page, and then waits for the flag to be set.  If the flag takes longer than 30s to be set, it bails and just renders what it has.  If you are on Heroku, you may need to shorten this flag to 15s, because <a href="https://devcenter.heroku.com/articles/request-timeout">Heroku has a request timeout</a> of 30s.</p>
 
 <p><a href="/blog/2014/10/07/angularjs-rails-and-seo-part-2/">Part 2</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/07/28/new-house/">Buying My First Real Estate Investment</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-07-28T18:46:17+02:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:46 pm</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/city-houses.jpg" title="First Real Estate Investment Property" class="banner-img"  /></p>
-
-<p>This week I will be closing on my first house that I plan on renovating and selling in the next few months.  I have been looking for a low-end flip for over a year now and I finally found one via <a href="http://networthrealtyusa.com/">NetWorth Reality</a> in Atlanta.</p>
-
-<p>Throughout this year long process, I have learned tons about the Atlanta real estate market and in general what to look for in purchasing an investment property.</p>
-
-<p>My criteria for my first purchase has been:</p>
-
-<ol>
-<li>The property value + $15k (for wiggle room) must be within my budget</li>
-<li>No seriously large repairs should be necessary. (roof and foundation need to be in good condition)</li>
-<li>Near my residence</li>
-<li>Low crime neighborhood.</li>
-<li>Zoned for good schools.</li>
-<li><a href="http://Zillow.com">Zillow</a> and comparable houses needed agree on the value of the home*.</li>
-<li>Best-case estimated profit needs to be at least $15,000.</li>
-<li>Must be able to be sold quickly at a higher value</li>
-<li>No condos (typically have high Homeowners Association fees and renting restrictions)</li>
-</ol>
-
-
-<p>The house I am buying meets most of the criteria, although its location is about 30 minutes away one direction.  As a developer that sells his time, I am not excited about having to drive that on a weekly (daily?!) basis, but I plan on outsourcing as much of the property management that I can.</p>
-
-<p>Once the repairs are finished on the property, I want to sell this property as soon as I can, because I don&rsquo;t have time to manage renters or property repairs.  While I already have interest from one person to rent from the house,</p>
-
-<p>Hopefully this will be a profitable endeavor, but it could just end up being an expensive learning experience.</p>
-
-<ul>
-<li>While I agree that <a href="http://Zillow.com">Zillow</a> doesn&rsquo;t know what it is talking about when it comes to home values.  I also think that the people buying the homes would not want to purchase a house too far off the price listed online.  The house I bought Zillow thinks is worth $115k and I purchased it for $47k.</li>
-</ul>
-
 </div>
   
   

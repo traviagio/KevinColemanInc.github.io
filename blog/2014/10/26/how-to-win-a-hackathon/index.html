@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Angularjs Rails and SEO Part 2 - Kevin Coleman</title>
+  <title>How to Win a Hackathon - Kevin Coleman</title>
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="This is a continuation post from Angularjs Rails and SEO Part 1. Now we need to configure Ruby on Rails to redirect Google&rsquo;s requests to get &hellip;">
+  <meta name="description" content="I have been to a few hackathons and startup weekends over the last few years and I have a pretty good prize rate (I have placed at more than 50% of &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.kcoleman.me/blog/2014/10/08/angularjs-rails-and-seo-part-2">
+  <link rel="canonical" href="http://www.kcoleman.me/blog/2014/10/26/how-to-win-a-hackathon">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Kevin Coleman" type="application/atom+xml">
@@ -106,7 +106,7 @@
   <header>
     
       
-        <h1 class="entry-title">Angularjs Rails and SEO Part 2</h1>
+        <h1 class="entry-title">How to Win a Hackathon</h1>
       
     
     
@@ -116,7 +116,7 @@
 
 
 
-<time class='entry-date' datetime='2014-10-08T02:26:43+02:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:26 am</span></time>
+<time class='entry-date' datetime='2014-10-26T20:14:40-04:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:14 pm</span></time>
         
         
       </p>
@@ -124,70 +124,94 @@
   </header>
 
 
-<div class="entry-content"><p><img src="/images/beach.jpeg" title="Angularjs Rails and SEO Part 2" class="banner-img"  /></p>
+<div class="entry-content"><p><img src="/images/cooking.jpg" title="How to win a hackathon" class="banner-img"  /></p>
 
-<p>This is a continuation post from <a href="/blog/2014/10/03/angularjs-rails-seo/">Angularjs Rails and SEO Part 1</a>.</p>
+<p>I have been to a few hackathons and startup weekends over the last few years and I have a pretty good prize rate (I have placed at more than 50% of the events).  After my back to back win of the ATT and FinApps hackathons, I want to share my thoughts on what it takes to be a winning team.</p>
 
-<p>Now we need to configure Ruby on Rails to redirect Google&rsquo;s requests to get the non-ajax version of the page.  Google flags requests by replacing the &lsquo;#!&rsquo; in the url with <code>?_escaped_fragment_=</code> so you can know the route it is trying to fetch.</p>
+<p><img src="/images/check.jpg" title="Winning Team at the ATT hackathon" style="display: block; margin-left: auto; margin-right: auto; width:35%;" /></p>
 
-<p>To catch this, we will add a <code>before_filter</code> to the application controller to watch for the <code>_escaped_fragment_</code> parameter.  This could will look like:</p>
+<h1>The best prize is the easiest</h1>
 
-<figure class='code'><figcaption><span>application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
-</span><span class='line'>  <span class="n">protect_from_forgery</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:catch_escaped_fragment</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kp">protected</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">catch_escaped_fragment</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">fragment</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:_escaped_fragment_</span><span class="o">]</span>
-</span><span class='line'>      <span class="c1"># Build the original url</span>
-</span><span class='line'>      <span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">request</span><span class="o">.</span><span class="n">protocol</span><span class="si">}#{</span><span class="n">request</span><span class="o">.</span><span class="n">host_with_port</span><span class="si">}#{</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>      <span class="n">url_with_hash</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">#!</span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:_escaped_fragment_</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="c1"># Render it with the PhantomJS script and return the result</span>
-</span><span class='line'>      <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;phantomjs &#39;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/lib/phantomjs/ember_to_static.js&#39; &#39;</span><span class="si">#{</span><span class="n">url_with_hash</span><span class="si">}</span><span class="s2">&#39; silence&quot;</span>
-</span><span class='line'>      <span class="n">result</span> <span class="o">=</span> <span class="sb">`</span><span class="si">#{</span><span class="n">command</span><span class="si">}</span><span class="sb">`</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">render</span> <span class="ss">text</span><span class="p">:</span> <span class="n">result</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>Your first goal of each event though should be building out your network.  I have met some very interesting individuals (a VC, and awesome developers and designers, etc.) by attending these events.  Meeting other smart and talented like-minded people is infinitely more valuable (and easier to obtain) than any monetary prize.</p>
+
+<p>I try to avoid grouping with people that I already know, because I want to find people I will work with again in the future.  My friends are known variables.  While awesome, I want to see who else is awesome to work with.</p>
+
+<h1>Winning the competition</h1>
+
+<p><img src="/images/att.jpg" title="Winning Team at the ATT hackathon" style="display: block; margin-left: auto; margin-right: auto;" /></p>
+
+<h2>The Team</h2>
+
+<p>First and foremost, as with starting a company, building a software product, or pretty much any other group activity, you need to have a solid team.</p>
+
+<p>There are two types of people on a good Hackathon team: The Coder and The Presenter.</p>
+
+<p>The coders have the easiest job.  They have to develop a working prototype in 18 hours.  Good coders can work independently and solve problems they run into quickly.</p>
+
+<p>Coders have to deliver.  It is more important to have a simple 100% finished product than an advanced 80% finished product.  During the presentation, don&rsquo;t make the judges put on their imagination hats and tell them what you could of done if you <em>insert lame excuse here</em>.</p>
+
+<p>You need one presenter and that person needs to be awesome at public speaking.  Typically they will also provide product development guidance.  The good presenter is just as valuable as a good coder, if not more.</p>
+
+<p>I have seen judges destroy teams without solid presenters during questioning.  Some judges will ask some really hard questions and you have to have someone be able to deliver awesome answers on the fly.</p>
+
+<p>An example of this was at the FinApps hackathon, a judge asked us how we secured our application.</p>
+
+<p>Rather than saying, &ldquo;oh, uhh&hellip; that is a good point. we didn&rsquo;t think of that&rdquo;.  Our presenter said, &ldquo;Our goal for this hackathon was deliver a functioning credit card selector to accomplish one of the goals laid out by the hackathon.  We have strategies for adding security into the project, but it was not a target for our team.&rdquo;</p>
+
+<h2>The Idea</h2>
+
+<p>You need to have an idea that is a tiny bit sexy, flexible, and a lot do-able.</p>
+
+<p>You don&rsquo;t have to bring your own idea, but having one definitely help.  I am not very creative and I typically join other teams.  My first requirement for a team is not if I like their idea, but if I think they have a solid presenter.</p>
+
+<p>I have seen teams enter the competition with an idea, but end up finding out it was physically impossible to execute that idea.  Don&rsquo;t be married to one concept.  13 teams registered for the FinApp&rsquo;s $30,000 prize and only 7 presented.  A big issue was that there wasn&rsquo;t a hardware means of executing their ideas and they ended up going home.</p>
+
+<p>Your idea should easily be understood in 5 minutes or less by a panel of non-technical judges.</p>
+
+<p>Please make sure you have the skillset and the time to execute your idea.  Many teams end up not being able to accomplish anything during a weekend because they were missing a developer, couldn&rsquo;t get it to work, or ran out of time.</p>
+
+<p>I have seen many teams get up there and say &ldquo;hey, everyone reach under your seats and pull out that imagination hat that I put under your seat, because I didn&rsquo;t get anything done this weekend except this 5 min power point presentation.&rdquo;</p>
+
+<h2>Coder Preparation</h2>
+
+<p>Technically you are not allowed to do this before most hackathon events.  Organizers require all work to be at the competition.  But I think there are still a few things you can &lsquo;legally&rsquo; do to help improve your chances of winning.</p>
+
+<p>If you know you are going to work with a certain technology, set up your environment before hand.  Don&rsquo;t go to the hackathon needing to install android studio, ruby on rails, or whatever technology stack you plan on using.  As with any installation, there will be headaches that you should solve before the competition.</p>
+
+<p>If you are working with hardware or an API, make sure your machine can deploy to this hardware before you arrive at the competition.  Many teams loose hours of coding time trying to communicate with a device or API unnecessarily.</p>
+
+<h2>The Presentation</h2>
+
+<p>This is where many teams mess this up.  I have seen some really awesome presentations by people that don&rsquo;t have that impressive of a product and I have seen some terrible presentations by people that could of had a good product.</p>
+
+<p>If you don&rsquo;t have a presenter, please go learn some basic presentation skills.</p>
+
+<h3>Presentation Tips</h3>
+
+<ul>
+<li>Don&rsquo;t go up there to show off source code.</li>
+<li>Focus on what you accomplished, not what you could do if you had the right resources.</li>
+<li>Test your application over and over before presenting.  Don&rsquo;t let it crash!</li>
+<li>The basic format should be
+
+<ul>
+<li>Introduction of members</li>
+<li>Problem you tried to solve</li>
+<li>How you solved the problem</li>
+<li>Demonstration of the prototype</li>
+</ul>
+</li>
+<li>Be funny.  Start of with a Joke or a &ldquo;ask the audience&rdquo; question like &ldquo;How many of you have this problem?&rdquo;</li>
+</ul>
 
 
-<p>This rails application controller code will trigger the phantomjs script we wrote in the previous blog post.  Since it asks to run it in silent mode, we can take the entire log output of the script (which should be the completed AngularJS application) and return that to google.</p>
+<h1>Closing</h1>
 
-<h2>Rails concurrency</h2>
+<p><img src="/images/business_card.jpg" title="Spark Starter Business Card" style="display: block; margin-left: auto; margin-right: auto; width:50%;" /></p>
 
-<p>Because this methodology is blocking the thread request, when phantomjs tries to fetch the angularjs page, the website hangs. Because rails only executes one request at a time, phantomJS&rsquo;s request will sit and wait forever, since the request it is currently in will never finish.   To fix this, you will need to run your server with passenger.  Passenger can handle multiple requests in Ruby.</p>
+<p>Don&rsquo;t forget to bring business cards! Remember this event should be about the networking and not the prize.</p>
 
-<p>Add <code>gem 'passenger'</code> to your Gemfile. Then you can run it like this</p>
-
-<p>and to run the application you can run <code>passenger -p 3000 -a 127.0.0.1</code>  if this is your first time running passenger with rails, you will have to follow an installation script.</p>
-
-<p>Awesome! You are finished.</p>
+<p>Be sure to communicate with everyone you talk with what your skillset is and what you are interested in.  This will help them understand how you can help them in the future (and how they can help you).</p>
 </div>
 
 
@@ -212,7 +236,7 @@
 
 
 
-<time class='entry-date' datetime='2014-10-08T02:26:43+02:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:26 am</span></time>
+<time class='entry-date' datetime='2014-10-26T20:14:40-04:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:14 pm</span></time>
       
       
 
@@ -221,7 +245,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.kcoleman.me/blog/2014/10/08/angularjs-rails-and-seo-part-2/" data-via="KevinColemanInc" data-counturl="http://www.kcoleman.me/blog/2014/10/08/angularjs-rails-and-seo-part-2/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.kcoleman.me/blog/2014/10/26/how-to-win-a-hackathon/" data-via="KevinColemanInc" data-counturl="http://www.kcoleman.me/blog/2014/10/26/how-to-win-a-hackathon/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -232,10 +256,10 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/10/03/angularjs-rails-seo/" title="Previous Post: Angularjs Rails and SEO Part 1">&laquo; Angularjs Rails and SEO Part 1</a>
+        <a class="basic-alignment left" href="/blog/2014/10/09/one-rails-app-two-web-applications/" title="Previous Post: One Rails App Two Web Applications">&laquo; One Rails App Two Web Applications</a>
       
       
-        <a class="basic-alignment right" href="/blog/2014/10/10/one-rails-app-two-web-applications/" title="Next Post: One Rails App Two Web Applications">One Rails App Two Web Applications &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2015/01/08/happybeam/" title="Next Post: SideProject: HappyBeam - Meditate and improve">SideProject: HappyBeam - Meditate and improve &raquo;</a>
       
     </p>
   </footer>

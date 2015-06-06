@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="Sometimes you may need to setup custom environments beyond the standard test, development, and production that rails comes with. If you would like to &hellip;">
+  <meta name="description" content="Recently I have been working on connecting to social media websites via oAuth gems like twitter and koala. I discovered a neat trick for initializing &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -108,6 +108,101 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2014/05/16/gem-configuration-defaults/">Gem Configuration Defaults</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-05-16T22:48:09-04:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:48 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Recently I have been working on connecting to social media websites via oAuth gems like twitter and koala.  I discovered a neat trick for initializing these gems with environment variables so that you don&rsquo;t have to be passing in the variables every time you want to create a new instance of them.</p>
+
+<p>For this example, I am going to use the twitter gem.  Out of the box, its initializer looks like this taken from their docs:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">client</span> <span class="o">=</span> <span class="no">Twitter</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">consumer_key</span>        <span class="o">=</span> <span class="s2">&quot;YOUR_CONSUMER_KEY&quot;</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">consumer_secret</span>     <span class="o">=</span> <span class="s2">&quot;YOUR_CONSUMER_SECRET&quot;</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token</span>        <span class="o">=</span> <span class="s2">&quot;YOUR_ACCESS_TOKEN&quot;</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token_secret</span> <span class="o">=</span> <span class="s2">&quot;YOUR_ACCESS_SECRET&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is pretty clunky if you ask me, especially if you plan on accessing your users data in a variety of different places in your code.  We can make this more DRY by doing setting the consumer key and consumer secret in an initializer override like this</p>
+
+<figure class='code'><figcaption><span>initializers/twitter.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Twitter</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">class_eval</span> <span class="k">do</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize_with_default_settings</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+</span><span class='line'>    <span class="n">options</span><span class="o">[</span><span class="ss">:consumer_key</span><span class="o">]</span> <span class="o">||=</span> <span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">fb_app_id</span>
+</span><span class='line'>    <span class="n">options</span><span class="o">[</span><span class="ss">:consumer_secret</span><span class="o">]</span> <span class="o">||=</span> <span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">fb_secret</span>
+</span><span class='line'>    <span class="n">initialize_without_default_settings</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">alias_method_chain</span> <span class="ss">:initialize</span><span class="p">,</span> <span class="ss">:default_settings</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Using the <a href="http://weblog.rubyonrails.org/2006/4/26/new-in-rails-module-alias_method_chain/">alias_method_chain</a>, we can sneak in some behaviors into the twitter client that weren&rsquo;t originally there, thus allowing us to not need to supply the consumer key every time we want to create a new client.  Now we can do things like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">client</span> <span class="o">=</span> <span class="no">Twitter</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token</span>        <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">access_token</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token_secret</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">access_token_secret</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Since the consumer key never changes across calls, this keeps our code that much simpler.
+lowing us to not need to supply the consumer key every time we want to create a new client.  Now we can do things like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">client</span> <span class="o">=</span> <span class="no">Twitter</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token</span>        <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">access_token</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token_secret</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">access_token_secret</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Since the consumer key never changes across calls, this keeps our code that much simpler.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2014/05/15/custom-environements-with-rails-4/">Custom Environments With Rails 4</a></h1>
     
     
@@ -117,7 +212,7 @@
 
 
 
-<time class='entry-date' datetime='2014-05-15T16:41:53+02:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:41 pm</span></time>
+<time class='entry-date' datetime='2014-05-15T10:41:53-04:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:41 am</span></time>
         
         
       </p>
@@ -211,7 +306,7 @@
 
 
 
-<time class='entry-date' datetime='2014-04-30T18:40:07+02:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:40 pm</span></time>
+<time class='entry-date' datetime='2014-04-30T12:40:07-04:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:40 pm</span></time>
         
         
       </p>
@@ -601,7 +696,7 @@
 
 
 
-<time class='entry-date' datetime='2014-04-16T18:30:31+02:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:30 pm</span></time>
+<time class='entry-date' datetime='2014-04-16T12:30:31-04:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:30 pm</span></time>
         
         
       </p>
@@ -802,7 +897,7 @@
 
 <h3>Quick tip: One gmail for multiple accounts</h3>
 
-<p>If you use gmail, you can use their wild card feature to have different emails that point to your email.  For example my email is <a href="&#109;&#x61;&#105;&#108;&#x74;&#x6f;&#58;&#x63;&#x2e;&#112;&#114;&#x6f;&#x67;&#x72;&#x61;&#x6d;&#101;&#114;&#64;&#x67;&#109;&#x61;&#105;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;&#x2e;">&#99;&#x2e;&#x70;&#x72;&#x6f;&#x67;&#x72;&#x61;&#109;&#101;&#114;&#64;&#103;&#109;&#x61;&#105;&#x6c;&#x2e;&#99;&#x6f;&#x6d;&#x2e;</a>  I can create a different brown paper tickets account with this email <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#x63;&#46;&#112;&#114;&#x6f;&#103;&#114;&#x61;&#x6d;&#x65;&#x72;&#x2b;&#x62;&#x70;&#x74;&#x40;&#x67;&#x6d;&#97;&#105;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;">&#99;&#46;&#112;&#x72;&#x6f;&#103;&#114;&#x61;&#x6d;&#x65;&#x72;&#x2b;&#x62;&#112;&#116;&#64;&#x67;&#x6d;&#x61;&#105;&#108;&#x2e;&#x63;&#111;&#x6d;</a> and all of the emails going to that new email go to my main inbox.  This way I don&rsquo;t have to keep creating emails to make new accounts.  Anything between the + and the @ symbols are ignored in gmail only.</p>
+<p>If you use gmail, you can use their wild card feature to have different emails that point to your email.  For example my email is <a href="&#109;&#97;&#105;&#x6c;&#x74;&#x6f;&#58;&#x63;&#46;&#112;&#114;&#x6f;&#103;&#114;&#x61;&#x6d;&#x65;&#x72;&#x40;&#x67;&#109;&#x61;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;&#46;">&#x63;&#46;&#x70;&#x72;&#111;&#103;&#x72;&#x61;&#109;&#101;&#x72;&#64;&#103;&#x6d;&#97;&#105;&#108;&#x2e;&#x63;&#x6f;&#x6d;&#x2e;</a>  I can create a different brown paper tickets account with this email <a href="&#x6d;&#97;&#105;&#x6c;&#116;&#111;&#x3a;&#99;&#46;&#112;&#114;&#x6f;&#x67;&#114;&#x61;&#109;&#x65;&#x72;&#43;&#x62;&#x70;&#116;&#64;&#x67;&#109;&#97;&#x69;&#108;&#x2e;&#99;&#x6f;&#x6d;">&#99;&#x2e;&#112;&#114;&#x6f;&#x67;&#114;&#97;&#x6d;&#101;&#x72;&#43;&#98;&#x70;&#x74;&#64;&#103;&#x6d;&#x61;&#105;&#108;&#x2e;&#x63;&#111;&#x6d;</a> and all of the emails going to that new email go to my main inbox.  This way I don&rsquo;t have to keep creating emails to make new accounts.  Anything between the + and the @ symbols are ignored in gmail only.</p>
 
 <h3>Lets scale this further (8 to infinite and beyond!)</h3>
 
@@ -833,7 +928,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/03/24/how-to-make-a-gem/">Extending Active Record in Rails 4.1</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/03/23/how-to-make-a-gem/">Extending Active Record in Rails 4.1</a></h1>
     
     
       <p class="meta">
@@ -842,7 +937,7 @@
 
 
 
-<time class='entry-date' datetime='2014-03-24T04:40:48+01:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:40 am</span></time>
+<time class='entry-date' datetime='2014-03-23T23:40:48-04:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>11:40 pm</span></time>
         
         
       </p>
@@ -1043,7 +1138,7 @@
 
 
 
-<time class='entry-date' datetime='2014-03-18T06:49:55+01:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:49 am</span></time>
+<time class='entry-date' datetime='2014-03-18T01:49:55-04:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:49 am</span></time>
         
         
       </p>
@@ -1279,7 +1374,7 @@
 
 
 
-<time class='entry-date' datetime='2014-03-11T18:05:11+01:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:05 pm</span></time>
+<time class='entry-date' datetime='2014-03-11T13:05:11-04:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:05 pm</span></time>
         
         
       </p>
@@ -1432,7 +1527,7 @@
 
 
 
-<time class='entry-date' datetime='2014-02-14T07:21:15+01:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:21 am</span></time>
+<time class='entry-date' datetime='2014-02-14T01:21:15-05:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:21 am</span></time>
         
         
       </p>

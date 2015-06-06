@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>One Rails App Two Web Applications - Kevin Coleman</title>
+  <title>Gem Configuration Defaults - Kevin Coleman</title>
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="When building a rails application, sometimes it is quicker to build one code base that is shared on two completely different frontend applications. &hellip;">
+  <meta name="description" content="Recently I have been working on connecting to social media websites via oAuth gems like twitter and koala. I discovered a neat trick for initializing &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.kcoleman.me/blog/2014/10/10/one-rails-app-two-web-applications">
+  <link rel="canonical" href="http://www.kcoleman.me/blog/2014/05/16/gem-configuration-defaults">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Kevin Coleman" type="application/atom+xml">
@@ -106,7 +106,7 @@
   <header>
     
       
-        <h1 class="entry-title">One Rails App Two Web Applications</h1>
+        <h1 class="entry-title">Gem Configuration Defaults</h1>
       
     
     
@@ -116,7 +116,7 @@
 
 
 
-<time class='entry-date' datetime='2014-10-10T02:11:45+02:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:11 am</span></time>
+<time class='entry-date' datetime='2014-05-16T22:48:09-04:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:48 pm</span></time>
         
         
       </p>
@@ -124,44 +124,28 @@
   </header>
 
 
-<div class="entry-content"><p><img src="/images/mountains.jpeg" title="One Rails App Two Web Applications" class="banner-img"  /></p>
+<div class="entry-content"><p>Recently I have been working on connecting to social media websites via oAuth gems like twitter and koala.  I discovered a neat trick for initializing these gems with environment variables so that you don&rsquo;t have to be passing in the variables every time you want to create a new instance of them.</p>
 
-<p>When building a rails application, sometimes it is quicker to build one code base that is shared on two completely different frontend applications.  I am going to discuss the design approaches I used to segregate the two rails websites within a single rails application base.</p>
+<p>For this example, I am going to use the twitter gem.  Out of the box, its initializer looks like this taken from their docs:</p>
 
-<h2>Configuring the Front End</h2>
-
-<p>My first &lsquo;trick&rsquo; is to build the system such that all interactions are run through an RESTful API.  This gives one surface area for applications (front end apps or mobile or whatever) and it reduces the amount of duplication that maybe experienced across the two different websites.</p>
-
-<p>For my projects, I lean towards AngularJS, mainly because there is a strong community backing the technology, not to mention this is one of Google&rsquo;s babies.</p>
-
-<p>Both of these websites will have a unique look and feel as well as style sheets and html designs.</p>
-
-<h3>Break apart the CSS files</h3>
-
-<p>I divided my assets/stylesheets folder to look like this:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>  assets/stylesheets/application.css
-</span><span class='line'>  assets/stylesheets/app1/app1.css
-</span><span class='line'>  assets/stylesheets/app2/app2.css</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>application.css</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="c">/*</span>
-</span><span class='line'><span class="c"> *= require_self</span>
-</span><span class='line'><span class="c"> */</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">client</span> <span class="o">=</span> <span class="no">Twitter</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">consumer_key</span>        <span class="o">=</span> <span class="s2">&quot;YOUR_CONSUMER_KEY&quot;</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">consumer_secret</span>     <span class="o">=</span> <span class="s2">&quot;YOUR_CONSUMER_SECRET&quot;</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token</span>        <span class="o">=</span> <span class="s2">&quot;YOUR_ACCESS_TOKEN&quot;</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token_secret</span> <span class="o">=</span> <span class="s2">&quot;YOUR_ACCESS_SECRET&quot;</span>
+</span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Note how I removed the standard <code>require_tree .</code> line to prevent it from auto loading the entire project.  I just want it to load global attributes for the two applications.</p>
+<p>This is pretty clunky if you ask me, especially if you plan on accessing your users data in a variety of different places in your code.  We can make this more DRY by doing setting the consumer key and consumer secret in an initializer override like this</p>
 
-<figure class='code'><figcaption><span>app1.css.scss</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>initializers/twitter.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -170,100 +154,42 @@
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="k">@import</span> <span class="s2">&quot;compass/reset&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;compass&quot;</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Twitter</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">class_eval</span> <span class="k">do</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize_with_default_settings</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+</span><span class='line'>    <span class="n">options</span><span class="o">[</span><span class="ss">:consumer_key</span><span class="o">]</span> <span class="o">||=</span> <span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">fb_app_id</span>
+</span><span class='line'>    <span class="n">options</span><span class="o">[</span><span class="ss">:consumer_secret</span><span class="o">]</span> <span class="o">||=</span> <span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">fb_secret</span>
+</span><span class='line'>    <span class="n">initialize_without_default_settings</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/variables&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/typography&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/footer&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/alerts&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/buttons&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/sprites&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/navigation&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/modals&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/framework_and_overrides&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/pages/bootstrap_override&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/pages/questions&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/pages/content&quot;</span>
+</span><span class='line'>  <span class="n">alias_method_chain</span> <span class="ss">:initialize</span><span class="p">,</span> <span class="ss">:default_settings</span>
+</span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Here I am explicitly including the app1.css resources in app1.</p>
-
-<p>application.css will include styling that is shared between the two applications.  An example, might be your frameworks like bootstrap.</p>
-
-<p>appN.css will include the styles that are unique to your web application.  You should create an /assets/stylesheets/app1/ folder to house all of your style sheets for that specific app.</p>
-
-<p>In my layouts view, you will only want to be loading app1 and application when a user requests an app1 website and app2 and application when the user requests an app2 website.</p>
-
-<p>By checking the request host, you can determine the domain the user is on you can decide which css files need to be delivered to the client.  The host check should be offloaded to a helper method that would like:</p>
+<p>Using the <a href="http://weblog.rubyonrails.org/2006/4/26/new-in-rails-module-alias_method_chain/">alias_method_chain</a>, we can sneak in some behaviors into the twitter client that weren&rsquo;t originally there, thus allowing us to not need to supply the consumer key every time we want to create a new client.  Now we can do things like this:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">def</span> <span class="nf">app1?</span>
-</span><span class='line'>    <span class="s1">&#39;app1.com&#39;</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">host</span>
-</span><span class='line'>  <span class="k">end</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">client</span> <span class="o">=</span> <span class="no">Twitter</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token</span>        <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">access_token</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token_secret</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">access_token_secret</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>In the rails views layout folder, you only include the style sheets that are used</p>
+<p>Since the consumer key never changes across calls, this keeps our code that much simpler.
+lowing us to not need to supply the consumer key every time we want to create a new client.  Now we can do things like this:</p>
 
-<figure class='code'><figcaption><span>layout.html.slim</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">==</span> <span class="n">stylesheet_link_tag</span> <span class="s2">&quot;application&quot;</span><span class="p">,</span> <span class="ss">:media</span> <span class="o">=&gt;</span> <span class="s1">&#39;all&#39;</span>
-</span><span class='line'><span class="o">-</span> <span class="k">if</span> <span class="n">app1?</span>
-</span><span class='line'>  <span class="o">==</span> <span class="n">stylesheet_link_tag</span> <span class="s2">&quot;app1&quot;</span><span class="p">,</span> <span class="ss">:media</span> <span class="o">=&gt;</span> <span class="s1">&#39;all&#39;</span>
-</span><span class='line'><span class="o">-</span> <span class="k">elsif</span> <span class="n">app2?</span>
-</span><span class='line'>  <span class="o">==</span> <span class="n">stylesheet_link_tag</span> <span class="s2">&quot;app2&quot;</span><span class="p">,</span> <span class="ss">:media</span> <span class="o">=&gt;</span> <span class="s1">&#39;all&#39;</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">client</span> <span class="o">=</span> <span class="no">Twitter</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token</span>        <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">access_token</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token_secret</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">access_token_secret</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>You need to tell rails to precompile these new css files</p>
-
-<figure class='code'><figcaption><span>config/initializers/assets.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">precompile</span> <span class="o">+=</span> <span class="sx">%w( app1.css app2.css )</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Javascript Divorce</h3>
-
-<p>You can use a similar technique to break up your javascript files into two projects</p>
-
-<figure class='code'><figcaption><span>layout.html.slim</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="o">==</span> <span class="n">javascript_include_tag</span> <span class="s1">&#39;application&#39;</span>
-</span><span class='line'>  <span class="o">-</span> <span class="k">if</span> <span class="n">app1?</span>
-</span><span class='line'>    <span class="o">==</span> <span class="n">javascript_include_tag</span> <span class="s1">&#39;app1&#39;</span>
-</span><span class='line'>  <span class="o">-</span> <span class="k">elsif</span> <span class="n">app2?</span>
-</span><span class='line'>    <span class="o">==</span> <span class="n">javascript_include_tag</span> <span class="s1">&#39;app2&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Don&rsquo;t forget to tell rails to precompile these new assets.</p>
-
-<figure class='code'><figcaption><span>config/initializers/assets.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">precompile</span> <span class="o">+=</span> <span class="sx">%w( app1.js app2.js )</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Backend</h2>
-
-<p>If you want to turn certain features on and off for certain applications, you should use the <a href="https://github.com/FetLife/rollout">rollout gem</a>.  It is a great tool for enabling and disabling features on the fly, or just completely locking up certain parts of the application.</p>
+<p>Since the consumer key never changes across calls, this keeps our code that much simpler.</p>
 </div>
 
 
@@ -288,7 +214,7 @@
 
 
 
-<time class='entry-date' datetime='2014-10-10T02:11:45+02:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:11 am</span></time>
+<time class='entry-date' datetime='2014-05-16T22:48:09-04:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:48 pm</span></time>
       
       
 
@@ -297,7 +223,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.kcoleman.me/blog/2014/10/10/one-rails-app-two-web-applications/" data-via="KevinColemanInc" data-counturl="http://www.kcoleman.me/blog/2014/10/10/one-rails-app-two-web-applications/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.kcoleman.me/blog/2014/05/16/gem-configuration-defaults/" data-via="KevinColemanInc" data-counturl="http://www.kcoleman.me/blog/2014/05/16/gem-configuration-defaults/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -308,10 +234,10 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/10/08/angularjs-rails-and-seo-part-2/" title="Previous Post: Angularjs Rails and SEO Part 2">&laquo; Angularjs Rails and SEO Part 2</a>
+        <a class="basic-alignment left" href="/blog/2014/05/15/custom-environements-with-rails-4/" title="Previous Post: Custom Environments with Rails 4">&laquo; Custom Environments with Rails 4</a>
       
       
-        <a class="basic-alignment right" href="/blog/2014/10/27/how-to-win-a-hackathon/" title="Next Post: How to win a hackathon">How to win a hackathon &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2014/05/17/tagging-models/" title="Next Post: Tagging Models">Tagging Models &raquo;</a>
       
     </p>
   </footer>
