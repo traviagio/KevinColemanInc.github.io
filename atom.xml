@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Coleman]]></title>
   <link href="http://www.kcoleman.me/atom.xml" rel="self"/>
   <link href="http://www.kcoleman.me/"/>
-  <updated>2015-06-10T22:16:56-07:00</updated>
+  <updated>2015-06-11T07:40:04-07:00</updated>
   <id>http://www.kcoleman.me/</id>
   <author>
     <name><![CDATA[Kevin Coleman]]></name>
@@ -84,7 +84,7 @@
 
 <p>Another sweet trick you can do for your side project websites is to use <a href="http://cloudflare.com">Cloudflare</a> to deliver valid SSL certificates for your projects.  From an SEO perspective, google loves SSL and from a safety and privacy perspective users love SSL.  You can read up on how to do with <a href="https://www.benburwell.com/posts/configuring-cloudflare-universal-ssl/">here</a>.</p>
 
-<p>It took me 15 minutes to configure <a href="http://www.kcoleman.me/">kcoleman.me</a> and <a href="AtlantaStartupJobs.com">AtlantaStartupJobs.com</a> to be behind Cloudflare.</p>
+<p>It took me 15 minutes to configure <a href="http://www.kcoleman.me/">kcoleman.me</a> and <a href="http://AtlantaStartupJobs.com">AtlantaStartupJobs.com</a> to be behind Cloudflare.</p>
 ]]></content>
   </entry>
   
@@ -1307,7 +1307,7 @@
 
 <p>I work remotely.  My day consists of waking up, working, going to Publix for food, saying hello to the checkout lady and then returning home for more work.  It is relationships with other people that <a href="http://money.usnews.com/money/personal-finance/articles/2012/03/15/why-good-friends-make-you-happy">lead to happy</a> and successful lives.</p>
 
-<p>While I can function completely fine by working from my home office, I need to get out of the house.  I need to connect with other people to build a strong business network.  For me, I build these relationships through my local <a href="http://www.meetup.com/find/events/?keywords=programming">programming meetups</a>, attending <a href="http://startupweekend.org/">startup weekends</a>, or any <a href="startupgossip.com">other start up events</a>.</p>
+<p>While I can function completely fine by working from my home office, I need to get out of the house.  I need to connect with other people to build a strong business network.  For me, I build these relationships through my local <a href="http://www.meetup.com/find/events/?keywords=programming">programming meetups</a>, attending <a href="http://startupweekend.org/">startup weekends</a>, or any <a href="http://startupgossip.com">other start up events</a>.</p>
 
 <h2>Keep coding</h2>
 
