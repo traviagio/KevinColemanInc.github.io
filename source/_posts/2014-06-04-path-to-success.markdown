@@ -16,7 +16,7 @@ After talking with many other successful entrepreneurs, I find that everyone has
 ## Get out of the house
 I work remotely.  My day consists of waking up, working, going to Publix for food, saying hello to the checkout lady and then returning home for more work.  It is relationships with other people that [lead to happy](http://money.usnews.com/money/personal-finance/articles/2012/03/15/why-good-friends-make-you-happy) and successful lives.  
 
-While I can function completely fine by working from my home office, I need to get out of the house.  I need to connect with other people to build a strong business network.  For me, I build these relationships through my local [programming meetups](http://www.meetup.com/find/events/?keywords=programming), attending [startup weekends](http://startupweekend.org/), or any [other start up events](startupgossip.com).
+While I can function completely fine by working from my home office, I need to get out of the house.  I need to connect with other people to build a strong business network.  For me, I build these relationships through my local [programming meetups](http://www.meetup.com/find/events/?keywords=programming), attending [startup weekends](http://startupweekend.org/), or any [other start up events](http://startupgossip.com).
 
 ## Keep coding
 My day job is freelance coding rails.  I spent 8-10 hours sitting on my computer developing models, controllers, and whatever else my clients need to keep cashflow coming in, but that is boring.  I need to keep my skills sharp and balanced.  

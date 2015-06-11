@@ -9,7 +9,7 @@ footer: true
 
 # Jeff Coleman’s Laws and Management Rules
 
-My grandfather, Jeff Coleman, started Coleman Research back in the 1980s, it was eventually sold to [L3 Communications](http://www.coleman-aerospace.com/about.htm) in the mid-90s.  As part of his legacy, he wrote a list of laws and management rules on how to run a successful business.  My father, Michael Coleman, took these rules and started Coleman Technologies, Inc. a company focused primarily on networking and VoIP.  They also had some other interesting products like their GPS tracking units for the police to use on suspects.  CTI eventually becaome part of [Presidio](www.presidio.com), a much larger VoIP and networking provider.
+My grandfather, Jeff Coleman, started Coleman Research back in the 1980s, it was eventually sold to [L3 Communications](http://www.coleman-aerospace.com/about.htm) in the mid-90s.  As part of his legacy, he wrote a list of laws and management rules on how to run a successful business.  My father, Michael Coleman, took these rules and started Coleman Technologies, Inc. a company focused primarily on networking and VoIP.  They also had some other interesting products like their GPS tracking units for the police to use on suspects.  CTI eventually becaome part of [Presidio](https://www.presidio.com), a much larger VoIP and networking provider.
 
 I think they serve as an excellent compass.  Seeing as these rules have provided a successful heading in these two business, I look to them for guidance as well.
 
