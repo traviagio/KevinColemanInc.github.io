@@ -21,7 +21,7 @@ While I can function completely fine by working from my home office, I need to g
 ## Keep coding
 My day job is freelance coding rails.  I spent 8-10 hours sitting on my computer developing models, controllers, and whatever else my clients need to keep cashflow coming in, but that is boring.  I need to keep my skills sharp and balanced.  
 
-Great! I know ruby on rails really well, but I want to be good at lots of different tools, because I have no idea what skills I will need in the future.  That is why I play with different frameworks like [NodeJS](/blog/2014/04/30/nodejs-chat-guide/) or [AngularJS](/blog/2014/03/18/reporting-with-rails-part-1/).
+Great! I know ruby on rails really well, but I want to be good at lots of different tools, because I have no idea what skills I will need in the future.  That is why I play with different frameworks like [NodeJS](/blog/2014/04/30/nodejs-chat-guide/) or [AngularJS](blog/2014/03/11/reporting-with-rails-p1/).
 
 ## Stay focused on your goals
 I attended the professional speakers [Toast Master's](http://www.toastmasters.org/) group a few months ago and one of the speakers was in the process of writing a "self-help guide to success" book.  Her name and the book’s escapes me, but she had an interesting technique for staying focused on life.  Every morning, write your goals in a journal.  This starts your day off thinking about what you want to accomplish and keeps it focused on detecting signals that may help you accomplish your goals.
