@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="I found a few minutes today to finally add search to Atlanta Startup Jobs. I had been putting it off for a long time, thinking it would be a long &hellip;">
+  <meta name="description" content="With Heroku&rsquo;s latest pricing restructure announcement, I decided it was time to re-evaluate my side-project hosting strategies. Historically, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -108,6 +108,102 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2015/06/10/hosting-side-projects/">Hosting Side Projects for Free</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-06-10T19:33:59-07:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:33 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/czech_2.jpg" title="Hosting Side Projects for Free" class="banner-img img-responsive"/></p>
+
+<p>With <a href="https://blog.heroku.com/archives/2015/5/7/new-dyno-types-public-beta">Heroku&rsquo;s latest pricing restructure announcement</a>, I decided it was time to re-evaluate my <a href="/projects">side-project</a> hosting strategies.  Historically, <a href="http://heroku.com">Heroku</a> has been my go to as a hosting provider for my various rails application endeavors, because it is so easy to setup and, most importantly, free.</p>
+
+<p>Previously my strategy for free hosting on Heroku without any server sleeping was to configure <a href="http://newrelic.com">new relic</a> to measure server uptime.  This was a great trick to keep your Heroku server from sleeping and it let you keep an eye out for server down time.  I shall be sad to see that go :(.</p>
+
+<p>My new recipe for creating new side project deployments is as follows:</p>
+
+<h1>Buying a domain for free</h1>
+
+<p>With the new <a href="http://www.newtldlist.com/">influx of TLD extensions</a>, many registrars are heavily discounting these new extensions in order to encourage main stream adoption.  You can snag a new domain name for dirt cheap, and often free, using one of these new domain extensions.</p>
+
+<p>If you are still a student or still have a .edu email address (thanks, <a href="http://gatech.edu">Georgia Tech</a>!), you can register a .me domain for free and/or a heavily discounted .com or .io domain using <a href="https://education.github.com/pack">Github.com&rsquo;s education pack</a>.</p>
+
+<p>Checkout <a href="http://register.science">register.science</a>, <a href="http://register.party">register.party</a>, and get on the <a href="http://www.alpnames.com/">Alpnames mailing list</a> to be notified of when free domain names are available for registration.</p>
+
+<h1>Hosting</h1>
+
+<h2>Heroku (free-ish)</h2>
+
+<p>You can stick with Heroku dyno&rsquo;s but like I said before, they are no longer allow websites to be active 24 per day.  Heroku will still be my go to for scheduled rake tasks, or anything that doesn&rsquo;t need to be awake all day since it is so easy to deploy to.</p>
+
+<p>Heroku also has great free database hosting for side projects.  As long as your db doesn&rsquo;t exceed 10,000 rows, Heroku will host it for free and give you a nice interface to run queries on.</p>
+
+<h2>Apigee (free)</h2>
+
+<p><a href="https://apigee.com/docs/api-services/content/what-apigee-edge">Apigee Edge</a> promises a lot of really <a href="https://apigee.com/about/pricing/apigee-edge-pricing-features">nice features</a> for their developer accounts: a buttload of storage space, unlimited bandwidth, and api analytics.  The big gotcha&rsquo;s though are they only host nodejs applications and their documentation is terrible.  <del>Once</del> if you can figure out how to get your website running, it is pretty simple to maintain, but getting it up there may take hours.  I used them for the <a href="http://challengepost.com/software/sentimus-edegx">Sears Hackathon</a> and the struggle was real.</p>
+
+<p>You can also do some pretty sweet stuff with combining api&rsquo;s into new apis.  They also have a service that competes with Parse for managing mobile app data, but again, the documentation is terrible.  Good luck.</p>
+
+<h2>Github pages (free)</h2>
+
+<p>I host this blog on <a href="http://pages.github.com">Github pages</a> and build things with <a href="http://octopress.org/">Octopress</a>.  Deployments and settings things up are a breeze, but github only hosts static content.</p>
+
+<p>A small part of me is considering moving <a href="http://AtlantaStartupJobs.com">AtlantaStartupJobs.com</a> to github, because the content there only changes once per day.  I would just need to write ruby tasks to grab the latest Atlanta start up jobs, generate the html for them, and then push up to Github.</p>
+
+<p>Since it is static, there is not backend database other than static hosting .json files, which could be a thing&hellip;</p>
+
+<h2>Amazon Web Services (free-ish)</h2>
+
+<p>For one year, you can utilize the basics of <a href="http://aws.amazon.com">AWS</a> for free.  One big catch here is setting up AWS servers and configuring them can be a weekend project on its own, unless you are familiar with devops.  It is not where near as simple as Heroku and you are limited by the resources of one ec2 machine.  It doesn&rsquo;t scale well if you plan on hosting a bunch of different projects.</p>
+
+<p>AWS has <a href="https://aws.amazon.com/rds/">RDS</a> which makes it super easy to throw up a database.  They support <a href="https://www.mysql.com/">mysql</a>, <a href="http://www.postgresql.org/">postgres</a>, and a few others.</p>
+
+<h2>OpenShift (use this one!)</h2>
+
+<p><a href="http://openshift.com">OpenShift</a> seems like the best drop in replacement for Heroku.  They have a free tier with reasonably powerful servers.  Unfortunately the database shares the same limited resources the application server utilizes, so you get a bit less than 1GB of storage space for your application and database to share.</p>
+
+<p>My strategy here is to keep my Heroku database up and just configure my OpenShift application to connect directly to the Heroku one, so I don&rsquo;t have to deal with shared resources.  This may make my website a little bit slower, but it should be good enough.</p>
+
+<h2>Cloud99</h2>
+
+<p>I have heard bad stories about <a href="http://www.cloud66.com/">Cloud99</a> and they were <a href="https://news.ycombinator.com/item?id=5685406">hacked a few years ago</a>, plus they are not free.  My advice is to stay away.</p>
+
+<h1>Free email</h1>
+
+<p>Having an @gmail.com account as the linked support email for your side project is so not classy.  You can configure your free custom domain with <a href="http://zoho.com">Zoho</a> and be able to email your customers from a more legit looking domain.  Be sure to configure your MX records properly so your new domain doesn&rsquo;t get sent to the spam folder.</p>
+
+<h1>Free transactional email sending</h1>
+
+<p>I really like <a href="http://mandrill.com">Mailchimp&rsquo;s Mandrill</a>.  I have been using them for years and haven&rsquo;t had any problems.  They offer a generous number of emails sent (10k) to be exact and don&rsquo;t limit their services in features, just mailing volume.</p>
+
+<h1>Free SSL certs</h1>
+
+<p>Another sweet trick you can do for your side project websites is to use <a href="http://cloudflare.com">Cloudflare</a> to deliver valid SSL certificates for your projects.  From an SEO perspective, google loves SSL and from a safety and privacy perspective users love SSL.  You can read up on how to do with <a href="https://www.benburwell.com/posts/configuring-cloudflare-universal-ssl/">here</a>.</p>
+
+<p>It took me 15 minutes to configure <a href="/">kcoleman.me</a> and <a href="AtlantaStartupJobs.com">AtlantaStartupJobs.com</a> to be behind Cloudflare.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2015/06/06/adding-search-to-atlanta-startup-jobs/">Adding Search to Atlanta Startup Jobs</a></h1>
     
     
@@ -117,7 +213,7 @@
 
 
 
-<time class='entry-date' datetime='2015-06-06T08:23:14-04:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:23 am</span></time>
+<time class='entry-date' datetime='2015-06-06T05:23:14-07:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:23 am</span></time>
         
         
       </p>
@@ -191,7 +287,7 @@
 
 
 
-<time class='entry-date' datetime='2015-06-03T03:23:38-04:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>3:23 am</span></time>
+<time class='entry-date' datetime='2015-06-03T00:23:38-07:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>12:23 am</span></time>
         
         
       </p>
@@ -333,7 +429,7 @@
 
 
 
-<time class='entry-date' datetime='2015-04-07T04:36:51-04:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:36 am</span></time>
+<time class='entry-date' datetime='2015-04-07T01:36:51-07:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:36 am</span></time>
         
         
       </p>
@@ -394,7 +490,7 @@
 
 
 
-<time class='entry-date' datetime='2015-03-12T15:46:43-04:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:46 pm</span></time>
+<time class='entry-date' datetime='2015-03-12T12:46:43-07:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>12:46 pm</span></time>
         
         
       </p>
@@ -575,7 +671,7 @@
 
 
 
-<time class='entry-date' datetime='2015-01-12T20:52:21-05:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:52 pm</span></time>
+<time class='entry-date' datetime='2015-01-12T17:52:21-08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:52 pm</span></time>
         
         
       </p>
@@ -625,7 +721,7 @@
 
 
 
-<time class='entry-date' datetime='2015-01-08T13:11:59-05:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:11 pm</span></time>
+<time class='entry-date' datetime='2015-01-08T10:11:59-08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:11 am</span></time>
         
         
       </p>
@@ -685,7 +781,7 @@
 
 
 
-<time class='entry-date' datetime='2014-10-26T20:14:40-04:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:14 pm</span></time>
+<time class='entry-date' datetime='2014-10-26T17:14:40-07:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:14 pm</span></time>
         
         
       </p>
@@ -802,7 +898,7 @@
 
 
 
-<time class='entry-date' datetime='2014-10-09T20:11:45-04:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:11 pm</span></time>
+<time class='entry-date' datetime='2014-10-09T17:11:45-07:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:11 pm</span></time>
         
         
       </p>
@@ -971,7 +1067,7 @@
 
 
 
-<time class='entry-date' datetime='2014-10-07T20:26:43-04:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:26 pm</span></time>
+<time class='entry-date' datetime='2014-10-07T17:26:43-07:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:26 pm</span></time>
         
         
       </p>
@@ -1043,251 +1139,6 @@
 <p>and to run the application you can run <code>passenger -p 3000 -a 127.0.0.1</code>  if this is your first time running passenger with rails, you will have to follow an installation script.</p>
 
 <p>Awesome! You are finished.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/10/03/angularjs-rails-seo/">Angularjs Rails and SEO Part 1</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-10-03T12:05:45-04:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>12:05 pm</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/mountain.jpeg" title="Angularjs Rails and SEO Part 1" class="banner-img"  /></p>
-
-<h2>Intro</h2>
-
-<p>Today I was handed an interesting project around improve the SEO surface area of an <a href="https://angularjs.org/">AngularJS</a> SPA for a client.  After a bit of research on how to handle this, I decided that I should roll my own tool to solve this problem as it will give me greater flexibility later as opposed to going with a SaaS app like <a href="http://Prerender.io">Prerender.io</a>.</p>
-
-<h2>Basic Concept</h2>
-
-<p>Google says they are doing a much better job <a href="http://googlewebmastercentral.blogspot.com.es/2014/05/understanding-web-pages-better.html">rendering Javascript</a> on websites.  Awesome! But what about the <a href="http://bing.com">other</a> <a href="http://duckduckgo.com">guys</a>?</p>
-
-<p>What we are going to do is leverage <a href="http://phantomjs.org/">PhantomJS</a> to render the angularjs code on the fly as the server requests the dynamic pages.  This way we don&rsquo;t have to deal with maintain a bunch of ERB files or pre-rendering static pages on our server.</p>
-
-<p>The cost will be that the page load time will be a bit slower unfortunately and these requests will be expensive on memory, but we just want the fast (dev time-wise) solution to hit the ground.</p>
-
-<h2>PhantomJS client</h2>
-
-<p>First you need to <a href="http://phantomjs.org/download.html">install PhantomJS</a>.  If you are using Heroku to host your application, you will need to configure Heroku to run phantomjs with <a href="https://github.com/stomita/heroku-buildpack-phantomjs">this build back</a>.</p>
-
-<p>Unfortunately there isn&rsquo;t a great way to detect when the page is finished loading.  My trick to solve this problem is for all of the controllers to set a status flag on the <code>body</code> tag noting they are finished running.  Now all of my controllers look like this:</p>
-
-<figure class='code'><figcaption><span>app/assets/javascripts/app/controllers/index.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">controller</span> <span class="s">&#39;IndexCtrl&#39;</span><span class="p">,</span> <span class="nf">($scope, $rootScope) -&gt;</span>
-</span><span class='line'>  <span class="p">...</span>
-</span><span class='line'>  <span class="nv">$rootScope.status = </span><span class="s">&#39;ready&#39;</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>and I have this on my <code>body</code> tag</p>
-
-<figure class='code'><figcaption><span>app/views/layouts/application.html.slim</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='haml'><span class='line'>  body data-status=&quot;{ { status } }&quot;
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So now I can watch the data-status to see when angular has finished running.</p>
-
-<p>Now lets create a angularjs-to-static.js.coffee file.  This will take in a URL and spit out the html for the page using PhantomJS.</p>
-
-<figure class='code'><figcaption><span>lib/phantomjs/angularjs_to_static.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="c1">#</span>
-</span><span class='line'><span class="c1"># angularjs_to_static.js.coffee</span>
-</span><span class='line'><span class="c1">#</span>
-</span><span class='line'><span class="c1"># This script takes a URL as argument. (In that order!)</span>
-</span><span class='line'><span class="c1"># The script then runs the Javascript on this page and waits until Ember has finished loading.</span>
-</span><span class='line'><span class="c1"># It then renders the resulting static HTML page to the console.</span>
-</span><span class='line'><span class="c1">#</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1"># Keep track of whether the page has already been exported. The &#39;setTimeout&#39; mess might cause it to be exported multiple times.</span>
-</span><span class='line'><span class="nv">exportPageContents = </span><span class="nf">-&gt;</span>
-</span><span class='line'>  <span class="k">unless</span> <span class="nx">pageHasBeenExported</span>
-</span><span class='line'>    <span class="nv">pageHasBeenExported = </span><span class="kc">true</span>
-</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">page</span><span class="p">.</span><span class="nx">content</span>
-</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;Finished.&quot;</span> <span class="k">unless</span> <span class="nx">silence</span>
-</span><span class='line'>    <span class="nx">phantom</span><span class="p">.</span><span class="nx">exit</span><span class="p">()</span>
-</span><span class='line'>  <span class="k">return</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">#wait until angularjs says its ready</span>
-</span><span class='line'><span class="nv">waitForStatus = </span><span class="nf">(page, callback) -&gt;</span>
-</span><span class='line'>  <span class="nv">expiration = </span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">()).</span><span class="nx">getTime</span><span class="p">()</span> <span class="o">+</span> <span class="mi">10000</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># try and fetch the desired element from the page</span>
-</span><span class='line'>  <span class="nv">result = </span><span class="nx">page</span><span class="p">.</span><span class="nx">evaluate</span><span class="p">(</span><span class="nf">-&gt;</span>
-</span><span class='line'>    <span class="nb">document</span><span class="p">.</span><span class="nx">body</span>
-</span><span class='line'>  <span class="p">)</span>
-</span><span class='line'>  <span class="nx">system</span><span class="p">.</span><span class="nx">stderr</span><span class="p">.</span><span class="nx">writeLine</span> <span class="nx">result</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># if desired element found then call callback after 50ms</span>
-</span><span class='line'>  <span class="k">if</span> <span class="nx">result</span>
-</span><span class='line'>    <span class="nx">system</span><span class="p">.</span><span class="nx">stderr</span><span class="p">.</span><span class="nx">writeLine</span> <span class="s">&quot;- trigger found&quot;</span> <span class="k">unless</span> <span class="nx">silence</span>
-</span><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span> <span class="p">(</span><span class="nf">-&gt;</span>
-</span><span class='line'>      <span class="nx">callback</span><span class="p">()</span>
-</span><span class='line'>      <span class="k">return</span>
-</span><span class='line'>    <span class="p">),</span> <span class="mi">50</span>
-</span><span class='line'>    <span class="k">return</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># determine whether timeout is triggered</span>
-</span><span class='line'>  <span class="nv">finish = </span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">()).</span><span class="nx">getTime</span><span class="p">()</span>
-</span><span class='line'>  <span class="k">if</span> <span class="nx">finish</span> <span class="o">&gt;</span> <span class="nx">expiration</span>
-</span><span class='line'>    <span class="nx">system</span><span class="p">.</span><span class="nx">stderr</span><span class="p">.</span><span class="nx">writeLine</span> <span class="s">&quot;- timed out&quot;</span> <span class="k">unless</span> <span class="nx">silence</span>
-</span><span class='line'>    <span class="nx">callback</span><span class="p">()</span>
-</span><span class='line'>    <span class="k">return</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># haven&#39;t timed out, haven&#39;t found object, so poll in another 100ms</span>
-</span><span class='line'>  <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span> <span class="p">(</span><span class="nf">-&gt;</span>
-</span><span class='line'>    <span class="nx">waitForStatus</span> <span class="nx">page</span><span class="p">,</span> <span class="nx">waitForStatus</span>
-</span><span class='line'>    <span class="k">return</span>
-</span><span class='line'>  <span class="p">),</span> <span class="mi">100</span>
-</span><span class='line'>  <span class="k">return</span>
-</span><span class='line'>
-</span><span class='line'><span class="nv">fs = </span><span class="nx">require</span><span class="p">(</span><span class="s">&quot;fs&quot;</span><span class="p">)</span>
-</span><span class='line'><span class="nv">system = </span><span class="nx">require</span><span class="p">(</span><span class="s">&quot;system&quot;</span><span class="p">)</span>
-</span><span class='line'><span class="nv">page = </span><span class="nx">require</span><span class="p">(</span><span class="s">&quot;webpage&quot;</span><span class="p">).</span><span class="nx">create</span><span class="p">()</span>
-</span><span class='line'><span class="nv">pageHasBeenExported = </span><span class="kc">false</span>
-</span><span class='line'><span class="nv">script = </span><span class="kc">undefined</span>
-</span><span class='line'><span class="nv">url = </span><span class="kc">undefined</span>
-</span><span class='line'><span class="nv">silence = </span><span class="kc">undefined</span>
-</span><span class='line'><span class="nv">script = </span><span class="nx">system</span><span class="p">.</span><span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="nx">system</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="o">or</span> <span class="nx">system</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">3</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># Output usage info and exit.</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;Usage: &quot;</span> <span class="o">+</span> <span class="nx">script</span> <span class="o">+</span> <span class="s">&quot; URL [silence]&quot;</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;  URL: address to open and run&quot;</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;  silence: enter &#39;silence&#39; (without quotes) to only output the page content and suppress info messages&quot;</span>
-</span><span class='line'>  <span class="nx">phantom</span><span class="p">.</span><span class="nx">exit</span> <span class="mi">1</span>
-</span><span class='line'><span class="k">else</span>
-</span><span class='line'>  <span class="nv">url = </span><span class="nx">system</span><span class="p">.</span><span class="nx">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-</span><span class='line'>  <span class="nv">silence = </span><span class="p">(</span><span class="nx">system</span><span class="p">.</span><span class="nx">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">is</span> <span class="s">&quot;silence&quot;</span><span class="p">)</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;Will render &quot;</span> <span class="o">+</span> <span class="nx">url</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span>  <span class="k">unless</span> <span class="nx">silence</span>
-</span><span class='line'>  <span class="nx">page</span><span class="p">.</span><span class="nx">open</span> <span class="nx">url</span><span class="p">,</span> <span class="nf">(status) -&gt;</span>
-</span><span class='line'>    <span class="k">unless</span> <span class="nx">status</span> <span class="o">is</span> <span class="s">&quot;success&quot;</span>
-</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;Unable to load URL!&quot;</span>  <span class="k">unless</span> <span class="nx">silence</span>
-</span><span class='line'>      <span class="nx">phantom</span><span class="p">.</span><span class="nx">exit</span><span class="p">()</span>
-</span><span class='line'>    <span class="k">else</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="c1"># Start a long timeout. When the page still doesn&#39;t seem to have finished loading after 30s, something has likely gone wrong. This timeout prevents a hangup of the server.</span>
-</span><span class='line'>      <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span> <span class="p">(</span><span class="nf">-&gt;</span>
-</span><span class='line'>        <span class="nx">exportPageContents</span><span class="p">()</span>
-</span><span class='line'>        <span class="k">return</span>
-</span><span class='line'>      <span class="p">),</span> <span class="mi">30000</span>
-</span><span class='line'>      <span class="nx">waitForStatus</span> <span class="nx">page</span><span class="p">,</span> <span class="nx">exportPageContents</span>
-</span><span class='line'>    <span class="k">return</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Side note</h3>
-
-<p>Much of this script was borrowed from <a href="http://www.pieterjongsma.com/2013/01/11/ember-google-ajax-rails.html">Ember.js, Google Ajax crawling and Rails</a>, but I didn&rsquo;t like he was detecting with angularjs was finished.  He was waiting for the page to finish its server requests, added some padding time and then finished.  Waiting for the flag to be set is a better technique, because I know angular has finished.</p>
-
-<p>Essentially this script takes in a URL, loads the page, and then waits for the flag to be set.  If the flag takes longer than 30s to be set, it bails and just renders what it has.  If you are on Heroku, you may need to shorten this flag to 15s, because <a href="https://devcenter.heroku.com/articles/request-timeout">Heroku has a request timeout</a> of 30s.</p>
-
-<p><a href="/blog/2014/10/07/angularjs-rails-and-seo-part-2/">Part 2</a></p>
 </div>
   
   

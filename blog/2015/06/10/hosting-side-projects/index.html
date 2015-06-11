@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Setting Up a Ruby on Rails 4.0.1beta1 With OSX Mavericks 10.9 - Kevin Coleman</title>
+  <title>Hosting Side Projects for Free - Kevin Coleman</title>
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="I keep having to setup Rails environments for people so I am just going to write my first blog article on how to do it on OSX 10.9. Installing the &hellip;">
+  <meta name="description" content="With Heroku&rsquo;s latest pricing restructure announcement, I decided it was time to re-evaluate my side-project hosting strategies. Historically, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.kcoleman.me/blog/2014/02/14/setting-up-a-ruby-on-rails-4-dot-0-1beta1-with-osx-mavericks-10-dot-9">
+  <link rel="canonical" href="http://www.kcoleman.me/blog/2015/06/10/hosting-side-projects">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Kevin Coleman" type="application/atom+xml">
@@ -106,7 +106,7 @@
   <header>
     
       
-        <h1 class="entry-title">Setting Up a Ruby on Rails 4.0.1beta1 With OSX Mavericks 10.9</h1>
+        <h1 class="entry-title">Hosting Side Projects for Free</h1>
       
     
     
@@ -116,7 +116,7 @@
 
 
 
-<time class='entry-date' datetime='2014-02-14T01:21:15-05:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:21 am</span></time>
+<time class='entry-date' datetime='2015-06-10T19:33:59-07:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:33 pm</span></time>
         
         
       </p>
@@ -124,115 +124,73 @@
   </header>
 
 
-<div class="entry-content"><p>I keep having to setup Rails environments for people so I am just going to write my first blog article on how to do it on OSX 10.9.</p>
+<div class="entry-content"><p><img src="/images/czech_2.jpg" title="Hosting Side Projects for Free" class="banner-img img-responsive"/></p>
 
-<h2>Installing the Command line tools</h2>
+<p>With <a href="https://blog.heroku.com/archives/2015/5/7/new-dyno-types-public-beta">Heroku&rsquo;s latest pricing restructure announcement</a>, I decided it was time to re-evaluate my <a href="/projects">side-project</a> hosting strategies.  Historically, <a href="http://heroku.com">Heroku</a> has been my go to as a hosting provider for my various rails application endeavors, because it is so easy to setup and, most importantly, free.</p>
 
-<p>The GCC compiler is required with installing RVM and Brew, so you need to download and install the xcode command line tools.  Open terminal and type in this:</p>
+<p>Previously my strategy for free hosting on Heroku without any server sleeping was to configure <a href="http://newrelic.com">new relic</a> to measure server uptime.  This was a great trick to keep your Heroku server from sleeping and it let you keep an eye out for server down time.  I shall be sad to see that go :(.</p>
 
-<figure class='code'><figcaption><span>Install Command line tools</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ xcode-select --install</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>My new recipe for creating new side project deployments is as follows:</p>
 
+<h1>Buying a domain for free</h1>
 
-<h2>Installing HomeBrew</h2>
+<p>With the new <a href="http://www.newtldlist.com/">influx of TLD extensions</a>, many registrars are heavily discounting these new extensions in order to encourage main stream adoption.  You can snag a new domain name for dirt cheap, and often free, using one of these new domain extensions.</p>
 
-<p>Homebrew is a package manager that makes it stupid easy to install and update software.  We will be using this tool to install Git, Postgres, and RVM.  To install this tool enter this into the terminal:</p>
+<p>If you are still a student or still have a .edu email address (thanks, <a href="http://gatech.edu">Georgia Tech</a>!), you can register a .me domain for free and/or a heavily discounted .com or .io domain using <a href="https://education.github.com/pack">Github.com&rsquo;s education pack</a>.</p>
 
-<figure class='code'><figcaption><span>Installing HomeBrew</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ ruby -e &quot;$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)&quot;</span>
-</span><span class='line'><span class="go">  $ brew doctor</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>Checkout <a href="http://register.science">register.science</a>, <a href="http://register.party">register.party</a>, and get on the <a href="http://www.alpnames.com/">Alpnames mailing list</a> to be notified of when free domain names are available for registration.</p>
 
+<h1>Hosting</h1>
 
-<p>The first command fetches and installs brew.  The second will update brew and fetch the latest installation scripts</p>
+<h2>Heroku (free-ish)</h2>
 
-<h2>Installing Postgres</h2>
+<p>You can stick with Heroku dyno&rsquo;s but like I said before, they are no longer allow websites to be active 24 per day.  Heroku will still be my go to for scheduled rake tasks, or anything that doesn&rsquo;t need to be awake all day since it is so easy to deploy to.</p>
 
-<p>Most guides recommend installing MySQL as the db engine, but because Heroku defaults to Postgres and Postgres is the hot right now, I use it in dev and in my production environments.</p>
+<p>Heroku also has great free database hosting for side projects.  As long as your db doesn&rsquo;t exceed 10,000 rows, Heroku will host it for free and give you a nice interface to run queries on.</p>
 
-<p>To install, type this command into the terminal:</p>
+<h2>Apigee (free)</h2>
 
-<figure class='code'><figcaption><span>Installing Postgres</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ brew update</span>
-</span><span class='line'><span class="go">  $ brew install postgresql</span>
-</span></code></pre></td></tr></table></div></figure>
+<p><a href="https://apigee.com/docs/api-services/content/what-apigee-edge">Apigee Edge</a> promises a lot of really <a href="https://apigee.com/about/pricing/apigee-edge-pricing-features">nice features</a> for their developer accounts: a buttload of storage space, unlimited bandwidth, and api analytics.  The big gotcha&rsquo;s though are they only host nodejs applications and their documentation is terrible.  <del>Once</del> if you can figure out how to get your website running, it is pretty simple to maintain, but getting it up there may take hours.  I used them for the <a href="http://challengepost.com/software/sentimus-edegx">Sears Hackathon</a> and the struggle was real.</p>
 
+<p>You can also do some pretty sweet stuff with combining api&rsquo;s into new apis.  They also have a service that competes with Parse for managing mobile app data, but again, the documentation is terrible.  Good luck.</p>
 
-<p>At the end of the install, follow the instructions for how to startup the server.  I would recommend to have it autostart with login, so you don’t have to think about it.  If you wish to manually start it when you need it, don’t lose that command to start it.</p>
+<h2>Github pages (free)</h2>
 
-<h2>Installing RVM</h2>
+<p>I host this blog on <a href="http://pages.github.com">Github pages</a> and build things with <a href="http://octopress.org/">Octopress</a>.  Deployments and settings things up are a breeze, but github only hosts static content.</p>
 
-<p>RVM is a ruby version manager.  It allows you to install multiple versions of ruby on your computer and easily switch between them.  This is important because as new versions of ruby on released, you will want to be able to test websites before deploying them and you may need to switch back to an old version if you encounter bugs.</p>
+<p>A small part of me is considering moving <a href="http://AtlantaStartupJobs.com">AtlantaStartupJobs.com</a> to github, because the content there only changes once per day.  I would just need to write ruby tasks to grab the latest Atlanta start up jobs, generate the html for them, and then push up to Github.</p>
 
-<figure class='code'><figcaption><span>Installing RVM</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ \curl -L https://get.rvm.io | bash -s stable</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>Since it is static, there is not backend database other than static hosting .json files, which could be a thing&hellip;</p>
 
+<h2>Amazon Web Services (free-ish)</h2>
 
-<h2>Install Rails</h2>
+<p>For one year, you can utilize the basics of <a href="http://aws.amazon.com">AWS</a> for free.  One big catch here is setting up AWS servers and configuring them can be a weekend project on its own, unless you are familiar with devops.  It is not where near as simple as Heroku and you are limited by the resources of one ec2 machine.  It doesn&rsquo;t scale well if you plan on hosting a bunch of different projects.</p>
 
-<p>To install the rails toolset type in this to terminal:</p>
+<p>AWS has <a href="https://aws.amazon.com/rds/">RDS</a> which makes it super easy to throw up a database.  They support <a href="https://www.mysql.com/">mysql</a>, <a href="http://www.postgresql.org/">postgres</a>, and a few others.</p>
 
-<figure class='code'><figcaption><span>Installing Rails</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ gem install rails</span>
-</span></code></pre></td></tr></table></div></figure>
+<h2>OpenShift (use this one!)</h2>
 
+<p><a href="http://openshift.com">OpenShift</a> seems like the best drop in replacement for Heroku.  They have a free tier with reasonably powerful servers.  Unfortunately the database shares the same limited resources the application server utilizes, so you get a bit less than 1GB of storage space for your application and database to share.</p>
 
-<p>This gives you rails command in terminal and allows you to create new rails websits.  To verify this installed properly type:</p>
+<p>My strategy here is to keep my Heroku database up and just configure my OpenShift application to connect directly to the Heroku one, so I don&rsquo;t have to deal with shared resources.  This may make my website a little bit slower, but it should be good enough.</p>
 
-<figure class='code'><figcaption><span>Installing Rails</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ rails --version</span>
-</span><span class='line'><span class="go">  Rails 4.1.0.beta1 </span>
-</span></code></pre></td></tr></table></div></figure>
+<h2>Cloud99</h2>
 
+<p>I have heard bad stories about <a href="http://www.cloud66.com/">Cloud99</a> and they were <a href="https://news.ycombinator.com/item?id=5685406">hacked a few years ago</a>, plus they are not free.  My advice is to stay away.</p>
 
-<h2>Installing Git</h2>
+<h1>Free email</h1>
 
-<p>git is the most common tool for managing source code.  I would recommend creating an account on github and using that as your source control.  Check out these guides for a quick start with git</p>
+<p>Having an @gmail.com account as the linked support email for your side project is so not classy.  You can configure your free custom domain with <a href="http://zoho.com">Zoho</a> and be able to email your customers from a more legit looking domain.  Be sure to configure your MX records properly so your new domain doesn&rsquo;t get sent to the spam folder.</p>
 
-<h3>Quick start git guide from the terminal</h3>
+<h1>Free transactional email sending</h1>
 
-<p>This is one of the best guides I could find on how to quickly emerse yourself into git.
-<a href="http://rogerdudler.github.io/git-guide/" title="Git Guide">Git Guide</a></p>
+<p>I really like <a href="http://mandrill.com">Mailchimp&rsquo;s Mandrill</a>.  I have been using them for years and haven&rsquo;t had any problems.  They offer a generous number of emails sent (10k) to be exact and don&rsquo;t limit their services in features, just mailing volume.</p>
 
-<h3>GitHub flow</h3>
+<h1>Free SSL certs</h1>
 
-<p>I uses this pattern for the repo if more than one person is working on it.
-<a href="http://scottchacon.com/2011/08/31/github-flow.html" title="Github Flow">What is GitFlow?</a></p>
+<p>Another sweet trick you can do for your side project websites is to use <a href="http://cloudflare.com">Cloudflare</a> to deliver valid SSL certificates for your projects.  From an SEO perspective, google loves SSL and from a safety and privacy perspective users love SSL.  You can read up on how to do with <a href="https://www.benburwell.com/posts/configuring-cloudflare-universal-ssl/">here</a>.</p>
 
-<h3>To install Git CLI</h3>
-
-<p>In order to have the most amount of control over your git repo, you will need to install the Git CLI.  Using the CLI can be intimidating at first, but it is definately worth learning.</p>
-
-<figure class='code'><figcaption><span>Git CLI</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ brew update</span>
-</span><span class='line'><span class="go">  $ brew install git</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>To install Github GUI</h3>
-
-<p>I also use Github’s GUI tool because it makes committing easier.  Unfortunately it tends to fall flat on its face outside of the happy path (read merge conflicts and rebasing), so you can’t completely rely on this tool for git management.</p>
-
-<p>Follow the instructions here
-<a href="http://mac.github.com/" title="Github tool">Github for mac</a></p>
-
-<h2>Install Heroku toolbelt</h2>
-
-<p><a href="http://Heroku.com/" title="Heroku">Heroku</a> is a popular hosting service for rails applications, mostly because it is free and easy to use.</p>
-
-<p>Make an account at <a href="http://Heroku.com/" title="Heroku">http://heroku.com/</a></p>
-
-<p>Install the toolbelt found here <a href="https://toolbelt.heroku.com/" title="Heroku Toolbelt">Heroku Toolbelt</a></p>
-
-<h2>Optional: Installing Sublime</h2>
-
-<p>Sublime is probably the most common text editor for Rails development.  You can download it here: <a href="http://www.sublimetext.com/" title="Sublime">Sublime</a></p>
+<p>It took me 15 minutes to configure <a href="/">kcoleman.me</a> and <a href="AtlantaStartupJobs.com">AtlantaStartupJobs.com</a> to be behind Cloudflare.</p>
 </div>
 
 
@@ -257,22 +215,16 @@
 
 
 
-<time class='entry-date' datetime='2014-02-14T01:21:15-05:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:21 am</span></time>
+<time class='entry-date' datetime='2015-06-10T19:33:59-07:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:33 pm</span></time>
       
       
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/ruby-on-rails/'>ruby on rails</a>
-  
-</span>
 
 
     </p>
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.kcoleman.me/blog/2014/02/14/setting-up-a-ruby-on-rails-4-dot-0-1beta1-with-osx-mavericks-10-dot-9/" data-via="KevinColemanInc" data-counturl="http://www.kcoleman.me/blog/2014/02/14/setting-up-a-ruby-on-rails-4-dot-0-1beta1-with-osx-mavericks-10-dot-9/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.kcoleman.me/blog/2015/06/10/hosting-side-projects/" data-via="KevinColemanInc" data-counturl="http://www.kcoleman.me/blog/2015/06/10/hosting-side-projects/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -283,8 +235,8 @@
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2015/06/06/adding-search-to-atlanta-startup-jobs/" title="Previous Post: Adding search to Atlanta Startup Jobs">&laquo; Adding search to Atlanta Startup Jobs</a>
       
-        <a class="basic-alignment right" href="/blog/2014/03/11/reporting-with-rails-p1/" title="Next Post: Reporting with Rails Part 1">Reporting with Rails Part 1 &raquo;</a>
       
     </p>
   </footer>

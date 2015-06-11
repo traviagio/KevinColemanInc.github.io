@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="This week I will be closing on my first house that I plan on renovating and selling in the next few months. I have been looking for a low-end flip &hellip;">
+  <meta name="description" content="Intro Today I was handed an interesting project around improve the SEO surface area of an AngularJS SPA for a client. After a bit of research on how &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -108,6 +108,251 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2014/10/03/angularjs-rails-seo/">Angularjs Rails and SEO Part 1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-10-03T09:05:45-07:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>9:05 am</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/mountain.jpeg" title="Angularjs Rails and SEO Part 1" class="banner-img"  /></p>
+
+<h2>Intro</h2>
+
+<p>Today I was handed an interesting project around improve the SEO surface area of an <a href="https://angularjs.org/">AngularJS</a> SPA for a client.  After a bit of research on how to handle this, I decided that I should roll my own tool to solve this problem as it will give me greater flexibility later as opposed to going with a SaaS app like <a href="http://Prerender.io">Prerender.io</a>.</p>
+
+<h2>Basic Concept</h2>
+
+<p>Google says they are doing a much better job <a href="http://googlewebmastercentral.blogspot.com.es/2014/05/understanding-web-pages-better.html">rendering Javascript</a> on websites.  Awesome! But what about the <a href="http://bing.com">other</a> <a href="http://duckduckgo.com">guys</a>?</p>
+
+<p>What we are going to do is leverage <a href="http://phantomjs.org/">PhantomJS</a> to render the angularjs code on the fly as the server requests the dynamic pages.  This way we don&rsquo;t have to deal with maintain a bunch of ERB files or pre-rendering static pages on our server.</p>
+
+<p>The cost will be that the page load time will be a bit slower unfortunately and these requests will be expensive on memory, but we just want the fast (dev time-wise) solution to hit the ground.</p>
+
+<h2>PhantomJS client</h2>
+
+<p>First you need to <a href="http://phantomjs.org/download.html">install PhantomJS</a>.  If you are using Heroku to host your application, you will need to configure Heroku to run phantomjs with <a href="https://github.com/stomita/heroku-buildpack-phantomjs">this build back</a>.</p>
+
+<p>Unfortunately there isn&rsquo;t a great way to detect when the page is finished loading.  My trick to solve this problem is for all of the controllers to set a status flag on the <code>body</code> tag noting they are finished running.  Now all of my controllers look like this:</p>
+
+<figure class='code'><figcaption><span>app/assets/javascripts/app/controllers/index.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">controller</span> <span class="s">&#39;IndexCtrl&#39;</span><span class="p">,</span> <span class="nf">($scope, $rootScope) -&gt;</span>
+</span><span class='line'>  <span class="p">...</span>
+</span><span class='line'>  <span class="nv">$rootScope.status = </span><span class="s">&#39;ready&#39;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and I have this on my <code>body</code> tag</p>
+
+<figure class='code'><figcaption><span>app/views/layouts/application.html.slim</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'>  body data-status=&quot;{ { status } }&quot;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So now I can watch the data-status to see when angular has finished running.</p>
+
+<p>Now lets create a angularjs-to-static.js.coffee file.  This will take in a URL and spit out the html for the page using PhantomJS.</p>
+
+<figure class='code'><figcaption><span>lib/phantomjs/angularjs_to_static.js.coffee</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1"># angularjs_to_static.js.coffee</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1"># This script takes a URL as argument. (In that order!)</span>
+</span><span class='line'><span class="c1"># The script then runs the Javascript on this page and waits until Ember has finished loading.</span>
+</span><span class='line'><span class="c1"># It then renders the resulting static HTML page to the console.</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Keep track of whether the page has already been exported. The &#39;setTimeout&#39; mess might cause it to be exported multiple times.</span>
+</span><span class='line'><span class="nv">exportPageContents = </span><span class="nf">-&gt;</span>
+</span><span class='line'>  <span class="k">unless</span> <span class="nx">pageHasBeenExported</span>
+</span><span class='line'>    <span class="nv">pageHasBeenExported = </span><span class="kc">true</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">page</span><span class="p">.</span><span class="nx">content</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;Finished.&quot;</span> <span class="k">unless</span> <span class="nx">silence</span>
+</span><span class='line'>    <span class="nx">phantom</span><span class="p">.</span><span class="nx">exit</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">return</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">#wait until angularjs says its ready</span>
+</span><span class='line'><span class="nv">waitForStatus = </span><span class="nf">(page, callback) -&gt;</span>
+</span><span class='line'>  <span class="nv">expiration = </span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">()).</span><span class="nx">getTime</span><span class="p">()</span> <span class="o">+</span> <span class="mi">10000</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># try and fetch the desired element from the page</span>
+</span><span class='line'>  <span class="nv">result = </span><span class="nx">page</span><span class="p">.</span><span class="nx">evaluate</span><span class="p">(</span><span class="nf">-&gt;</span>
+</span><span class='line'>    <span class="nb">document</span><span class="p">.</span><span class="nx">body</span>
+</span><span class='line'>  <span class="p">)</span>
+</span><span class='line'>  <span class="nx">system</span><span class="p">.</span><span class="nx">stderr</span><span class="p">.</span><span class="nx">writeLine</span> <span class="nx">result</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># if desired element found then call callback after 50ms</span>
+</span><span class='line'>  <span class="k">if</span> <span class="nx">result</span>
+</span><span class='line'>    <span class="nx">system</span><span class="p">.</span><span class="nx">stderr</span><span class="p">.</span><span class="nx">writeLine</span> <span class="s">&quot;- trigger found&quot;</span> <span class="k">unless</span> <span class="nx">silence</span>
+</span><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span> <span class="p">(</span><span class="nf">-&gt;</span>
+</span><span class='line'>      <span class="nx">callback</span><span class="p">()</span>
+</span><span class='line'>      <span class="k">return</span>
+</span><span class='line'>    <span class="p">),</span> <span class="mi">50</span>
+</span><span class='line'>    <span class="k">return</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># determine whether timeout is triggered</span>
+</span><span class='line'>  <span class="nv">finish = </span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">()).</span><span class="nx">getTime</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">if</span> <span class="nx">finish</span> <span class="o">&gt;</span> <span class="nx">expiration</span>
+</span><span class='line'>    <span class="nx">system</span><span class="p">.</span><span class="nx">stderr</span><span class="p">.</span><span class="nx">writeLine</span> <span class="s">&quot;- timed out&quot;</span> <span class="k">unless</span> <span class="nx">silence</span>
+</span><span class='line'>    <span class="nx">callback</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">return</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># haven&#39;t timed out, haven&#39;t found object, so poll in another 100ms</span>
+</span><span class='line'>  <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span> <span class="p">(</span><span class="nf">-&gt;</span>
+</span><span class='line'>    <span class="nx">waitForStatus</span> <span class="nx">page</span><span class="p">,</span> <span class="nx">waitForStatus</span>
+</span><span class='line'>    <span class="k">return</span>
+</span><span class='line'>  <span class="p">),</span> <span class="mi">100</span>
+</span><span class='line'>  <span class="k">return</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">fs = </span><span class="nx">require</span><span class="p">(</span><span class="s">&quot;fs&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="nv">system = </span><span class="nx">require</span><span class="p">(</span><span class="s">&quot;system&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="nv">page = </span><span class="nx">require</span><span class="p">(</span><span class="s">&quot;webpage&quot;</span><span class="p">).</span><span class="nx">create</span><span class="p">()</span>
+</span><span class='line'><span class="nv">pageHasBeenExported = </span><span class="kc">false</span>
+</span><span class='line'><span class="nv">script = </span><span class="kc">undefined</span>
+</span><span class='line'><span class="nv">url = </span><span class="kc">undefined</span>
+</span><span class='line'><span class="nv">silence = </span><span class="kc">undefined</span>
+</span><span class='line'><span class="nv">script = </span><span class="nx">system</span><span class="p">.</span><span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="nx">system</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="o">or</span> <span class="nx">system</span><span class="p">.</span><span class="nx">args</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">3</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Output usage info and exit.</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;Usage: &quot;</span> <span class="o">+</span> <span class="nx">script</span> <span class="o">+</span> <span class="s">&quot; URL [silence]&quot;</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;  URL: address to open and run&quot;</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;  silence: enter &#39;silence&#39; (without quotes) to only output the page content and suppress info messages&quot;</span>
+</span><span class='line'>  <span class="nx">phantom</span><span class="p">.</span><span class="nx">exit</span> <span class="mi">1</span>
+</span><span class='line'><span class="k">else</span>
+</span><span class='line'>  <span class="nv">url = </span><span class="nx">system</span><span class="p">.</span><span class="nx">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'>  <span class="nv">silence = </span><span class="p">(</span><span class="nx">system</span><span class="p">.</span><span class="nx">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">is</span> <span class="s">&quot;silence&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;Will render &quot;</span> <span class="o">+</span> <span class="nx">url</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span>  <span class="k">unless</span> <span class="nx">silence</span>
+</span><span class='line'>  <span class="nx">page</span><span class="p">.</span><span class="nx">open</span> <span class="nx">url</span><span class="p">,</span> <span class="nf">(status) -&gt;</span>
+</span><span class='line'>    <span class="k">unless</span> <span class="nx">status</span> <span class="o">is</span> <span class="s">&quot;success&quot;</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;Unable to load URL!&quot;</span>  <span class="k">unless</span> <span class="nx">silence</span>
+</span><span class='line'>      <span class="nx">phantom</span><span class="p">.</span><span class="nx">exit</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1"># Start a long timeout. When the page still doesn&#39;t seem to have finished loading after 30s, something has likely gone wrong. This timeout prevents a hangup of the server.</span>
+</span><span class='line'>      <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span> <span class="p">(</span><span class="nf">-&gt;</span>
+</span><span class='line'>        <span class="nx">exportPageContents</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">return</span>
+</span><span class='line'>      <span class="p">),</span> <span class="mi">30000</span>
+</span><span class='line'>      <span class="nx">waitForStatus</span> <span class="nx">page</span><span class="p">,</span> <span class="nx">exportPageContents</span>
+</span><span class='line'>    <span class="k">return</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Side note</h3>
+
+<p>Much of this script was borrowed from <a href="http://www.pieterjongsma.com/2013/01/11/ember-google-ajax-rails.html">Ember.js, Google Ajax crawling and Rails</a>, but I didn&rsquo;t like he was detecting with angularjs was finished.  He was waiting for the page to finish its server requests, added some padding time and then finished.  Waiting for the flag to be set is a better technique, because I know angular has finished.</p>
+
+<p>Essentially this script takes in a URL, loads the page, and then waits for the flag to be set.  If the flag takes longer than 30s to be set, it bails and just renders what it has.  If you are on Heroku, you may need to shorten this flag to 15s, because <a href="https://devcenter.heroku.com/articles/request-timeout">Heroku has a request timeout</a> of 30s.</p>
+
+<p><a href="/blog/2014/10/07/angularjs-rails-and-seo-part-2/">Part 2</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2014/07/28/new-house/">Buying My First Real Estate Investment</a></h1>
     
     
@@ -117,7 +362,7 @@
 
 
 
-<time class='entry-date' datetime='2014-07-28T12:46:17-04:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:46 pm</span></time>
+<time class='entry-date' datetime='2014-07-28T09:46:17-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>9:46 am</span></time>
         
         
       </p>
@@ -177,7 +422,7 @@
 
 
 
-<time class='entry-date' datetime='2014-07-23T15:13:52-04:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>3:13 pm</span></time>
+<time class='entry-date' datetime='2014-07-23T12:13:52-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2014</span></span> <span class='time'>12:13 pm</span></time>
         
         
       </p>
@@ -231,7 +476,7 @@
 
 
 
-<time class='entry-date' datetime='2014-07-05T11:46:57-04:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>11:46 am</span></time>
+<time class='entry-date' datetime='2014-07-05T08:46:57-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>8:46 am</span></time>
         
         
       </p>
@@ -293,7 +538,7 @@
 
 
 
-<time class='entry-date' datetime='2014-06-21T17:31:51-04:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>5:31 pm</span></time>
+<time class='entry-date' datetime='2014-06-21T14:31:51-07:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>2:31 pm</span></time>
         
         
       </p>
@@ -331,7 +576,7 @@
 
 
 
-<time class='entry-date' datetime='2014-06-13T16:42:01-04:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:42 pm</span></time>
+<time class='entry-date' datetime='2014-06-13T13:42:01-07:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:42 pm</span></time>
         
         
       </p>
@@ -384,7 +629,7 @@
 
 
 
-<time class='entry-date' datetime='2014-06-05T13:08:29-04:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:08 pm</span></time>
+<time class='entry-date' datetime='2014-06-05T10:08:29-07:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:08 am</span></time>
         
         
       </p>
@@ -465,7 +710,7 @@
 
 
 
-<time class='entry-date' datetime='2014-06-04T17:50:34-04:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:50 pm</span></time>
+<time class='entry-date' datetime='2014-06-04T14:50:34-07:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>4</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:50 pm</span></time>
         
         
       </p>
@@ -514,7 +759,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/06/01/twitter-bot-on-heroku/">Twitter Bot on Heroku</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/05/31/twitter-bot-on-heroku/">Twitter Bot on Heroku</a></h1>
     
     
       <p class="meta">
@@ -523,7 +768,7 @@
 
 
 
-<time class='entry-date' datetime='2014-06-01T00:05:08-04:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>12:05 am</span></time>
+<time class='entry-date' datetime='2014-05-31T21:05:08-07:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>9:05 pm</span></time>
         
         
       </p>
@@ -722,7 +967,7 @@
 
 
 
-<time class='entry-date' datetime='2014-05-31T14:22:47-04:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>2:22 pm</span></time>
+<time class='entry-date' datetime='2014-05-31T11:22:47-07:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>11:22 am</span></time>
         
         
       </p>
@@ -899,171 +1144,6 @@
 <h2>To be continue</h2>
 
 <p>In the next article, I will be discussing on how to recover from a Redis failure.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/05/17/tagging-models/">Tagging Models</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-05-17T11:14:24-04:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>11:14 am</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/music_slider.jpg" title="Tagging Models" class="banner-img"/></p>
-
-<p>Sometimes you need to tag your models with tokens, think tagging images with keywords or including hashtags in a twitter post.</p>
-
-<p>And in a slightly more rare situation, you sometimes may want to have multiple types of tags for your products.  Like in an ecommerce store, you may want to have a style, color, type, or generic tags attached to your product model.  These tags could be used in an recommendation engine to help determine what products are similar to other products.</p>
-
-<h1>Create the Style Model</h1>
-
-<p>This is your basic many to many relationship between your style model and your products model.</p>
-
-<figure class='code'><figcaption><span>db/migrations/create_styles_table.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="n">create_table</span> <span class="ss">:styles</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
-</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">create_table</span> <span class="ss">:products_styles</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:product_id</span><span class="p">,</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
-</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:style_id</span><span class="p">,</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
-</span><span class='line'>    <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h1>Creating the tags concern</h1>
-
-<p>Because effectively all of the tags are going to have the same attributes (namely <code>:name</code>), I want to have all of that common code in a Concern that will be included in all of the different types of tags</p>
-
-<p>My concern looks like this</p>
-
-<figure class='code'><figcaption><span>app/models/concerns/taggable.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">Taggable</span>
-</span><span class='line'>  <span class="kp">extend</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Concern</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">included</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">validate</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">has_and_belongs_to_many</span> <span class="ss">:products</span>
-</span><span class='line'>    <span class="n">before_save</span> <span class="ss">:downcase_name</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">downcase_name</span>
-</span><span class='line'>    <span class="nb">name</span><span class="o">.</span><span class="n">downcase!</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I want to only save the lower case name and I want to automatically report the relationship between products and the taggable attribute.  This will reduce the noise in the database.</p>
-
-<h1>Create the Model</h1>
-
-<p>Now because I am using a concern, my models should be really thin and only look like this</p>
-
-<figure class='code'><figcaption><span>app/models/concerns/taggable.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Style</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-</span><span class='line'>  <span class="kp">include</span> <span class="no">Taggable</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h1>Adding and removing tags</h1>
-
-<p>Using the jQuery tokenizer extension, you can follow the guide at <a href="http://railscasts.com/episodes/258-token-fields">Rails casts</a> to hook into your model.  While his approach is dandy and all, we have multiple types of tags attached to our product and there is a faster way to manage the addition methods on our model.</p>
-
-<p>His method requires that you have a method like below for every one of your token attributes.  This is going to make your products model huge as you add more and more taggable attributes.</p>
-
-<figure class='code'><figcaption><span>app/models/concerns/taggable.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">has_and_belongs_to_many</span> <span class="ss">:authors</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">author_tokens</span><span class="o">=</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
-</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">author_ids</span> <span class="o">=</span> <span class="n">ids</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>We can reduce this code creep by using Ruby meta programming.  I want to have an array of all of the taggable attributes that product can have and it should automatically create the necessarily methods and relationships between products and this taggable item.</p>
-
-<figure class='code'><figcaption><span>app/models/product.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="no">ATTRIBUTES</span> <span class="o">=</span> <span class="sx">%w(style)</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="no">ATTRIBUTES</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">status_name</span><span class="o">|</span>
-</span><span class='line'>    <span class="n">has_and_belongs_to_many</span> <span class="n">status_name</span><span class="o">.</span><span class="n">pluralize</span><span class="o">.</span><span class="n">to_sym</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">define_method</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">status_name</span><span class="si">}</span><span class="s2">_ids=&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">ids</span><span class="o">|</span>
-</span><span class='line'>      <span class="nb">self</span><span class="o">.</span><span class="n">send</span> <span class="p">(</span><span class="n">status_name</span><span class="o">.</span><span class="n">pluralize</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span><span class="p">),</span> <span class="n">ids</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span><span class="o">|</span><span class="n">c</span><span class="o">|</span> <span class="n">status_name</span><span class="o">.</span><span class="n">pluralize</span><span class="o">.</span><span class="n">singularize</span><span class="o">.</span><span class="n">camelize</span><span class="o">.</span><span class="n">constantize</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">to_i</span><span class="p">)</span> <span class="p">}</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now as add more and more taggable items to the product model, it will automatically create the <code>[attribute_name]_ids</code> methods that the jQuery needs to attach these tokens onto our model.  The more taggable attributes I add, the more code I save.</p>
-
-<h1>Alternative approach</h1>
-
-<p>You could argue that I could of put all of the tags in one table and used STI to break each type into different models.  While this could work if all of the tags had the same name type of string, you may want your name attribute to be an integer.  Having them in separate tables will also reduce the table size, thus making the results run a little bit quicker.</p>
-
-<h1>Conclusion</h1>
-
-<p>Like always, feel free to hit me up in the <a href="/chat">chat</a>.  My chat tool is hooked into Google Talk, free too drop me a message if you have any questions.  Cheers.</p>
 </div>
   
   

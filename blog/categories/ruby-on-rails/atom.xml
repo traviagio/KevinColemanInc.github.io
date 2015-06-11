@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby on Rails | Kevin Coleman]]></title>
   <link href="http://www.kcoleman.me/blog/categories/ruby-on-rails/atom.xml" rel="self"/>
   <link href="http://www.kcoleman.me/"/>
-  <updated>2015-06-06T08:56:31-04:00</updated>
+  <updated>2015-06-10T22:16:56-07:00</updated>
   <id>http://www.kcoleman.me/</id>
   <author>
     <name><![CDATA[Kevin Coleman]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Setting Up a Ruby on Rails 4.0.1beta1 With OSX Mavericks 10.9]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/02/14/setting-up-a-ruby-on-rails-4-dot-0-1beta1-with-osx-mavericks-10-dot-9/"/>
-    <updated>2014-02-14T01:21:15-05:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/02/14/setting-up-a-ruby-on-rails-4-dot-0-1beta1-with-osx-mavericks-10-dot-9</id>
+    <link href="http://www.kcoleman.me/blog/2014/02/13/setting-up-a-ruby-on-rails-4-dot-0-1beta1-with-osx-mavericks-10-dot-9/"/>
+    <updated>2014-02-13T22:21:15-08:00</updated>
+    <id>http://www.kcoleman.me/blog/2014/02/13/setting-up-a-ruby-on-rails-4-dot-0-1beta1-with-osx-mavericks-10-dot-9</id>
     <content type="html"><![CDATA[<p>I keep having to setup Rails environments for people so I am just going to write my first blog article on how to do it on OSX 10.9.</p>
 
 <h2>Installing the Command line tools</h2>
