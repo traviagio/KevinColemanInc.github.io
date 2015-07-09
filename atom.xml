@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Coleman]]></title>
   <link href="http://www.kcoleman.me/atom.xml" rel="self"/>
   <link href="http://www.kcoleman.me/"/>
-  <updated>2015-07-08T23:53:29-07:00</updated>
+  <updated>2015-07-08T23:57:03-07:00</updated>
   <id>http://www.kcoleman.me/</id>
   <author>
     <name><![CDATA[Kevin Coleman]]></name>
@@ -18,7 +18,7 @@
     <link href="http://www.kcoleman.me/blog/2015/07/08/limited-retry-pattern/"/>
     <updated>2015-07-08T23:43:12-07:00</updated>
     <id>http://www.kcoleman.me/blog/2015/07/08/limited-retry-pattern</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/horse_statue.jpeg" title="Limited Retry Pattern" class="banner-img" /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/horse_statue.jpg" title="Limited Retry Pattern" class="banner-img" /></p>
 
 <p>The limited retry pattern is a great tool for retrying method calls a limited number of times.  In instances where I want to make an API with a limited number of tries. I would have my method look like this:</p>
 
