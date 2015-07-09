@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="Here is how to build a quick URL shortener in Rails 4.0 that shares the same application as the rest of your project, but is meant to run on a &hellip;">
+  <meta name="description" content="Inspired by the Technology Review article, How Advanced Social bots Have Infiltrated Twitter, I thought it would be an interesting to see how &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -102,6 +102,205 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/31/twitter-bot-on-heroku/">Twitter Bot on Heroku</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-05-31T21:05:08-07:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>9:05 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/alley.jpg" title="Twitter bot v1 on Heroku" class="banner-img" /></p>
+
+<p>Inspired by the Technology Review article, <a href="http://www.technologyreview.com/view/527746/how-advanced-socialbots-have-infiltrated-twitter/">How Advanced Social bots Have Infiltrated Twitter</a>, I thought it would be an interesting to see how difficult it is to write a bot to generate followers over a given topic.</p>
+
+<p>I think a first basic start would be to post proven social content from other sources (namely <a href="http://reddit.com/">reddit.com</a>).  Version one of the bot will just repost the top article of the day on a given sub-reddit onto this twitter account.  Lets get started.</p>
+
+<h2>Import the gems</h2>
+
+<p>First I need to create my <code>Gemfile</code> and reference these gems:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">source</span> <span class="s1">&#39;https://rubygems.org&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;twitter&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;redditkit&#39;</span><span class="c1">#, :git =&gt; &#39;https://github.com/samsymons/RedditKit.rb.git&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;redis&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There are a number of reddit gems, but I found that <a href="https://github.com/samsymons/RedditKit.rb">redditkit</a> seems to be the most maintained.</p>
+
+<p>Redis will be used as our data store to prevent duplicate tweets.</p>
+
+<h2>Twitter Bot code</h2>
+
+<figure class='code'><figcaption><span>twitter_bot.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;twitter&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;redditkit&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;redis&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;open-uri&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">KARMA_THRESHOLD</span><span class="o">=</span><span class="mi">2000</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>First we need to require all of the resources.  Unfortunately these are not automatically loaded like they are in rails.  I set the KARMA_THRESHOLD to a score of 2000, so that we only share quality content.  <code>open-uri</code> will be used with the image upload.  If you upload the image as opposed to sharing the link, the photo will appear in the stream, thus giving it more exposure.</p>
+
+<figure class='code'><figcaption><span>twitter_bot.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;REDISCLOUD_URL&quot;</span><span class="o">]</span> <span class="o">||=</span> <span class="s2">&quot;redis://localhost:6379/&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;REDISCLOUD_URL&quot;</span><span class="o">]</span>
+</span><span class='line'>    <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;REDISCLOUD_URL&quot;</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="vg">$redis</span> <span class="o">=</span> <span class="no">Redis</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:host</span> <span class="o">=&gt;</span> <span class="n">uri</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="ss">:port</span> <span class="o">=&gt;</span> <span class="n">uri</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="n">uri</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Since I am hosting this with Heroku, I need to set a default environment variable for the rediscloud_url which is set by the <a href="http://redislabs.com/redis-cloud">Redis cloud addin</a></p>
+
+<p>Next I configure the twitter gem with the API keys I got from their website</p>
+
+<figure class='code'><figcaption><span>twitter_bot.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">client</span> <span class="o">=</span> <span class="no">Twitter</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">consumer_key</span>        <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">consumer_secret</span>     <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token</span>        <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token_secret</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">authenticated_client</span> <span class="o">=</span> <span class="no">RedditKit</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'><span class="n">posts</span> <span class="o">=</span> <span class="n">authenticated_client</span><span class="o">.</span><span class="n">links</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="ss">:category</span> <span class="o">=&gt;</span> <span class="ss">:top</span><span class="p">,</span> <span class="ss">time</span><span class="p">:</span> <span class="ss">:hour</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I also login to my reddit account and retrieve the links for the sub-reddit of my choice.</p>
+
+<h2>Loop through all of the links and find something to share</h2>
+
+<figure class='code'><figcaption><span>twitter_bot.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">posts</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">link</span><span class="o">|</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">score</span> <span class="o">&gt;</span> <span class="no">KARMA_THRESHOLD</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">link</span><span class="o">[</span><span class="ss">:domain</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;imgur.com&quot;</span> <span class="o">||</span> <span class="n">link</span><span class="o">[</span><span class="ss">:domain</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;i.imgur.com&quot;</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span><span class="vg">$redis</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;link:&#39;</span><span class="o">+</span><span class="n">link</span><span class="o">.</span><span class="n">id</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">include?</span> <span class="s2">&quot;r/&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">include?</span> <span class="s2">&quot;i.imgur&quot;</span>
+</span><span class='line'>      <span class="n">image_url</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="n">image_url</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/http:\/\//</span><span class="p">,</span> <span class="s1">&#39;http://i.&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.jpg&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;cringe.png&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">fo</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">fo</span><span class="o">.</span><span class="n">write</span> <span class="nb">open</span><span class="p">(</span><span class="n">image_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="vg">$redis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;link:&#39;</span><span class="o">+</span><span class="n">link</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="kp">true</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">client</span><span class="o">.</span><span class="n">update_with_media</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">title</span> <span class="o">+</span> <span class="s2">&quot; #LOL &quot;</span><span class="p">,</span> <span class="no">File</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;cringe.png&#39;</span><span class="p">))</span>
+</span><span class='line'>    <span class="k">break</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I want to only select links with a high enough karma score, with an imgur image, and not in my redis store and not referencing another reddit thread.  I don&rsquo;t want them to include any reddit references in my tweets if I can help it.</p>
+
+<p>Sometimes people post a link to the imgur page instead of directly to the link, so I need to change up the image_url as necessary depending on whether or not they did so.</p>
+
+<p>Next I download the image so I can re-upload it to twitter later.   Next I create the token in my redis store so I don&rsquo;t accidently have any duplicate image links.  I check against that in the if statement above.</p>
+
+<p>Now I update my twitter feed with the link title, a hash tag, and the new image I just downloaded.  Because I am running this on Heroku, the image saved to disk will get lost when the dyno gets killed with the scheduler ends.  So I don&rsquo;t really need to worry about clean up.</p>
+
+<p>I want this to only run once, because twitter will get upset if they notice that fire off tweets in bursts.  I think once per day is a good starting ground and I can move up the frequency, as I get more and more brave.</p>
+
+<h2>Deploy to Heroku</h2>
+
+<p>I need to make this a git repo, add my code so far.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">git init</span>
+</span><span class='line'><span class="go">git add .</span>
+</span><span class='line'><span class="go">git commit -m &quot;first twitter bot commit!&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now I need to make the <a href="http://heroku.com">Heroku</a> application to run this under and push it up to the server</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">heroku apps:create twitter-bot</span>
+</span><span class='line'><span class="go">git push heroku master</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Heroku Scheduler</h2>
+
+<p>Heroku comes with a free scheduler that I can run in daily increments, perfect for this application.  I set configure it so it runs <code>ruby twitter_bot.rb</code> every day at midnight, so users will be able to see my tweets in the morning when they wake up.</p>
+
+<h2>In the future&hellip;.</h2>
+
+<p>I plan on adding more content sources and more frequent posts.  I am running this along side the chrome extension <a href="https://github.com/ztratar/followr">Followr</a>, which is an automated tool for favoriting tweets of other users based on preset hash tags.  So far it has earned me 10 new followers and 3 new re-tweets.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1260,7 +1459,7 @@ lowing us to not need to supply the consumer key every time we want to create a 
 
 <h3>Quick tip: One gmail for multiple accounts</h3>
 
-<p>If you use gmail, you can use their wild card feature to have different emails that point to your email.  For example my email is <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#111;&#58;&#99;&#46;&#x70;&#x72;&#111;&#103;&#114;&#97;&#109;&#x65;&#x72;&#x40;&#103;&#109;&#97;&#x69;&#x6c;&#46;&#x63;&#111;&#x6d;&#46;">&#x63;&#46;&#x70;&#x72;&#x6f;&#103;&#114;&#x61;&#109;&#x65;&#x72;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#x63;&#x6f;&#109;&#x2e;</a>  I can create a different brown paper tickets account with this email <a href="&#x6d;&#97;&#x69;&#108;&#116;&#111;&#58;&#99;&#46;&#112;&#114;&#x6f;&#x67;&#x72;&#97;&#109;&#101;&#114;&#x2b;&#x62;&#112;&#x74;&#x40;&#x67;&#x6d;&#x61;&#x69;&#108;&#46;&#x63;&#x6f;&#x6d;">&#99;&#46;&#x70;&#114;&#111;&#103;&#114;&#x61;&#109;&#101;&#114;&#x2b;&#x62;&#112;&#x74;&#x40;&#x67;&#109;&#x61;&#x69;&#x6c;&#46;&#99;&#111;&#109;</a> and all of the emails going to that new email go to my main inbox.  This way I don&rsquo;t have to keep creating emails to make new accounts.  Anything between the + and the @ symbols are ignored in gmail only.</p>
+<p>If you use gmail, you can use their wild card feature to have different emails that point to your email.  For example my email is <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#x63;&#46;&#x70;&#x72;&#111;&#x67;&#x72;&#x61;&#x6d;&#101;&#114;&#x40;&#103;&#109;&#97;&#x69;&#108;&#46;&#x63;&#111;&#109;&#x2e;">&#99;&#46;&#x70;&#x72;&#x6f;&#103;&#114;&#97;&#x6d;&#x65;&#114;&#64;&#103;&#109;&#x61;&#x69;&#x6c;&#46;&#99;&#x6f;&#x6d;&#46;</a>  I can create a different brown paper tickets account with this email <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#x6f;&#58;&#99;&#46;&#112;&#114;&#x6f;&#x67;&#x72;&#x61;&#x6d;&#101;&#114;&#43;&#98;&#x70;&#x74;&#x40;&#103;&#109;&#97;&#x69;&#108;&#46;&#99;&#x6f;&#x6d;">&#99;&#46;&#x70;&#114;&#x6f;&#x67;&#114;&#x61;&#109;&#101;&#114;&#x2b;&#x62;&#112;&#x74;&#x40;&#103;&#x6d;&#97;&#x69;&#108;&#x2e;&#99;&#x6f;&#x6d;</a> and all of the emails going to that new email go to my main inbox.  This way I don&rsquo;t have to keep creating emails to make new accounts.  Anything between the + and the @ symbols are ignored in gmail only.</p>
 
 <h3>Lets scale this further (8 to infinite and beyond!)</h3>
 
@@ -1876,145 +2075,9 @@ lowing us to not need to supply the consumer key every time we want to create a 
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/13/setting-up-a-ruby-on-rails-4-dot-0-1beta1-with-osx-mavericks-10-dot-9/">Setting Up a Ruby on Rails 4.0.1beta1 With OSX Mavericks 10.9</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-02-13T22:21:15-08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:21 pm</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I keep having to setup Rails environments for people so I am just going to write my first blog article on how to do it on OSX 10.9.</p>
-
-<h2>Installing the Command line tools</h2>
-
-<p>The GCC compiler is required with installing RVM and Brew, so you need to download and install the xcode command line tools.  Open terminal and type in this:</p>
-
-<figure class='code'><figcaption><span>Install Command line tools</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ xcode-select --install</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Installing HomeBrew</h2>
-
-<p>Homebrew is a package manager that makes it stupid easy to install and update software.  We will be using this tool to install Git, Postgres, and RVM.  To install this tool enter this into the terminal:</p>
-
-<figure class='code'><figcaption><span>Installing HomeBrew</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ ruby -e &quot;$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)&quot;</span>
-</span><span class='line'><span class="go">  $ brew doctor</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The first command fetches and installs brew.  The second will update brew and fetch the latest installation scripts</p>
-
-<h2>Installing Postgres</h2>
-
-<p>Most guides recommend installing MySQL as the db engine, but because Heroku defaults to Postgres and Postgres is the hot right now, I use it in dev and in my production environments.</p>
-
-<p>To install, type this command into the terminal:</p>
-
-<figure class='code'><figcaption><span>Installing Postgres</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ brew update</span>
-</span><span class='line'><span class="go">  $ brew install postgresql</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>At the end of the install, follow the instructions for how to startup the server.  I would recommend to have it autostart with login, so you don’t have to think about it.  If you wish to manually start it when you need it, don’t lose that command to start it.</p>
-
-<h2>Installing RVM</h2>
-
-<p>RVM is a ruby version manager.  It allows you to install multiple versions of ruby on your computer and easily switch between them.  This is important because as new versions of ruby on released, you will want to be able to test websites before deploying them and you may need to switch back to an old version if you encounter bugs.</p>
-
-<figure class='code'><figcaption><span>Installing RVM</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ \curl -L https://get.rvm.io | bash -s stable</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Install Rails</h2>
-
-<p>To install the rails toolset type in this to terminal:</p>
-
-<figure class='code'><figcaption><span>Installing Rails</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ gem install rails</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This gives you rails command in terminal and allows you to create new rails websits.  To verify this installed properly type:</p>
-
-<figure class='code'><figcaption><span>Installing Rails</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ rails --version</span>
-</span><span class='line'><span class="go">  Rails 4.1.0.beta1 </span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Installing Git</h2>
-
-<p>git is the most common tool for managing source code.  I would recommend creating an account on github and using that as your source control.  Check out these guides for a quick start with git</p>
-
-<h3>Quick start git guide from the terminal</h3>
-
-<p>This is one of the best guides I could find on how to quickly emerse yourself into git.
-<a href="http://rogerdudler.github.io/git-guide/" title="Git Guide">Git Guide</a></p>
-
-<h3>GitHub flow</h3>
-
-<p>I uses this pattern for the repo if more than one person is working on it.
-<a href="http://scottchacon.com/2011/08/31/github-flow.html" title="Github Flow">What is GitFlow?</a></p>
-
-<h3>To install Git CLI</h3>
-
-<p>In order to have the most amount of control over your git repo, you will need to install the Git CLI.  Using the CLI can be intimidating at first, but it is definately worth learning.</p>
-
-<figure class='code'><figcaption><span>Git CLI</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ brew update</span>
-</span><span class='line'><span class="go">  $ brew install git</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>To install Github GUI</h3>
-
-<p>I also use Github’s GUI tool because it makes committing easier.  Unfortunately it tends to fall flat on its face outside of the happy path (read merge conflicts and rebasing), so you can’t completely rely on this tool for git management.</p>
-
-<p>Follow the instructions here
-<a href="http://mac.github.com/" title="Github tool">Github for mac</a></p>
-
-<h2>Install Heroku toolbelt</h2>
-
-<p><a href="http://Heroku.com/" title="Heroku">Heroku</a> is a popular hosting service for rails applications, mostly because it is free and easy to use.</p>
-
-<p>Make an account at <a href="http://Heroku.com/" title="Heroku">http://heroku.com/</a></p>
-
-<p>Install the toolbelt found here <a href="https://toolbelt.heroku.com/" title="Heroku Toolbelt">Heroku Toolbelt</a></p>
-
-<h2>Optional: Installing Sublime</h2>
-
-<p>Sublime is probably the most common text editor for Rails development.  You can download it here: <a href="http://www.sublimetext.com/" title="Sublime">Sublime</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/posts/4">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     

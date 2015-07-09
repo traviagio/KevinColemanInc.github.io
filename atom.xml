@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Coleman]]></title>
   <link href="http://www.kcoleman.me/atom.xml" rel="self"/>
   <link href="http://www.kcoleman.me/"/>
-  <updated>2015-07-08T23:34:46-07:00</updated>
+  <updated>2015-07-08T23:53:29-07:00</updated>
   <id>http://www.kcoleman.me/</id>
   <author>
     <name><![CDATA[Kevin Coleman]]></name>
@@ -12,6 +12,42 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Limited Retry Pattern]]></title>
+    <link href="http://www.kcoleman.me/blog/2015/07/08/limited-retry-pattern/"/>
+    <updated>2015-07-08T23:43:12-07:00</updated>
+    <id>http://www.kcoleman.me/blog/2015/07/08/limited-retry-pattern</id>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/horse_statue.jpeg" title="Limited Retry Pattern" class="banner-img" /></p>
+
+<p>The limited retry pattern is a great tool for retrying method calls a limited number of times.  In instances where I want to make an API with a limited number of tries. I would have my method look like this:</p>
+
+<figure class='code'><figcaption><span>limited_retry.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">api_call</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@retries</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="k">begin</span>
+</span><span class='line'>    <span class="n">do_api_call</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">rescue</span> <span class="no">ApiError</span><span class="p">,</span> <span class="no">Timeout</span>
+</span><span class='line'>    <span class="vi">@retries</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="k">retry</span> <span class="k">if</span> <span class="vi">@retries</span> <span class="o">&lt;</span> <span class="mi">5</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The retry method is really powerful in ruby.  If a block is rescued, by calling &ldquo;retry&rdquo; it will attempt to run that block again.  For example, if your server has a spotty connection, it would make sense to retry an API request twice if it failed to reach the server.</p>
+
+<p>The <a href="https://github.com/DiegoSalazar/DefRetry">DefRetry gem</a> by DiegoSalazar can be used to add DSL to your ruby classes that you want to retry a few times.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Adding Queues to Your Models]]></title>
@@ -1480,184 +1516,6 @@
 <p>Whenever I come up with a task that needs to get done, I toss it into my <a href="http://wunderlist.com">Wunderlist</a> inbox.  Now I find that I have a moment with nothing scheduled, I can always look their for guidance.  I only put short actionable items in that list like: do laundry, ready <a href="http://engineering.richrelevance.com/bandits-recommendation-systems/">this</a> article on recommendation systems, or check <a href="http://www.zillow.com">Zillow</a> for homes.</p>
 
 <p>Hopefully by following these goals, I will stumble through life and find myself retired by athange 30, ha!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Twitter Bot on Heroku]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/05/31/twitter-bot-on-heroku/"/>
-    <updated>2014-05-31T21:05:08-07:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/05/31/twitter-bot-on-heroku</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/alley.jpg" title="Twitter bot v1 on Heroku" class="banner-img" /></p>
-
-<p>Inspired by the Technology Review article, <a href="http://www.technologyreview.com/view/527746/how-advanced-socialbots-have-infiltrated-twitter/">How Advanced Social bots Have Infiltrated Twitter</a>, I thought it would be an interesting to see how difficult it is to write a bot to generate followers over a given topic.</p>
-
-<p>I think a first basic start would be to post proven social content from other sources (namely <a href="http://reddit.com/">reddit.com</a>).  Version one of the bot will just repost the top article of the day on a given sub-reddit onto this twitter account.  Lets get started.</p>
-
-<h2>Import the gems</h2>
-
-<p>First I need to create my <code>Gemfile</code> and reference these gems:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">source</span> <span class="s1">&#39;https://rubygems.org&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;twitter&#39;</span>
-</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;redditkit&#39;</span><span class="c1">#, :git =&gt; &#39;https://github.com/samsymons/RedditKit.rb.git&#39;</span>
-</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;redis&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>There are a number of reddit gems, but I found that <a href="https://github.com/samsymons/RedditKit.rb">redditkit</a> seems to be the most maintained.</p>
-
-<p>Redis will be used as our data store to prevent duplicate tweets.</p>
-
-<h2>Twitter Bot code</h2>
-
-<figure class='code'><figcaption><span>twitter_bot.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;twitter&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;redditkit&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;redis&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;open-uri&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">KARMA_THRESHOLD</span><span class="o">=</span><span class="mi">2000</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>First we need to require all of the resources.  Unfortunately these are not automatically loaded like they are in rails.  I set the KARMA_THRESHOLD to a score of 2000, so that we only share quality content.  <code>open-uri</code> will be used with the image upload.  If you upload the image as opposed to sharing the link, the photo will appear in the stream, thus giving it more exposure.</p>
-
-<figure class='code'><figcaption><span>twitter_bot.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;REDISCLOUD_URL&quot;</span><span class="o">]</span> <span class="o">||=</span> <span class="s2">&quot;redis://localhost:6379/&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;REDISCLOUD_URL&quot;</span><span class="o">]</span>
-</span><span class='line'>    <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;REDISCLOUD_URL&quot;</span><span class="o">]</span><span class="p">)</span>
-</span><span class='line'>    <span class="vg">$redis</span> <span class="o">=</span> <span class="no">Redis</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:host</span> <span class="o">=&gt;</span> <span class="n">uri</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="ss">:port</span> <span class="o">=&gt;</span> <span class="n">uri</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="n">uri</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Since I am hosting this with Heroku, I need to set a default environment variable for the rediscloud_url which is set by the <a href="http://redislabs.com/redis-cloud">Redis cloud addin</a></p>
-
-<p>Next I configure the twitter gem with the API keys I got from their website</p>
-
-<figure class='code'><figcaption><span>twitter_bot.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">client</span> <span class="o">=</span> <span class="no">Twitter</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">consumer_key</span>        <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">consumer_secret</span>     <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token</span>        <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token_secret</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">authenticated_client</span> <span class="o">=</span> <span class="no">RedditKit</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
-</span><span class='line'><span class="n">posts</span> <span class="o">=</span> <span class="n">authenticated_client</span><span class="o">.</span><span class="n">links</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="ss">:category</span> <span class="o">=&gt;</span> <span class="ss">:top</span><span class="p">,</span> <span class="ss">time</span><span class="p">:</span> <span class="ss">:hour</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I also login to my reddit account and retrieve the links for the sub-reddit of my choice.</p>
-
-<h2>Loop through all of the links and find something to share</h2>
-
-<figure class='code'><figcaption><span>twitter_bot.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">posts</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">link</span><span class="o">|</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">score</span> <span class="o">&gt;</span> <span class="no">KARMA_THRESHOLD</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">link</span><span class="o">[</span><span class="ss">:domain</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;imgur.com&quot;</span> <span class="o">||</span> <span class="n">link</span><span class="o">[</span><span class="ss">:domain</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;i.imgur.com&quot;</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span><span class="vg">$redis</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;link:&#39;</span><span class="o">+</span><span class="n">link</span><span class="o">.</span><span class="n">id</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">include?</span> <span class="s2">&quot;r/&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">include?</span> <span class="s2">&quot;i.imgur&quot;</span>
-</span><span class='line'>      <span class="n">image_url</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span>
-</span><span class='line'>    <span class="k">else</span>
-</span><span class='line'>      <span class="n">image_url</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/http:\/\//</span><span class="p">,</span> <span class="s1">&#39;http://i.&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.jpg&quot;</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;cringe.png&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">fo</span><span class="o">|</span>
-</span><span class='line'>      <span class="n">fo</span><span class="o">.</span><span class="n">write</span> <span class="nb">open</span><span class="p">(</span><span class="n">image_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="vg">$redis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;link:&#39;</span><span class="o">+</span><span class="n">link</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="kp">true</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">client</span><span class="o">.</span><span class="n">update_with_media</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">title</span> <span class="o">+</span> <span class="s2">&quot; #LOL &quot;</span><span class="p">,</span> <span class="no">File</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;cringe.png&#39;</span><span class="p">))</span>
-</span><span class='line'>    <span class="k">break</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I want to only select links with a high enough karma score, with an imgur image, and not in my redis store and not referencing another reddit thread.  I don&rsquo;t want them to include any reddit references in my tweets if I can help it.</p>
-
-<p>Sometimes people post a link to the imgur page instead of directly to the link, so I need to change up the image_url as necessary depending on whether or not they did so.</p>
-
-<p>Next I download the image so I can re-upload it to twitter later.   Next I create the token in my redis store so I don&rsquo;t accidently have any duplicate image links.  I check against that in the if statement above.</p>
-
-<p>Now I update my twitter feed with the link title, a hash tag, and the new image I just downloaded.  Because I am running this on Heroku, the image saved to disk will get lost when the dyno gets killed with the scheduler ends.  So I don&rsquo;t really need to worry about clean up.</p>
-
-<p>I want this to only run once, because twitter will get upset if they notice that fire off tweets in bursts.  I think once per day is a good starting ground and I can move up the frequency, as I get more and more brave.</p>
-
-<h2>Deploy to Heroku</h2>
-
-<p>I need to make this a git repo, add my code so far.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">git init</span>
-</span><span class='line'><span class="go">git add .</span>
-</span><span class='line'><span class="go">git commit -m &quot;first twitter bot commit!&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now I need to make the <a href="http://heroku.com">Heroku</a> application to run this under and push it up to the server</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">heroku apps:create twitter-bot</span>
-</span><span class='line'><span class="go">git push heroku master</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Heroku Scheduler</h2>
-
-<p>Heroku comes with a free scheduler that I can run in daily increments, perfect for this application.  I set configure it so it runs <code>ruby twitter_bot.rb</code> every day at midnight, so users will be able to see my tweets in the morning when they wake up.</p>
-
-<h2>In the future&hellip;.</h2>
-
-<p>I plan on adding more content sources and more frequent posts.  I am running this along side the chrome extension <a href="https://github.com/ztratar/followr">Followr</a>, which is an automated tool for favoriting tweets of other users based on preset hash tags.  So far it has earned me 10 new followers and 3 new re-tweets.</p>
 ]]></content>
   </entry>
   

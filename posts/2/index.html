@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="This is a continuation post from Angularjs Rails and SEO Part 1. Now we need to configure Ruby on Rails to redirect Google&rsquo;s requests to get &hellip;">
+  <meta name="description" content="When building a rails application, sometimes it is quicker to build one code base that is shared on two completely different frontend applications. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -102,6 +102,175 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/10/09/one-rails-app-two-web-applications/">One Rails App Two Web Applications</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-10-09T17:11:45-07:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:11 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/mountains.jpeg" title="One Rails App Two Web Applications" class="banner-img"  /></p>
+
+<p>When building a rails application, sometimes it is quicker to build one code base that is shared on two completely different frontend applications.  I am going to discuss the design approaches I used to segregate the two rails websites within a single rails application base.</p>
+
+<h2>Configuring the Front End</h2>
+
+<p>My first &lsquo;trick&rsquo; is to build the system such that all interactions are run through an RESTful API.  This gives one surface area for applications (front end apps or mobile or whatever) and it reduces the amount of duplication that maybe experienced across the two different websites.</p>
+
+<p>For my projects, I lean towards AngularJS, mainly because there is a strong community backing the technology, not to mention this is one of Google&rsquo;s babies.</p>
+
+<p>Both of these websites will have a unique look and feel as well as style sheets and html designs.</p>
+
+<h3>Break apart the CSS files</h3>
+
+<p>I divided my assets/stylesheets folder to look like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  assets/stylesheets/application.css
+</span><span class='line'>  assets/stylesheets/app1/app1.css
+</span><span class='line'>  assets/stylesheets/app2/app2.css</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>application.css</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="c">/*</span>
+</span><span class='line'><span class="c"> *= require_self</span>
+</span><span class='line'><span class="c"> */</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note how I removed the standard <code>require_tree .</code> line to prevent it from auto loading the entire project.  I just want it to load global attributes for the two applications.</p>
+
+<figure class='code'><figcaption><span>app1.css.scss</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="k">@import</span> <span class="s2">&quot;compass/reset&quot;</span>
+</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;compass&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/variables&quot;</span>
+</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/typography&quot;</span>
+</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/footer&quot;</span>
+</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/alerts&quot;</span>
+</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/buttons&quot;</span>
+</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/sprites&quot;</span>
+</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/navigation&quot;</span>
+</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/modals&quot;</span>
+</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/framework_and_overrides&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/pages/bootstrap_override&quot;</span>
+</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/pages/questions&quot;</span>
+</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/pages/content&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here I am explicitly including the app1.css resources in app1.</p>
+
+<p>application.css will include styling that is shared between the two applications.  An example, might be your frameworks like bootstrap.</p>
+
+<p>appN.css will include the styles that are unique to your web application.  You should create an /assets/stylesheets/app1/ folder to house all of your style sheets for that specific app.</p>
+
+<p>In my layouts view, you will only want to be loading app1 and application when a user requests an app1 website and app2 and application when the user requests an app2 website.</p>
+
+<p>By checking the request host, you can determine the domain the user is on you can decide which css files need to be delivered to the client.  The host check should be offloaded to a helper method that would like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">def</span> <span class="nf">app1?</span>
+</span><span class='line'>    <span class="s1">&#39;app1.com&#39;</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">host</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the rails views layout folder, you only include the style sheets that are used</p>
+
+<figure class='code'><figcaption><span>layout.html.slim</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">==</span> <span class="n">stylesheet_link_tag</span> <span class="s2">&quot;application&quot;</span><span class="p">,</span> <span class="ss">:media</span> <span class="o">=&gt;</span> <span class="s1">&#39;all&#39;</span>
+</span><span class='line'><span class="o">-</span> <span class="k">if</span> <span class="n">app1?</span>
+</span><span class='line'>  <span class="o">==</span> <span class="n">stylesheet_link_tag</span> <span class="s2">&quot;app1&quot;</span><span class="p">,</span> <span class="ss">:media</span> <span class="o">=&gt;</span> <span class="s1">&#39;all&#39;</span>
+</span><span class='line'><span class="o">-</span> <span class="k">elsif</span> <span class="n">app2?</span>
+</span><span class='line'>  <span class="o">==</span> <span class="n">stylesheet_link_tag</span> <span class="s2">&quot;app2&quot;</span><span class="p">,</span> <span class="ss">:media</span> <span class="o">=&gt;</span> <span class="s1">&#39;all&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You need to tell rails to precompile these new css files</p>
+
+<figure class='code'><figcaption><span>config/initializers/assets.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">precompile</span> <span class="o">+=</span> <span class="sx">%w( app1.css app2.css )</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Javascript Divorce</h3>
+
+<p>You can use a similar technique to break up your javascript files into two projects</p>
+
+<figure class='code'><figcaption><span>layout.html.slim</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="o">==</span> <span class="n">javascript_include_tag</span> <span class="s1">&#39;application&#39;</span>
+</span><span class='line'>  <span class="o">-</span> <span class="k">if</span> <span class="n">app1?</span>
+</span><span class='line'>    <span class="o">==</span> <span class="n">javascript_include_tag</span> <span class="s1">&#39;app1&#39;</span>
+</span><span class='line'>  <span class="o">-</span> <span class="k">elsif</span> <span class="n">app2?</span>
+</span><span class='line'>    <span class="o">==</span> <span class="n">javascript_include_tag</span> <span class="s1">&#39;app2&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Don&rsquo;t forget to tell rails to precompile these new assets.</p>
+
+<figure class='code'><figcaption><span>config/initializers/assets.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">precompile</span> <span class="o">+=</span> <span class="sx">%w( app1.js app2.js )</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Backend</h2>
+
+<p>If you want to turn certain features on and off for certain applications, you should use the <a href="https://github.com/FetLife/rollout">rollout gem</a>.  It is a great tool for enabling and disabling features on the fly, or just completely locking up certain parts of the application.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -840,205 +1009,6 @@
 <p>Whenever I come up with a task that needs to get done, I toss it into my <a href="http://wunderlist.com">Wunderlist</a> inbox.  Now I find that I have a moment with nothing scheduled, I can always look their for guidance.  I only put short actionable items in that list like: do laundry, ready <a href="http://engineering.richrelevance.com/bandits-recommendation-systems/">this</a> article on recommendation systems, or check <a href="http://www.zillow.com">Zillow</a> for homes.</p>
 
 <p>Hopefully by following these goals, I will stumble through life and find myself retired by athange 30, ha!</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/05/31/twitter-bot-on-heroku/">Twitter Bot on Heroku</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-05-31T21:05:08-07:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>9:05 pm</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/alley.jpg" title="Twitter bot v1 on Heroku" class="banner-img" /></p>
-
-<p>Inspired by the Technology Review article, <a href="http://www.technologyreview.com/view/527746/how-advanced-socialbots-have-infiltrated-twitter/">How Advanced Social bots Have Infiltrated Twitter</a>, I thought it would be an interesting to see how difficult it is to write a bot to generate followers over a given topic.</p>
-
-<p>I think a first basic start would be to post proven social content from other sources (namely <a href="http://reddit.com/">reddit.com</a>).  Version one of the bot will just repost the top article of the day on a given sub-reddit onto this twitter account.  Lets get started.</p>
-
-<h2>Import the gems</h2>
-
-<p>First I need to create my <code>Gemfile</code> and reference these gems:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">source</span> <span class="s1">&#39;https://rubygems.org&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;twitter&#39;</span>
-</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;redditkit&#39;</span><span class="c1">#, :git =&gt; &#39;https://github.com/samsymons/RedditKit.rb.git&#39;</span>
-</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;redis&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>There are a number of reddit gems, but I found that <a href="https://github.com/samsymons/RedditKit.rb">redditkit</a> seems to be the most maintained.</p>
-
-<p>Redis will be used as our data store to prevent duplicate tweets.</p>
-
-<h2>Twitter Bot code</h2>
-
-<figure class='code'><figcaption><span>twitter_bot.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;twitter&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;redditkit&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;redis&#39;</span>
-</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;open-uri&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">KARMA_THRESHOLD</span><span class="o">=</span><span class="mi">2000</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>First we need to require all of the resources.  Unfortunately these are not automatically loaded like they are in rails.  I set the KARMA_THRESHOLD to a score of 2000, so that we only share quality content.  <code>open-uri</code> will be used with the image upload.  If you upload the image as opposed to sharing the link, the photo will appear in the stream, thus giving it more exposure.</p>
-
-<figure class='code'><figcaption><span>twitter_bot.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;REDISCLOUD_URL&quot;</span><span class="o">]</span> <span class="o">||=</span> <span class="s2">&quot;redis://localhost:6379/&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;REDISCLOUD_URL&quot;</span><span class="o">]</span>
-</span><span class='line'>    <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;REDISCLOUD_URL&quot;</span><span class="o">]</span><span class="p">)</span>
-</span><span class='line'>    <span class="vg">$redis</span> <span class="o">=</span> <span class="no">Redis</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:host</span> <span class="o">=&gt;</span> <span class="n">uri</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="ss">:port</span> <span class="o">=&gt;</span> <span class="n">uri</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="n">uri</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Since I am hosting this with Heroku, I need to set a default environment variable for the rediscloud_url which is set by the <a href="http://redislabs.com/redis-cloud">Redis cloud addin</a></p>
-
-<p>Next I configure the twitter gem with the API keys I got from their website</p>
-
-<figure class='code'><figcaption><span>twitter_bot.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">client</span> <span class="o">=</span> <span class="no">Twitter</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">consumer_key</span>        <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">consumer_secret</span>     <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token</span>        <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">access_token_secret</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">authenticated_client</span> <span class="o">=</span> <span class="no">RedditKit</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
-</span><span class='line'><span class="n">posts</span> <span class="o">=</span> <span class="n">authenticated_client</span><span class="o">.</span><span class="n">links</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="ss">:category</span> <span class="o">=&gt;</span> <span class="ss">:top</span><span class="p">,</span> <span class="ss">time</span><span class="p">:</span> <span class="ss">:hour</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I also login to my reddit account and retrieve the links for the sub-reddit of my choice.</p>
-
-<h2>Loop through all of the links and find something to share</h2>
-
-<figure class='code'><figcaption><span>twitter_bot.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">posts</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">link</span><span class="o">|</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">score</span> <span class="o">&gt;</span> <span class="no">KARMA_THRESHOLD</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">link</span><span class="o">[</span><span class="ss">:domain</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;imgur.com&quot;</span> <span class="o">||</span> <span class="n">link</span><span class="o">[</span><span class="ss">:domain</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;i.imgur.com&quot;</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span><span class="vg">$redis</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;link:&#39;</span><span class="o">+</span><span class="n">link</span><span class="o">.</span><span class="n">id</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">include?</span> <span class="s2">&quot;r/&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">include?</span> <span class="s2">&quot;i.imgur&quot;</span>
-</span><span class='line'>      <span class="n">image_url</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span>
-</span><span class='line'>    <span class="k">else</span>
-</span><span class='line'>      <span class="n">image_url</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/http:\/\//</span><span class="p">,</span> <span class="s1">&#39;http://i.&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.jpg&quot;</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;cringe.png&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">fo</span><span class="o">|</span>
-</span><span class='line'>      <span class="n">fo</span><span class="o">.</span><span class="n">write</span> <span class="nb">open</span><span class="p">(</span><span class="n">image_url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="vg">$redis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;link:&#39;</span><span class="o">+</span><span class="n">link</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="kp">true</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">client</span><span class="o">.</span><span class="n">update_with_media</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">title</span> <span class="o">+</span> <span class="s2">&quot; #LOL &quot;</span><span class="p">,</span> <span class="no">File</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;cringe.png&#39;</span><span class="p">))</span>
-</span><span class='line'>    <span class="k">break</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I want to only select links with a high enough karma score, with an imgur image, and not in my redis store and not referencing another reddit thread.  I don&rsquo;t want them to include any reddit references in my tweets if I can help it.</p>
-
-<p>Sometimes people post a link to the imgur page instead of directly to the link, so I need to change up the image_url as necessary depending on whether or not they did so.</p>
-
-<p>Next I download the image so I can re-upload it to twitter later.   Next I create the token in my redis store so I don&rsquo;t accidently have any duplicate image links.  I check against that in the if statement above.</p>
-
-<p>Now I update my twitter feed with the link title, a hash tag, and the new image I just downloaded.  Because I am running this on Heroku, the image saved to disk will get lost when the dyno gets killed with the scheduler ends.  So I don&rsquo;t really need to worry about clean up.</p>
-
-<p>I want this to only run once, because twitter will get upset if they notice that fire off tweets in bursts.  I think once per day is a good starting ground and I can move up the frequency, as I get more and more brave.</p>
-
-<h2>Deploy to Heroku</h2>
-
-<p>I need to make this a git repo, add my code so far.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">git init</span>
-</span><span class='line'><span class="go">git add .</span>
-</span><span class='line'><span class="go">git commit -m &quot;first twitter bot commit!&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now I need to make the <a href="http://heroku.com">Heroku</a> application to run this under and push it up to the server</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">heroku apps:create twitter-bot</span>
-</span><span class='line'><span class="go">git push heroku master</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Heroku Scheduler</h2>
-
-<p>Heroku comes with a free scheduler that I can run in daily increments, perfect for this application.  I set configure it so it runs <code>ruby twitter_bot.rb</code> every day at midnight, so users will be able to see my tweets in the morning when they wake up.</p>
-
-<h2>In the future&hellip;.</h2>
-
-<p>I plan on adding more content sources and more frequent posts.  I am running this along side the chrome extension <a href="https://github.com/ztratar/followr">Followr</a>, which is an automated tool for favoriting tweets of other users based on preset hash tags.  So far it has earned me 10 new followers and 3 new re-tweets.</p>
 </div>
   
   

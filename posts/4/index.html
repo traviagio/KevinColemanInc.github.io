@@ -5,14 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - Kevin Coleman</title>
+  <title>Kevin Coleman</title>
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="Blog Archive 2015 Limited Retry Pattern
-Jul 08 2015 Adding Queues to Your Models
-Jun 23 2015 Hosting Side Projects for Free
-Jun 10 2015 Adding &hellip;">
+  <meta name="description" content="I keep having to setup Rails environments for people so I am just going to write my first blog article on how to do it on OSX 10.9. Installing the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -21,7 +18,7 @@ Jun 10 2015 Adding &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.kcoleman.me/blog/archives">
+  <link rel="canonical" href="http://www.kcoleman.me/posts/4">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Kevin Coleman" type="application/atom+xml">
@@ -103,366 +100,160 @@ Jun 10 2015 Adding &hellip;">
 </nav>
   <div id="main">
     <div id="content">
-      <div>
-<article role="article">
+      <div class="blog-index">
   
+  
+  
+    <article>
+      
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/13/setting-up-a-ruby-on-rails-4-dot-0-1beta1-with-osx-mavericks-10-dot-9/">Setting Up a Ruby on Rails 4.0.1beta1 With OSX Mavericks 10.9</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-02-13T22:21:15-08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>13</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:21 pm</span></time>
+        
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives">
 
 
+  <div class="entry-content"><p>I keep having to setup Rails environments for people so I am just going to write my first blog article on how to do it on OSX 10.9.</p>
 
-  
-  <h2>2015</h2>
+<h2>Installing the Command line tools</h2>
 
-<article>
-  
-<h1><a href="/blog/2015/07/08/limited-retry-pattern/">Limited Retry Pattern</a></h1>
-<time datetime="2015-07-08T23:43:12-07:00" pubdate><span class='month'>Jul</span> <span class='day'>08</span> <span class='year'>2015</span></time>
+<p>The GCC compiler is required with installing RVM and Brew, so you need to download and install the xcode command line tools.  Open terminal and type in this:</p>
 
+<figure class='code'><figcaption><span>Install Command line tools</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ xcode-select --install</span>
+</span></code></pre></td></tr></table></div></figure>
 
-</article>
 
+<h2>Installing HomeBrew</h2>
 
+<p>Homebrew is a package manager that makes it stupid easy to install and update software.  We will be using this tool to install Git, Postgres, and RVM.  To install this tool enter this into the terminal:</p>
 
-<article>
-  
-<h1><a href="/blog/2015/06/23/queable-concern/">Adding Queues to Your Models</a></h1>
-<time datetime="2015-06-23T21:54:42-07:00" pubdate><span class='month'>Jun</span> <span class='day'>23</span> <span class='year'>2015</span></time>
+<figure class='code'><figcaption><span>Installing HomeBrew</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ ruby -e &quot;$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)&quot;</span>
+</span><span class='line'><span class="go">  $ brew doctor</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-</article>
+<p>The first command fetches and installs brew.  The second will update brew and fetch the latest installation scripts</p>
 
+<h2>Installing Postgres</h2>
 
+<p>Most guides recommend installing MySQL as the db engine, but because Heroku defaults to Postgres and Postgres is the hot right now, I use it in dev and in my production environments.</p>
 
-<article>
-  
-<h1><a href="/blog/2015/06/10/hosting-side-projects/">Hosting Side Projects for Free</a></h1>
-<time datetime="2015-06-10T19:33:59-07:00" pubdate><span class='month'>Jun</span> <span class='day'>10</span> <span class='year'>2015</span></time>
+<p>To install, type this command into the terminal:</p>
 
+<figure class='code'><figcaption><span>Installing Postgres</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ brew update</span>
+</span><span class='line'><span class="go">  $ brew install postgresql</span>
+</span></code></pre></td></tr></table></div></figure>
 
-</article>
 
+<p>At the end of the install, follow the instructions for how to startup the server.  I would recommend to have it autostart with login, so you don’t have to think about it.  If you wish to manually start it when you need it, don’t lose that command to start it.</p>
 
+<h2>Installing RVM</h2>
 
-<article>
-  
-<h1><a href="/blog/2015/06/06/adding-search-to-atlanta-startup-jobs/">Adding Search to Atlanta Startup Jobs</a></h1>
-<time datetime="2015-06-06T05:23:14-07:00" pubdate><span class='month'>Jun</span> <span class='day'>06</span> <span class='year'>2015</span></time>
+<p>RVM is a ruby version manager.  It allows you to install multiple versions of ruby on your computer and easily switch between them.  This is important because as new versions of ruby on released, you will want to be able to test websites before deploying them and you may need to switch back to an old version if you encounter bugs.</p>
 
+<figure class='code'><figcaption><span>Installing RVM</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ \curl -L https://get.rvm.io | bash -s stable</span>
+</span></code></pre></td></tr></table></div></figure>
 
-</article>
 
+<h2>Install Rails</h2>
 
+<p>To install the rails toolset type in this to terminal:</p>
 
-<article>
-  
-<h1><a href="/blog/2015/06/03/rails-patterns-builders-and-models/">Rails Patterns: Builders and Models</a></h1>
-<time datetime="2015-06-03T00:23:38-07:00" pubdate><span class='month'>Jun</span> <span class='day'>03</span> <span class='year'>2015</span></time>
+<figure class='code'><figcaption><span>Installing Rails</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ gem install rails</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/rails/'>rails,</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a></span>
-</footer>
 
+<p>This gives you rails command in terminal and allows you to create new rails websits.  To verify this installed properly type:</p>
 
-</article>
+<figure class='code'><figcaption><span>Installing Rails</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ rails --version</span>
+</span><span class='line'><span class="go">  Rails 4.1.0.beta1 </span>
+</span></code></pre></td></tr></table></div></figure>
 
 
+<h2>Installing Git</h2>
 
-<article>
-  
-<h1><a href="/blog/2015/04/07/Ruby-on-Rails-Grape-gem/">Ruby on Rails Grape Gem: Pros and Cons</a></h1>
-<time datetime="2015-04-07T01:36:51-07:00" pubdate><span class='month'>Apr</span> <span class='day'>07</span> <span class='year'>2015</span></time>
+<p>git is the most common tool for managing source code.  I would recommend creating an account on github and using that as your source control.  Check out these guides for a quick start with git</p>
 
+<h3>Quick start git guide from the terminal</h3>
 
-</article>
+<p>This is one of the best guides I could find on how to quickly emerse yourself into git.
+<a href="http://rogerdudler.github.io/git-guide/" title="Git Guide">Git Guide</a></p>
 
+<h3>GitHub flow</h3>
 
+<p>I uses this pattern for the repo if more than one person is working on it.
+<a href="http://scottchacon.com/2011/08/31/github-flow.html" title="Github Flow">What is GitFlow?</a></p>
 
-<article>
-  
-<h1><a href="/blog/2015/03/12/android-app-architecture/">Otto Meet Retrofit: How to Build a Scalable and Performant Android Application</a></h1>
-<time datetime="2015-03-12T12:46:43-07:00" pubdate><span class='month'>Mar</span> <span class='day'>12</span> <span class='year'>2015</span></time>
+<h3>To install Git CLI</h3>
 
+<p>In order to have the most amount of control over your git repo, you will need to install the Git CLI.  Using the CLI can be intimidating at first, but it is definately worth learning.</p>
 
-</article>
+<figure class='code'><figcaption><span>Git CLI</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  $ brew update</span>
+</span><span class='line'><span class="go">  $ brew install git</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
+<h3>To install Github GUI</h3>
 
-<article>
-  
-<h1><a href="/blog/2015/01/12/atlanta-startup-jobs/">Atlanta Startup Jobs - Scratch Your Own Itch</a></h1>
-<time datetime="2015-01-12T17:52:21-08:00" pubdate><span class='month'>Jan</span> <span class='day'>12</span> <span class='year'>2015</span></time>
+<p>I also use Github’s GUI tool because it makes committing easier.  Unfortunately it tends to fall flat on its face outside of the happy path (read merge conflicts and rebasing), so you can’t completely rely on this tool for git management.</p>
 
+<p>Follow the instructions here
+<a href="http://mac.github.com/" title="Github tool">Github for mac</a></p>
 
-</article>
+<h2>Install Heroku toolbelt</h2>
 
+<p><a href="http://Heroku.com/" title="Heroku">Heroku</a> is a popular hosting service for rails applications, mostly because it is free and easy to use.</p>
 
+<p>Make an account at <a href="http://Heroku.com/" title="Heroku">http://heroku.com/</a></p>
 
-<article>
-  
-<h1><a href="/blog/2015/01/08/happybeam/">SideProject: HappyBeam - Meditate and Improve</a></h1>
-<time datetime="2015-01-08T10:11:59-08:00" pubdate><span class='month'>Jan</span> <span class='day'>08</span> <span class='year'>2015</span></time>
+<p>Install the toolbelt found here <a href="https://toolbelt.heroku.com/" title="Heroku Toolbelt">Heroku Toolbelt</a></p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/projects/'>projects</a></span>
-</footer>
+<h2>Optional: Installing Sublime</h2>
 
-
-</article>
-
-
-
-  
-  <h2>2014</h2>
-
-<article>
-  
-<h1><a href="/blog/2014/10/26/how-to-win-a-hackathon/">How to Win a Hackathon</a></h1>
-<time datetime="2014-10-26T17:14:40-07:00" pubdate><span class='month'>Oct</span> <span class='day'>26</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/10/09/one-rails-app-two-web-applications/">One Rails App Two Web Applications</a></h1>
-<time datetime="2014-10-09T17:11:45-07:00" pubdate><span class='month'>Oct</span> <span class='day'>09</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/10/07/angularjs-rails-and-seo-part-2/">Angularjs Rails and SEO Part 2</a></h1>
-<time datetime="2014-10-07T17:26:43-07:00" pubdate><span class='month'>Oct</span> <span class='day'>07</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/10/03/angularjs-rails-seo/">Angularjs Rails and SEO Part 1</a></h1>
-<time datetime="2014-10-03T09:05:45-07:00" pubdate><span class='month'>Oct</span> <span class='day'>03</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/07/28/new-house/">Buying My First Real Estate Investment</a></h1>
-<time datetime="2014-07-28T09:46:17-07:00" pubdate><span class='month'>Jul</span> <span class='day'>28</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/real-estate/'>real_estate</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/07/23/how-to-get-osx-git-branch-name-in-console/">How to Get OSX Git Branch Name in Console</a></h1>
-<time datetime="2014-07-23T12:13:52-07:00" pubdate><span class='month'>Jul</span> <span class='day'>23</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/07/05/web-consulting/">How to Start Web Consulting</a></h1>
-<time datetime="2014-07-05T08:46:57-07:00" pubdate><span class='month'>Jul</span> <span class='day'>05</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/06/21/goodie-hack-number-2/">Goodie Hack #2</a></h1>
-<time datetime="2014-06-21T14:31:51-07:00" pubdate><span class='month'>Jun</span> <span class='day'>21</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/06/13/entry-level-rails/">What It Takes to Be Entry Level Rails Developers</a></h1>
-<time datetime="2014-06-13T13:42:01-07:00" pubdate><span class='month'>Jun</span> <span class='day'>13</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/06/05/rails-4-dot-1-enums-how-not-to-handle-states/">Rails 4.1 Enums: How Not to Handle States</a></h1>
-<time datetime="2014-06-05T10:08:29-07:00" pubdate><span class='month'>Jun</span> <span class='day'>05</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/06/04/path-to-success/">My Path to Success</a></h1>
-<time datetime="2014-06-04T14:50:34-07:00" pubdate><span class='month'>Jun</span> <span class='day'>04</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/05/31/twitter-bot-on-heroku/">Twitter Bot on Heroku</a></h1>
-<time datetime="2014-05-31T21:05:08-07:00" pubdate><span class='month'>May</span> <span class='day'>31</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/05/31/url-shorter-with-redis-and-rails/">Rails and Redis URL Shortener in Same Application</a></h1>
-<time datetime="2014-05-31T11:22:47-07:00" pubdate><span class='month'>May</span> <span class='day'>31</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/05/17/tagging-models/">Tagging Models</a></h1>
-<time datetime="2014-05-17T08:14:24-07:00" pubdate><span class='month'>May</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/05/16/gem-configuration-defaults/">Gem Configuration Defaults</a></h1>
-<time datetime="2014-05-16T19:48:09-07:00" pubdate><span class='month'>May</span> <span class='day'>16</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/05/15/custom-environements-with-rails-4/">Custom Environments With Rails 4</a></h1>
-<time datetime="2014-05-15T07:41:53-07:00" pubdate><span class='month'>May</span> <span class='day'>15</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/04/30/nodejs-chat-guide/">NodeJS Chat Guide</a></h1>
-<time datetime="2014-04-30T09:40:07-07:00" pubdate><span class='month'>Apr</span> <span class='day'>30</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/04/16/rapid-fire-ticket-purchasing-and-the-extendable-web/">Rapid Ticket Purchasing and the Extendable Web</a></h1>
-<time datetime="2014-04-16T09:30:31-07:00" pubdate><span class='month'>Apr</span> <span class='day'>16</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/chrome/'>chrome</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/03/23/how-to-make-a-gem/">Extending Active Record in Rails 4.1</a></h1>
-<time datetime="2014-03-23T20:40:48-07:00" pubdate><span class='month'>Mar</span> <span class='day'>23</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/03/17/reporting-with-rails-part-1/">Reporting With Rails Part 2</a></h1>
-<time datetime="2014-03-17T22:49:55-07:00" pubdate><span class='month'>Mar</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/03/11/reporting-with-rails-p1/">Reporting With Rails Part 1</a></h1>
-<time datetime="2014-03-11T10:05:11-07:00" pubdate><span class='month'>Mar</span> <span class='day'>11</span> <span class='year'>2014</span></time>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/02/13/setting-up-a-ruby-on-rails-4-dot-0-1beta1-with-osx-mavericks-10-dot-9/">Setting Up a Ruby on Rails 4.0.1beta1 With OSX Mavericks 10.9</a></h1>
-<time datetime="2014-02-13T22:21:15-08:00" pubdate><span class='month'>Feb</span> <span class='day'>13</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ruby-on-rails/'>ruby on rails</a></span>
-</footer>
-
-
-</article>
-
+<p>Sublime is probably the most common text editor for Rails development.  You can download it here: <a href="http://www.sublimetext.com/" title="Sublime">Sublime</a></p>
 </div>
-
   
-</article>
+  
 
 
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/posts/3">Newer &rarr;</a>
+    
+  </div>
 </div>
-
 <aside class="sidebar">
   
     
   
 </aside>
-
 
     </div>
   </div>

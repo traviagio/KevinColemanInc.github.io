@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="At work recently, we needed to introduce the concept of a queue into our rails app. MySQL really doesn&rsquo;t do a great job with these types of &hellip;">
+  <meta name="description" content="The limited retry pattern is a great tool for retrying method calls a limited number of times. In instances where I want to make an API with a &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -102,6 +102,63 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/07/08/limited-retry-pattern/">Limited Retry Pattern</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-07-08T23:43:12-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:43 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/horse_statue.jpeg" title="Limited Retry Pattern" class="banner-img" /></p>
+
+<p>The limited retry pattern is a great tool for retrying method calls a limited number of times.  In instances where I want to make an API with a limited number of tries. I would have my method look like this:</p>
+
+<figure class='code'><figcaption><span>limited_retry.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">api_call</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@retries</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="k">begin</span>
+</span><span class='line'>    <span class="n">do_api_call</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">rescue</span> <span class="no">ApiError</span><span class="p">,</span> <span class="no">Timeout</span>
+</span><span class='line'>    <span class="vi">@retries</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="k">retry</span> <span class="k">if</span> <span class="vi">@retries</span> <span class="o">&lt;</span> <span class="mi">5</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The retry method is really powerful in ruby.  If a block is rescued, by calling &ldquo;retry&rdquo; it will attempt to run that block again.  For example, if your server has a spotty connection, it would make sense to retry an API request twice if it failed to reach the server.</p>
+
+<p>The <a href="https://github.com/DiegoSalazar/DefRetry">DefRetry gem</a> by DiegoSalazar can be used to add DSL to your ruby classes that you want to retry a few times.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1052,175 +1109,6 @@
 <p>Don&rsquo;t forget to bring business cards! Remember this event should be about the networking and not the prize.</p>
 
 <p>Be sure to communicate with everyone you talk with what your skillset is and what you are interested in.  This will help them understand how you can help them in the future (and how they can help you).</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/10/09/one-rails-app-two-web-applications/">One Rails App Two Web Applications</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-10-09T17:11:45-07:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:11 pm</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/mountains.jpeg" title="One Rails App Two Web Applications" class="banner-img"  /></p>
-
-<p>When building a rails application, sometimes it is quicker to build one code base that is shared on two completely different frontend applications.  I am going to discuss the design approaches I used to segregate the two rails websites within a single rails application base.</p>
-
-<h2>Configuring the Front End</h2>
-
-<p>My first &lsquo;trick&rsquo; is to build the system such that all interactions are run through an RESTful API.  This gives one surface area for applications (front end apps or mobile or whatever) and it reduces the amount of duplication that maybe experienced across the two different websites.</p>
-
-<p>For my projects, I lean towards AngularJS, mainly because there is a strong community backing the technology, not to mention this is one of Google&rsquo;s babies.</p>
-
-<p>Both of these websites will have a unique look and feel as well as style sheets and html designs.</p>
-
-<h3>Break apart the CSS files</h3>
-
-<p>I divided my assets/stylesheets folder to look like this:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>  assets/stylesheets/application.css
-</span><span class='line'>  assets/stylesheets/app1/app1.css
-</span><span class='line'>  assets/stylesheets/app2/app2.css</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>application.css</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="c">/*</span>
-</span><span class='line'><span class="c"> *= require_self</span>
-</span><span class='line'><span class="c"> */</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Note how I removed the standard <code>require_tree .</code> line to prevent it from auto loading the entire project.  I just want it to load global attributes for the two applications.</p>
-
-<figure class='code'><figcaption><span>app1.css.scss</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="k">@import</span> <span class="s2">&quot;compass/reset&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;compass&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/variables&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/typography&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/footer&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/alerts&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/buttons&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/sprites&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/navigation&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/modals&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/partials/framework_and_overrides&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/pages/bootstrap_override&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/pages/questions&quot;</span>
-</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;app1/pages/content&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Here I am explicitly including the app1.css resources in app1.</p>
-
-<p>application.css will include styling that is shared between the two applications.  An example, might be your frameworks like bootstrap.</p>
-
-<p>appN.css will include the styles that are unique to your web application.  You should create an /assets/stylesheets/app1/ folder to house all of your style sheets for that specific app.</p>
-
-<p>In my layouts view, you will only want to be loading app1 and application when a user requests an app1 website and app2 and application when the user requests an app2 website.</p>
-
-<p>By checking the request host, you can determine the domain the user is on you can decide which css files need to be delivered to the client.  The host check should be offloaded to a helper method that would like:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">def</span> <span class="nf">app1?</span>
-</span><span class='line'>    <span class="s1">&#39;app1.com&#39;</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">host</span>
-</span><span class='line'>  <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In the rails views layout folder, you only include the style sheets that are used</p>
-
-<figure class='code'><figcaption><span>layout.html.slim</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">==</span> <span class="n">stylesheet_link_tag</span> <span class="s2">&quot;application&quot;</span><span class="p">,</span> <span class="ss">:media</span> <span class="o">=&gt;</span> <span class="s1">&#39;all&#39;</span>
-</span><span class='line'><span class="o">-</span> <span class="k">if</span> <span class="n">app1?</span>
-</span><span class='line'>  <span class="o">==</span> <span class="n">stylesheet_link_tag</span> <span class="s2">&quot;app1&quot;</span><span class="p">,</span> <span class="ss">:media</span> <span class="o">=&gt;</span> <span class="s1">&#39;all&#39;</span>
-</span><span class='line'><span class="o">-</span> <span class="k">elsif</span> <span class="n">app2?</span>
-</span><span class='line'>  <span class="o">==</span> <span class="n">stylesheet_link_tag</span> <span class="s2">&quot;app2&quot;</span><span class="p">,</span> <span class="ss">:media</span> <span class="o">=&gt;</span> <span class="s1">&#39;all&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>You need to tell rails to precompile these new css files</p>
-
-<figure class='code'><figcaption><span>config/initializers/assets.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">precompile</span> <span class="o">+=</span> <span class="sx">%w( app1.css app2.css )</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Javascript Divorce</h3>
-
-<p>You can use a similar technique to break up your javascript files into two projects</p>
-
-<figure class='code'><figcaption><span>layout.html.slim</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="o">==</span> <span class="n">javascript_include_tag</span> <span class="s1">&#39;application&#39;</span>
-</span><span class='line'>  <span class="o">-</span> <span class="k">if</span> <span class="n">app1?</span>
-</span><span class='line'>    <span class="o">==</span> <span class="n">javascript_include_tag</span> <span class="s1">&#39;app1&#39;</span>
-</span><span class='line'>  <span class="o">-</span> <span class="k">elsif</span> <span class="n">app2?</span>
-</span><span class='line'>    <span class="o">==</span> <span class="n">javascript_include_tag</span> <span class="s1">&#39;app2&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Don&rsquo;t forget to tell rails to precompile these new assets.</p>
-
-<figure class='code'><figcaption><span>config/initializers/assets.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">precompile</span> <span class="o">+=</span> <span class="sx">%w( app1.js app2.js )</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Backend</h2>
-
-<p>If you want to turn certain features on and off for certain applications, you should use the <a href="https://github.com/FetLife/rollout">rollout gem</a>.  It is a great tool for enabling and disabling features on the fly, or just completely locking up certain parts of the application.</p>
 </div>
   
   
