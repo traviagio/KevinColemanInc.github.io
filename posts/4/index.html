@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="I keep having to setup Rails environments for people so I am just going to write my first blog article on how to do it on OSX 10.9. Installing the &hellip;">
+  <meta name="description" content="I have worked on several projects that need a reporting tool to present the data models in a complex manor. I often find these queries to get more &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -102,6 +102,159 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/11/reporting-with-rails-p1/">Reporting With Rails Part 1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-03-11T10:05:11-07:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:05 am</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I have worked on several projects that need a reporting tool to present the data models in a complex manor.  I often find these queries to get more complicated than ActiveRecord is able to handle (think needing sub-arqueries or joining against tables that aren&rsquo;t represented by models).  As a result, I have to write raw SQL queries to handle the data retrieval.  This can get ugly very quickly if you are not careful on how you structure your framework for storing these queries.</p>
+
+<p>I am going to describe the two ways that I have solved this issue and give you the pros and cons of each.  This will be the first article of two describing what the first iteration of this framework and why I choose to redesign it to something else.</p>
+
+<h2>reports.rb</h2>
+
+<p>The first strategy involved creating a model called &lsquo;reports&rsquo;.  This model only contained basic information of the report: (name, url_name, created_at, etc.)</p>
+
+<p><img src="/images/report_diagram.png" title="Report ER Diagram" width="180px"/></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">create_table</span> <span class="ss">:reports</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="ss">:uuid</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:name</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:url_name</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:description</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
+</span><span class='line'>    <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For every report we wanted to have, we would create a new entry in the database with that information filled out.</p>
+
+<p>These reports need to be install via rake tasks or migrations (to be honest, my personal preference is to use migrations, because when setting up a new box, you wont have to remember to run this other task).</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'> <span class="no">Report</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span>
+</span><span class='line'>    <span class="nb">name</span><span class="p">:</span> <span class="s2">&quot;All Users&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="ss">url_name</span><span class="p">:</span> <span class="s2">&quot;all_users&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="ss">description</span><span class="p">:</span> <span class="s2">&quot;show all users in the database&quot;</span>
+</span><span class='line'>    <span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>lib/reports.rb</h2>
+
+<p>Now that we know what reports are available, the next step is create their methods.  Each report gets its own method in lib/reports.rb, because that is where we will be storing the SQL and formatting rules for each of them.</p>
+
+<p>An example report would look something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="kp">include</span> <span class="no">ActionView</span><span class="o">::</span><span class="no">Helpers</span><span class="o">::</span><span class="no">NumberHelper</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">all_users</span>
+</span><span class='line'>  <span class="n">table_headers</span> <span class="o">=</span> <span class="o">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="s1">&#39;Account Balance&#39;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT id, name, email, balance FROM users&quot;</span>
+</span><span class='line'>  <span class="n">query_results</span> <span class="o">=</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">results</span> <span class="o">=</span> <span class="o">[</span><span class="n">table_headers</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">query_results</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">query_result</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">results</span> <span class="o">+=</span> <span class="o">[</span><span class="n">query_result</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">,</span><span class="n">query_result</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">,</span><span class="n">query_result</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span><span class="p">,</span> <span class="n">number_to_currency</span><span class="p">(</span><span class="n">query_result</span><span class="o">[</span><span class="mi">3</span><span class="o">]</span><span class="p">)</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">results</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Each method returns a [NxM] array of the results, ready to displayed in the html.  Pagination and sorting have been withheld from this example, as they are trivial to add in.  <a href="https://github.com/amatsuda/kaminari">Kaminari</a> gem handles pagination very nicely, although for larger reports, I letting the database handle the pagination, ruby will have to loop through all of the data points, which is expensive.</p>
+
+<h2>reports_controller.rb</h2>
+
+<p>Next a reports controller needs to get made.  This will have two methods in it: index, and show.</p>
+
+<p>All index will do is show the list of report names and links to them (we used a drop down box with textboxes for begin and end date selectors).  Show is where the report will be displayed.  We probably should of made this an AJAX callback and requested the results separately, but I will get to that later.</p>
+
+<p>The show method would grab from the URL the url_name of the report being run.  Then it would run <a href="http://ruby-doc.org/core-2.1.1/Object.html#method-i-send">.send</a> to execute the method name of the string in the lib/reports.rb class.  The results were written to a table element with a timestamp of when the report was run.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">show</span>
+</span><span class='line'>  <span class="vi">@report</span> <span class="o">=</span> <span class="no">Report</span><span class="o">.</span><span class="n">find_by_url_name</span><span class="p">(</span><span class="ss">:url_name</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@results</span> <span class="o">=</span> <span class="no">Report</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="vi">@report</span><span class="o">.</span><span class="n">url_name</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="http://brakemanscanner.org/">Brakeman</a> hates this, because using .to_sym on any parameter is a huge security flaw.  This reporting engine was locked behind <a href="https://github.com/ryanb/cancan">CanCan</a>/<a href="https://github.com/plataformatec/devise">Devise</a> and only staff members had access to this page.  But someone malicious could of done a lot of damage to the system if abused.</p>
+
+<h2>Pros</h2>
+
+<ul>
+<li>Custom sql == more control over the queries allowing for greater efficiency</li>
+<li>SQL is managed in GIT, so you can easily view the changes</li>
+<li>Formatting is handled by RoR, which lets you make use of the helper methods</li>
+<li>Because the SQL lives in code, you can leverage ruby by creating custom ruby methods to generate portions of SQL.  (think a method the lets all reports sharing the same where conditions for datetime restrictions)</li>
+</ul>
+
+
+<h2>Cons</h2>
+
+<ul>
+<li>You will end up with a massive lib/reports.rb file, which can be difficult to maintain</li>
+<li>Because the formatting is handled by ruby, the report may run a little slow</li>
+<li>Security flaw with the .send</li>
+<li>Difficult to maintain.  If you change a column, then you have to modify your code a bunch of different places.</li>
+<li>Database dependency means for new deployments, a rake task, database migration, or seed must be run in order for the website to reflect the new reports</li>
+</ul>
+
+
+<p>Part 2 will be linked here.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>

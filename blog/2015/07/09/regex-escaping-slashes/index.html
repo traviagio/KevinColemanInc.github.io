@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Limited Retry Pattern - Kevin Coleman</title>
+  <title>Regex: Escaping Slashes - Kevin Coleman</title>
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="The limited retry pattern is a great tool for retrying method calls a limited number of times. In instances where I want to make an API with a &hellip;">
+  <meta name="description" content="Escaping slashes in can leave regex expressions difficult to read. A regex statement that is meant to identify a url like this one http://atdc.org/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.kcoleman.me/blog/2015/07/08/limited-retry-pattern">
+  <link rel="canonical" href="http://www.kcoleman.me/blog/2015/07/09/regex-escaping-slashes">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Kevin Coleman" type="application/atom+xml">
@@ -106,7 +106,7 @@
   <header>
     
       
-        <h1 class="entry-title">Limited Retry Pattern</h1>
+        <h1 class="entry-title">Regex: Escaping Slashes</h1>
       
     
     
@@ -116,7 +116,7 @@
 
 
 
-<time class='entry-date' datetime='2015-07-08T23:43:12-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:43 pm</span></time>
+<time class='entry-date' datetime='2015-07-09T07:49:01-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:49 am</span></time>
         
         
       </p>
@@ -124,34 +124,23 @@
   </header>
 
 
-<div class="entry-content"><p><img src="/images/horse_statue.jpg" title="Limited Retry Pattern" class="banner-img" /></p>
+<div class="entry-content"><p><img src="/images/buildings.jpg" title="Regex: Escaping Slashes" class="banner-img"  /></p>
 
-<p>The limited retry pattern is a great tool for retrying method calls a limited number of times.  In instances where I want to make an API with a limited number of tries. I would have my method look like this:</p>
+<p>Escaping slashes in can leave regex expressions difficult to read.  A regex statement that is meant to identify a url like this one <code>http://atdc.org/wp-admin/admin-ajax.php</code>.</p>
 
-<figure class='code'><figcaption><span>limited_retry.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">api_call</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-</span><span class='line'>  <span class="vi">@retries</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>  <span class="k">begin</span>
-</span><span class='line'>    <span class="n">do_api_call</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">rescue</span> <span class="no">ApiError</span><span class="p">,</span> <span class="no">Timeout</span>
-</span><span class='line'>    <span class="vi">@retries</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'>    <span class="k">retry</span> <span class="k">if</span> <span class="vi">@retries</span> <span class="o">&lt;</span> <span class="mi">5</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>would look something like this using the standard <code>/expression/</code> notation:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/http:\/\/atdc.org\/wp-admin\/admin-ajax.php/</span></code></pre></td></tr></table></div></figure>
 
 
-<p>The retry method is really powerful in ruby.  If a block is rescued, by calling &ldquo;retry&rdquo; it will attempt to run that block again.  For example, if your server has a spotty connection, it would make sense to retry an API request twice if it failed to reach the server.</p>
+<p>But if you use the <code>%r{expression}</code> notation, then your regex expressions do not need to be muddled with escaping slashes:</p>
 
-<p>The <a href="https://github.com/DiegoSalazar/DefRetry">DefRetry gem</a> by DiegoSalazar can be used to add DSL to your ruby classes that you want to retry a few times.</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>%r{http://atdc.org/wp-admin/admin-ajax.php}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Much easier to read :)</p>
 </div>
 
 
@@ -176,7 +165,7 @@
 
 
 
-<time class='entry-date' datetime='2015-07-08T23:43:12-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:43 pm</span></time>
+<time class='entry-date' datetime='2015-07-09T07:49:01-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:49 am</span></time>
       
       
 
@@ -185,7 +174,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.kcoleman.me/blog/2015/07/08/limited-retry-pattern/" data-via="KevinColemanInc" data-counturl="http://www.kcoleman.me/blog/2015/07/08/limited-retry-pattern/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.kcoleman.me/blog/2015/07/09/regex-escaping-slashes/" data-via="KevinColemanInc" data-counturl="http://www.kcoleman.me/blog/2015/07/09/regex-escaping-slashes/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -196,10 +185,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2015/06/23/queable-concern/" title="Previous Post: Adding Queues to your models">&laquo; Adding Queues to your models</a>
+        <a class="basic-alignment left" href="/blog/2015/07/08/limited-retry-pattern/" title="Previous Post: Limited Retry Pattern">&laquo; Limited Retry Pattern</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2015/07/09/regex-escaping-slashes/" title="Next Post: Regex: Escaping Slashes">Regex: Escaping Slashes &raquo;</a>
       
     </p>
   </footer>

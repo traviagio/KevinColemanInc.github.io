@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Coleman]]></title>
   <link href="http://www.kcoleman.me/atom.xml" rel="self"/>
   <link href="http://www.kcoleman.me/"/>
-  <updated>2015-07-08T23:57:03-07:00</updated>
+  <updated>2015-07-09T07:58:54-07:00</updated>
   <id>http://www.kcoleman.me/</id>
   <author>
     <name><![CDATA[Kevin Coleman]]></name>
@@ -12,6 +12,31 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Regex: Escaping Slashes]]></title>
+    <link href="http://www.kcoleman.me/blog/2015/07/09/regex-escaping-slashes/"/>
+    <updated>2015-07-09T07:49:01-07:00</updated>
+    <id>http://www.kcoleman.me/blog/2015/07/09/regex-escaping-slashes</id>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/buildings.jpg" title="Regex: Escaping Slashes" class="banner-img"  /></p>
+
+<p>Escaping slashes in can leave regex expressions difficult to read.  A regex statement that is meant to identify a url like this one <code>http://atdc.org/wp-admin/admin-ajax.php</code>.</p>
+
+<p>would look something like this using the standard <code>/expression/</code> notation:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/http:\/\/atdc.org\/wp-admin\/admin-ajax.php/</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But if you use the <code>%r{expression}</code> notation, then your regex expressions do not need to be muddled with escaping slashes:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>%r{http://atdc.org/wp-admin/admin-ajax.php}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Much easier to read :)</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Limited Retry Pattern]]></title>
@@ -1479,43 +1504,6 @@
 <p>The new order would be pending => processing => accepted => shipping => complete.  Which is awkward, because in the database, it looks like 1 => 2 => 3 => 5 => 4.  Which can feel a bit weird if you don&rsquo;t know what is going on.</p>
 
 <p>If you had just left your states as named strings, you wouldn&rsquo;t have this odd ordering issue or this ambiguity of what number resides with what state.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[My Path to Success]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/06/04/path-to-success/"/>
-    <updated>2014-06-04T14:50:34-07:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/06/04/path-to-success</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/escalator.jpg" title="My path to success" class="banner-img" /></p>
-
-<p>My first and foremost goal is to become a successful entrepreneur.  Unfortunately, I am still working on trying to get there.  While my <a href="http://www.kcoleman.me/coleman-laws">grandfather&rsquo;s laws</a> make a great guide for running a business, I don&rsquo;t have a business yet to run.</p>
-
-<p>After talking with many other successful entrepreneurs, I find that everyone has to find their own path to success, but you can learn from what the greats have to say and let their advice guide you.</p>
-
-<h2>Get out of the house</h2>
-
-<p>I work remotely.  My day consists of waking up, working, going to Publix for food, saying hello to the checkout lady and then returning home for more work.  It is relationships with other people that <a href="http://money.usnews.com/money/personal-finance/articles/2012/03/15/why-good-friends-make-you-happy">lead to happy</a> and successful lives.</p>
-
-<p>While I can function completely fine by working from my home office, I need to get out of the house.  I need to connect with other people to build a strong business network.  For me, I build these relationships through my local <a href="http://www.meetup.com/find/events/?keywords=programming">programming meetups</a>, attending <a href="http://startupweekend.org/">startup weekends</a>, or any <a href="http://startupgossip.com">other start up events</a>.</p>
-
-<h2>Keep coding</h2>
-
-<p>My day job is freelance coding rails.  I spent 8-10 hours sitting on my computer developing models, controllers, and whatever else my clients need to keep cashflow coming in, but that is boring.  I need to keep my skills sharp and balanced.</p>
-
-<p>Great! I know ruby on rails really well, but I want to be good at lots of different tools, because I have no idea what skills I will need in the future.  That is why I play with different frameworks like <a href="http://www.kcoleman.me/blog/2014/04/30/nodejs-chat-guide/">NodeJS</a> or <a href="blog/2014/03/11/reporting-with-rails-p1/">AngularJS</a>.</p>
-
-<h2>Stay focused on your goals</h2>
-
-<p>I attended the professional speakers <a href="http://www.toastmasters.org/">Toast Master&rsquo;s</a> group a few months ago and one of the speakers was in the process of writing a &ldquo;self-help guide to success&rdquo; book.  Her name and the book’s escapes me, but she had an interesting technique for staying focused on life.  Every morning, write your goals in a journal.  This starts your day off thinking about what you want to accomplish and keeps it focused on detecting signals that may help you accomplish your goals.</p>
-
-<h2>Keep a short list</h2>
-
-<p>I find myself in situations where I think: &ldquo;Great! I have nothing to do right now.&rdquo; Bullshit.  There are always things to do, I find my mind is terrible about coming up with them once its entered that state.</p>
-
-<p>Whenever I come up with a task that needs to get done, I toss it into my <a href="http://wunderlist.com">Wunderlist</a> inbox.  Now I find that I have a moment with nothing scheduled, I can always look their for guidance.  I only put short actionable items in that list like: do laundry, ready <a href="http://engineering.richrelevance.com/bandits-recommendation-systems/">this</a> article on recommendation systems, or check <a href="http://www.zillow.com">Zillow</a> for homes.</p>
-
-<p>Hopefully by following these goals, I will stumble through life and find myself retired by athange 30, ha!</p>
 ]]></content>
   </entry>
   
