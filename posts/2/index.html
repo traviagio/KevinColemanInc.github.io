@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="Intro Today I was handed an interesting project around improve the SEO surface area of an AngularJS SPA for a client. After a bit of research on how &hellip;">
+  <meta name="description" content="This is a continuation post from Angularjs Rails and SEO Part 1. Now we need to configure Ruby on Rails to redirect Google&rsquo;s requests to get &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -102,6 +102,99 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/10/07/angularjs-rails-and-seo-part-2/">Angularjs Rails and SEO Part 2</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-10-07T17:26:43-07:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:26 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/beach.jpeg" title="Angularjs Rails and SEO Part 2" class="banner-img"  /></p>
+
+<p>This is a continuation post from <a href="/blog/2014/10/03/angularjs-rails-seo/">Angularjs Rails and SEO Part 1</a>.</p>
+
+<p>Now we need to configure Ruby on Rails to redirect Google&rsquo;s requests to get the non-ajax version of the page.  Google flags requests by replacing the &lsquo;#!&rsquo; in the url with <code>?_escaped_fragment_=</code> so you can know the route it is trying to fetch.</p>
+
+<p>To catch this, we will add a <code>before_filter</code> to the application controller to watch for the <code>_escaped_fragment_</code> parameter.  This could will look like:</p>
+
+<figure class='code'><figcaption><span>application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">protect_from_forgery</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:catch_escaped_fragment</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">protected</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">catch_escaped_fragment</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">fragment</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:_escaped_fragment_</span><span class="o">]</span>
+</span><span class='line'>      <span class="c1"># Build the original url</span>
+</span><span class='line'>      <span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">request</span><span class="o">.</span><span class="n">protocol</span><span class="si">}#{</span><span class="n">request</span><span class="o">.</span><span class="n">host_with_port</span><span class="si">}#{</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>      <span class="n">url_with_hash</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">#!</span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:_escaped_fragment_</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1"># Render it with the PhantomJS script and return the result</span>
+</span><span class='line'>      <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;phantomjs &#39;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/lib/phantomjs/ember_to_static.js&#39; &#39;</span><span class="si">#{</span><span class="n">url_with_hash</span><span class="si">}</span><span class="s2">&#39; silence&quot;</span>
+</span><span class='line'>      <span class="n">result</span> <span class="o">=</span> <span class="sb">`</span><span class="si">#{</span><span class="n">command</span><span class="si">}</span><span class="sb">`</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">render</span> <span class="ss">text</span><span class="p">:</span> <span class="n">result</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This rails application controller code will trigger the phantomjs script we wrote in the previous blog post.  Since it asks to run it in silent mode, we can take the entire log output of the script (which should be the completed AngularJS application) and return that to google.</p>
+
+<h2>Rails concurrency</h2>
+
+<p>Because this methodology is blocking the thread request, when phantomjs tries to fetch the angularjs page, the website hangs. Because rails only executes one request at a time, phantomJS&rsquo;s request will sit and wait forever, since the request it is currently in will never finish.   To fix this, you will need to run your server with passenger.  Passenger can handle multiple requests in Ruby.</p>
+
+<p>Add <code>gem 'passenger'</code> to your Gemfile. Then you can run it like this</p>
+
+<p>and to run the application you can run <code>passenger -p 3000 -a 127.0.0.1</code>  if this is your first time running passenger with rails, you will have to follow an installation script.</p>
+
+<p>Awesome! You are finished.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -946,204 +1039,6 @@
 <h2>In the future&hellip;.</h2>
 
 <p>I plan on adding more content sources and more frequent posts.  I am running this along side the chrome extension <a href="https://github.com/ztratar/followr">Followr</a>, which is an automated tool for favoriting tweets of other users based on preset hash tags.  So far it has earned me 10 new followers and 3 new re-tweets.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/05/31/url-shorter-with-redis-and-rails/">Rails and Redis URL Shortener in Same Application</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-05-31T11:22:47-07:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>11:22 am</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/locks.jpg" title="Redis key value storage" class="banner-img" /></p>
-
-<p>Here is how to build a quick URL shortener in Rails 4.0 that shares the same application as the rest of your project, but is meant to run on a different domain using <a href="http://redis.io/">Redis</a>.</p>
-
-<h2>Installing Redis</h2>
-
-<p>I recommend just using <a href="http://brew.sh/">brew</a> to install redis.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  brew install redis</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now to start it up, open a new terminal window and type:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">redis-server</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Link Model creation</h2>
-
-<p>Redis maybe great for quick access to information, but it does not guarantee like an <a href="http://en.wikipedia.org/wiki/ACID">ACID compliant</a> database does that the information you put there will always be there.  Because it is a <a href="http://en.wikipedia.org/wiki/NoSQL">noSQL</a> key-value store in memory, if the server it is running against restarts, its entire memory will be lost and you will need to have a reliable back up so you can re-generate the storage as needed.</p>
-
-<figure class='code'><figcaption><span>migration</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">create_table</span> <span class="s2">&quot;links&quot;</span><span class="p">,</span> <span class="ss">force</span><span class="p">:</span> <span class="kp">true</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">datetime</span> <span class="s2">&quot;created_at&quot;</span>
-</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">datetime</span> <span class="s2">&quot;updated_at&quot;</span>
-</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">string</span>   <span class="s2">&quot;short_code&quot;</span><span class="p">,</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
-</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">string</span>   <span class="s2">&quot;long_url&quot;</span><span class="p">,</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
-</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="s2">&quot;click_count&quot;</span><span class="p">,</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
-</span><span class='line'>  <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The short code will be a 6-8 digit representation of the longer link which will be stored in the <code>long_url</code> field.  I also want to store the click count of these links, so I am adding that as an attribute as well.</p>
-
-<h2>Link Model code</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Link</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-</span><span class='line'>  <span class="n">validates</span> <span class="ss">:long_url</span><span class="p">,</span> <span class="ss">:click_count</span><span class="p">,</span> <span class="ss">:long_url</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
-</span><span class='line'>  <span class="n">after_create</span> <span class="ss">:store_in_redis</span>
-</span><span class='line'>  <span class="n">before_create</span> <span class="ss">:set_short_code</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">redis_url_key</span><span class="p">(</span><span class="n">short_code</span><span class="p">)</span>
-</span><span class='line'>    <span class="s1">&#39;link:&#39;</span><span class="o">+</span><span class="n">short_code</span><span class="o">+</span><span class="s1">&#39;:url&#39;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">redis_clicks_key</span><span class="p">(</span><span class="n">short_code</span><span class="p">)</span>
-</span><span class='line'>    <span class="s1">&#39;link:&#39;</span><span class="o">+</span><span class="n">short_code</span><span class="o">+</span><span class="s1">&#39;:clicks&#39;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">url</span>
-</span><span class='line'>    <span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">shortener_domain</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">self</span><span class="o">.</span><span class="n">short_code</span> <span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">short_code</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kp">private</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">set_short_code</span>
-</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">short_code</span> <span class="o">||=</span> <span class="kp">loop</span> <span class="k">do</span>
-</span><span class='line'>      <span class="n">token</span> <span class="o">=</span> <span class="p">(</span><span class="vg">$redis</span><span class="o">.</span><span class="n">incr</span><span class="p">(</span><span class="s1">&#39;link:next:id&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="no">Time</span><span class="o">.</span><span class="n">zone</span><span class="o">.</span><span class="n">now</span><span class="o">.</span><span class="n">to_i</span> <span class="o">+</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">36</span><span class="o">**</span><span class="mi">6</span><span class="p">))</span><span class="o">.</span><span class="n">to_s</span><span class="p">(</span><span class="mi">36</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">break</span> <span class="n">token</span> <span class="k">unless</span> <span class="no">Link</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">short_code</span><span class="p">:</span> <span class="n">token</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">store_in_redis</span>
-</span><span class='line'>    <span class="vg">$redis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="no">Link</span><span class="o">.</span><span class="n">redis_url_key</span><span class="p">(</span><span class="nb">self</span><span class="o">.</span><span class="n">short_code</span><span class="p">),</span> <span class="nb">self</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">purchase_link</span><span class="p">)</span>
-</span><span class='line'>    <span class="vg">$redis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="no">Link</span><span class="o">.</span><span class="n">redis_clicks_key</span><span class="p">(</span><span class="nb">self</span><span class="o">.</span><span class="n">short_code</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>To start off, we have our validation code to ensure we don&rsquo;t accidently save bad data.</p>
-
-<p>We want to randomly generate a unique short code that is of appropriate length before we save this to the database.  In <code>set_short_code</code>, I keep trying to a valid randomly generated code based off of the time, an incrementor variable I am storing in Redis to ensure uniqueness.  Hypothetically if I got a request at the exact same second and somehow got the same random number, the Redis variable should protect against double urls.</p>
-
-<p>After we write this to the database, we want to store the <code>short_code</code> and <code>long_url</code> in Redis.  We are doing it after we create, because if there are validation errors, then our Redis storage could contain bad data.  The key for the long url will look like &lsquo;link:uDk3nZz:url&rsquo; and the click count will look like &lsquo;link:uDk3nZz:clicks&rsquo;.  So when I want to pull out the long url, I simple say <code>$redis.get(Link.redis_url_key(params[:short_code]))</code> and I will have the long url, assuming it exists.  I can also update the click count in a similar fashion.</p>
-
-<h2>Side note: Redis best practice</h2>
-
-<p>You should use the following naming scheme for all of your Redis keys, so that you have a standard way of retrieving data: [resource]:[id]:[attribute].</p>
-
-<p>I wrote two helper methods to keep track of how we are naming the keys, so we don&rsquo;t end up with a bunch of magic strings everywhere in our project.  If we want to change how we store links in Redis, we only have to look one place, the link model. We will use them later when we create the controller so we know what fields to access with a given <code>short_code</code>.</p>
-
-<h2>Links controller</h2>
-
-<figure class='code'><figcaption><span>links_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">LinksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">show</span>
-</span><span class='line'>    <span class="n">url</span> <span class="o">=</span> <span class="vg">$redis</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="no">Link</span><span class="o">.</span><span class="n">redis_url_key</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:short_code</span><span class="o">]</span><span class="p">))</span>
-</span><span class='line'>    <span class="k">raise</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">RoutingError</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;Not Found&#39;</span><span class="p">)</span> <span class="k">unless</span> <span class="n">url</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="vg">$redis</span><span class="o">.</span><span class="n">incr</span><span class="p">(</span><span class="no">Link</span><span class="o">.</span><span class="n">redis_clicks_key</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:short_code</span><span class="o">]</span><span class="p">))</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">redirect_to</span> <span class="n">url</span><span class="p">,</span> <span class="ss">status</span><span class="p">:</span> <span class="mi">302</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Use the <code>short_code</code> parameter, and that Redis url key method, we look up the long url.</p>
-
-<p>If we can&rsquo;t find the url, then we rails a 404 page. If not, we continue and bump up the click count.  Redis has a built in incrementor so we wont have to worry about accidently loosing click counts during concurrent requests. and redirect ot the url we found in Redis.</p>
-
-<h2>Configuring Routes to work across multiple domains</h2>
-
-<figure class='code'><figcaption><span>routes.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">constraints</span> <span class="ss">domain</span><span class="p">:</span> <span class="s2">&quot;example.com&quot;</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">get</span> <span class="s2">&quot;/:short_code&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;likes#show&quot;</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="s1">&#39;social_share&#39;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>We put this the top of our routes.rb file, because we want it to override any of the succeeding route configurations.  I recommend changing your host file to point dev.example.com to 127.0.0.1 so when you test this locally, you would hit your local machine as opposed to the production or staging server.</p>
-
-<h2>To be continue</h2>
-
-<p>In the next article, I will be discussing on how to recover from a Redis failure.</p>
 </div>
   
   

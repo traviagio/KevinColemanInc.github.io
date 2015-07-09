@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Coleman]]></title>
   <link href="http://www.kcoleman.me/atom.xml" rel="self"/>
   <link href="http://www.kcoleman.me/"/>
-  <updated>2015-06-11T07:42:21-07:00</updated>
+  <updated>2015-07-08T23:34:46-07:00</updated>
   <id>http://www.kcoleman.me/</id>
   <author>
     <name><![CDATA[Kevin Coleman]]></name>
@@ -12,6 +12,160 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Adding Queues to Your Models]]></title>
+    <link href="http://www.kcoleman.me/blog/2015/06/23/queable-concern/"/>
+    <updated>2015-06-23T21:54:42-07:00</updated>
+    <id>http://www.kcoleman.me/blog/2015/06/23/queable-concern</id>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/bird_statue.jpg" title="Adding Queues to your models" class="banner-img" /></p>
+
+<p>At work recently, we needed to introduce the concept of a queue into our rails app.  MySQL really doesn&rsquo;t do a great job with these types of things, because it is so slow.  Redis is a much better solution, because its speed and ease of use.</p>
+
+<p>I built the queueing concern on top of RedisObjects, because it has such a great DSL wrapper for storing ruby types into redis.  The main feature I use is their list object.</p>
+
+<figure class='code'><figcaption><span>queueable.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">Queueable</span>
+</span><span class='line'>  <span class="kp">extend</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Concern</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">included</span> <span class="k">do</span>
+</span><span class='line'>    <span class="kp">include</span> <span class="no">Redis</span><span class="o">::</span><span class="no">Objects</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># more code here</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This adds Redis::Objects to the models that I use this concern on so I can leverage their list DSL method.</p>
+
+<p>In my model, I want to write my own DSL to make it super easy for me to create new queue attributes in all of my models.  I want to be able to just do this in my model:</p>
+
+<figure class='code'><figcaption><span>user.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">Queueable</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">queue</span> <span class="ss">:scoring_queue</span>
+</span><span class='line'>  <span class="n">queue</span> <span class="ss">:email_queue</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For the purposes of my application, I needed to be able to:</p>
+
+<ul>
+<li>rotate the queue, such that the top element returned and is moved to the bottom of the queue.</li>
+<li>set the entire queue to something new.</li>
+<li>re-queue a element, so that if it exists in my queue, it gets sent to the bottom.</li>
+</ul>
+
+
+<figure class='code'><figcaption><span>user_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UserController</span> <span class="o">&lt;</span> <span class="no">ActiveController</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">show</span>
+</span><span class='line'>    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">next_score</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">rotate_scoring_queue</span> <span class="c1">#gets the top element and moves it to the bottom</span>
+</span><span class='line'>    <span class="n">user</span><span class="o">.</span><span class="n">requeue_scoring_queue</span> <span class="n">invited_score</span> <span class="c1"># moves this score to the bottom of the queue</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To accomplish this, I use a meta programming to dynamically create these methods.  The <code>define_method</code> in ruby is an extremely powerful concept that allows developers to create methods based with dynamic names.</p>
+
+<figure class='code'><figcaption><span>queueable.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">class_methods</span> <span class="k">do</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">queue</span><span class="p">(</span><span class="n">queue_name</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">list</span> <span class="n">queue_name</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">define_method</span><span class="p">(</span><span class="s2">&quot;rotate_</span><span class="si">#{</span><span class="n">queue_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>        <span class="n">queue_list</span> <span class="o">=</span> <span class="nb">send</span><span class="p">(</span><span class="n">queue_name</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">queue_list</span><span class="o">.</span><span class="n">rpoplpush</span> <span class="n">queue_list</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">define_method</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">queue_name</span><span class="si">}</span><span class="s2">=&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">vals</span><span class="o">|</span>
+</span><span class='line'>        <span class="n">queue_list</span> <span class="o">=</span> <span class="nb">send</span><span class="p">(</span><span class="n">queue_name</span><span class="p">)</span>
+</span><span class='line'>        <span class="no">Redis</span><span class="o">::</span><span class="no">Objects</span><span class="o">.</span><span class="n">redis</span><span class="o">.</span><span class="n">multi</span> <span class="k">do</span>
+</span><span class='line'>          <span class="n">queue_list</span><span class="o">.</span><span class="n">clear</span>
+</span><span class='line'>          <span class="n">queue_list</span><span class="o">.</span><span class="n">push</span> <span class="o">*</span><span class="n">vals</span><span class="o">.</span><span class="n">reverse</span> <span class="k">if</span> <span class="n">vals</span><span class="o">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">define_method</span><span class="p">(</span><span class="s2">&quot;requeue_</span><span class="si">#{</span><span class="n">queue_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">target</span><span class="o">|</span>
+</span><span class='line'>        <span class="n">queue_list</span> <span class="o">=</span> <span class="nb">send</span><span class="p">(</span><span class="n">queue_name</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">number_removed</span> <span class="o">=</span> <span class="n">queue_list</span><span class="o">.</span><span class="n">delete</span> <span class="n">target</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">if</span> <span class="n">number_removed</span> <span class="o">==</span> <span class="mi">0</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">last_item_in_queue</span> <span class="o">=</span> <span class="n">queue_list</span><span class="o">.</span><span class="n">first</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="n">last_item_in_queue</span>
+</span><span class='line'>          <span class="n">queue_list</span><span class="o">.</span><span class="n">insert</span> <span class="ss">:before</span><span class="p">,</span> <span class="n">last_item_in_queue</span><span class="p">,</span> <span class="n">target</span>
+</span><span class='line'>        <span class="k">else</span>
+</span><span class='line'>          <span class="n">queue_list</span><span class="o">.</span><span class="n">push</span> <span class="n">target</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first line <code>def queue</code> adds in my DSL method to the model to allow queues with a given name to be created.</p>
+
+<p>Unfortunately RedisObjects doesn&rsquo;t come with an out of the box way to set an entire list at once.  So I had to write my own using Redis transactions.  So the second method overrides the setter method of the list to accept an array of values that we will set.</p>
+
+<p>The re-queue method removes a target value from the queue.  Then it sets it to the queue, if it can&rsquo;t find a last item (then that means it was the only item in the queue), it adds it back to the list.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Hosting Side Projects for Free]]></title>
@@ -1504,183 +1658,6 @@
 <h2>In the future&hellip;.</h2>
 
 <p>I plan on adding more content sources and more frequent posts.  I am running this along side the chrome extension <a href="https://github.com/ztratar/followr">Followr</a>, which is an automated tool for favoriting tweets of other users based on preset hash tags.  So far it has earned me 10 new followers and 3 new re-tweets.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Rails and Redis URL Shortener in Same Application]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/05/31/url-shorter-with-redis-and-rails/"/>
-    <updated>2014-05-31T11:22:47-07:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/05/31/url-shorter-with-redis-and-rails</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/locks.jpg" title="Redis key value storage" class="banner-img" /></p>
-
-<p>Here is how to build a quick URL shortener in Rails 4.0 that shares the same application as the rest of your project, but is meant to run on a different domain using <a href="http://redis.io/">Redis</a>.</p>
-
-<h2>Installing Redis</h2>
-
-<p>I recommend just using <a href="http://brew.sh/">brew</a> to install redis.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">  brew install redis</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now to start it up, open a new terminal window and type:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">redis-server</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Link Model creation</h2>
-
-<p>Redis maybe great for quick access to information, but it does not guarantee like an <a href="http://en.wikipedia.org/wiki/ACID">ACID compliant</a> database does that the information you put there will always be there.  Because it is a <a href="http://en.wikipedia.org/wiki/NoSQL">noSQL</a> key-value store in memory, if the server it is running against restarts, its entire memory will be lost and you will need to have a reliable back up so you can re-generate the storage as needed.</p>
-
-<figure class='code'><figcaption><span>migration</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">create_table</span> <span class="s2">&quot;links&quot;</span><span class="p">,</span> <span class="ss">force</span><span class="p">:</span> <span class="kp">true</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">datetime</span> <span class="s2">&quot;created_at&quot;</span>
-</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">datetime</span> <span class="s2">&quot;updated_at&quot;</span>
-</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">string</span>   <span class="s2">&quot;short_code&quot;</span><span class="p">,</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
-</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">string</span>   <span class="s2">&quot;long_url&quot;</span><span class="p">,</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
-</span><span class='line'>    <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="s2">&quot;click_count&quot;</span><span class="p">,</span> <span class="ss">null</span><span class="p">:</span> <span class="kp">false</span>
-</span><span class='line'>  <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The short code will be a 6-8 digit representation of the longer link which will be stored in the <code>long_url</code> field.  I also want to store the click count of these links, so I am adding that as an attribute as well.</p>
-
-<h2>Link Model code</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Link</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-</span><span class='line'>  <span class="n">validates</span> <span class="ss">:long_url</span><span class="p">,</span> <span class="ss">:click_count</span><span class="p">,</span> <span class="ss">:long_url</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
-</span><span class='line'>  <span class="n">after_create</span> <span class="ss">:store_in_redis</span>
-</span><span class='line'>  <span class="n">before_create</span> <span class="ss">:set_short_code</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">redis_url_key</span><span class="p">(</span><span class="n">short_code</span><span class="p">)</span>
-</span><span class='line'>    <span class="s1">&#39;link:&#39;</span><span class="o">+</span><span class="n">short_code</span><span class="o">+</span><span class="s1">&#39;:url&#39;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">redis_clicks_key</span><span class="p">(</span><span class="n">short_code</span><span class="p">)</span>
-</span><span class='line'>    <span class="s1">&#39;link:&#39;</span><span class="o">+</span><span class="n">short_code</span><span class="o">+</span><span class="s1">&#39;:clicks&#39;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">url</span>
-</span><span class='line'>    <span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">shortener_domain</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">self</span><span class="o">.</span><span class="n">short_code</span> <span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">short_code</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kp">private</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">set_short_code</span>
-</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">short_code</span> <span class="o">||=</span> <span class="kp">loop</span> <span class="k">do</span>
-</span><span class='line'>      <span class="n">token</span> <span class="o">=</span> <span class="p">(</span><span class="vg">$redis</span><span class="o">.</span><span class="n">incr</span><span class="p">(</span><span class="s1">&#39;link:next:id&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="no">Time</span><span class="o">.</span><span class="n">zone</span><span class="o">.</span><span class="n">now</span><span class="o">.</span><span class="n">to_i</span> <span class="o">+</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">36</span><span class="o">**</span><span class="mi">6</span><span class="p">))</span><span class="o">.</span><span class="n">to_s</span><span class="p">(</span><span class="mi">36</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">break</span> <span class="n">token</span> <span class="k">unless</span> <span class="no">Link</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">short_code</span><span class="p">:</span> <span class="n">token</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">store_in_redis</span>
-</span><span class='line'>    <span class="vg">$redis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="no">Link</span><span class="o">.</span><span class="n">redis_url_key</span><span class="p">(</span><span class="nb">self</span><span class="o">.</span><span class="n">short_code</span><span class="p">),</span> <span class="nb">self</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">purchase_link</span><span class="p">)</span>
-</span><span class='line'>    <span class="vg">$redis</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="no">Link</span><span class="o">.</span><span class="n">redis_clicks_key</span><span class="p">(</span><span class="nb">self</span><span class="o">.</span><span class="n">short_code</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>To start off, we have our validation code to ensure we don&rsquo;t accidently save bad data.</p>
-
-<p>We want to randomly generate a unique short code that is of appropriate length before we save this to the database.  In <code>set_short_code</code>, I keep trying to a valid randomly generated code based off of the time, an incrementor variable I am storing in Redis to ensure uniqueness.  Hypothetically if I got a request at the exact same second and somehow got the same random number, the Redis variable should protect against double urls.</p>
-
-<p>After we write this to the database, we want to store the <code>short_code</code> and <code>long_url</code> in Redis.  We are doing it after we create, because if there are validation errors, then our Redis storage could contain bad data.  The key for the long url will look like &lsquo;link:uDk3nZz:url&rsquo; and the click count will look like &lsquo;link:uDk3nZz:clicks&rsquo;.  So when I want to pull out the long url, I simple say <code>$redis.get(Link.redis_url_key(params[:short_code]))</code> and I will have the long url, assuming it exists.  I can also update the click count in a similar fashion.</p>
-
-<h2>Side note: Redis best practice</h2>
-
-<p>You should use the following naming scheme for all of your Redis keys, so that you have a standard way of retrieving data: [resource]:[id]:[attribute].</p>
-
-<p>I wrote two helper methods to keep track of how we are naming the keys, so we don&rsquo;t end up with a bunch of magic strings everywhere in our project.  If we want to change how we store links in Redis, we only have to look one place, the link model. We will use them later when we create the controller so we know what fields to access with a given <code>short_code</code>.</p>
-
-<h2>Links controller</h2>
-
-<figure class='code'><figcaption><span>links_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">LinksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">show</span>
-</span><span class='line'>    <span class="n">url</span> <span class="o">=</span> <span class="vg">$redis</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="no">Link</span><span class="o">.</span><span class="n">redis_url_key</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:short_code</span><span class="o">]</span><span class="p">))</span>
-</span><span class='line'>    <span class="k">raise</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">RoutingError</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;Not Found&#39;</span><span class="p">)</span> <span class="k">unless</span> <span class="n">url</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="vg">$redis</span><span class="o">.</span><span class="n">incr</span><span class="p">(</span><span class="no">Link</span><span class="o">.</span><span class="n">redis_clicks_key</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:short_code</span><span class="o">]</span><span class="p">))</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">redirect_to</span> <span class="n">url</span><span class="p">,</span> <span class="ss">status</span><span class="p">:</span> <span class="mi">302</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Use the <code>short_code</code> parameter, and that Redis url key method, we look up the long url.</p>
-
-<p>If we can&rsquo;t find the url, then we rails a 404 page. If not, we continue and bump up the click count.  Redis has a built in incrementor so we wont have to worry about accidently loosing click counts during concurrent requests. and redirect ot the url we found in Redis.</p>
-
-<h2>Configuring Routes to work across multiple domains</h2>
-
-<figure class='code'><figcaption><span>routes.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">constraints</span> <span class="ss">domain</span><span class="p">:</span> <span class="s2">&quot;example.com&quot;</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">get</span> <span class="s2">&quot;/:short_code&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;likes#show&quot;</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="s1">&#39;social_share&#39;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>We put this the top of our routes.rb file, because we want it to override any of the succeeding route configurations.  I recommend changing your host file to point dev.example.com to 127.0.0.1 so when you test this locally, you would hit your local machine as opposed to the production or staging server.</p>
-
-<h2>To be continue</h2>
-
-<p>In the next article, I will be discussing on how to recover from a Redis failure.</p>
 ]]></content>
   </entry>
   

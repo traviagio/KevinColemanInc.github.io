@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="With Heroku&rsquo;s latest pricing restructure announcement, I decided it was time to re-evaluate my side-project hosting strategies. Historically, &hellip;">
+  <meta name="description" content="At work recently, we needed to introduce the concept of a queue into our rails app. MySQL really doesn&rsquo;t do a great job with these types of &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -102,6 +102,181 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/06/23/queable-concern/">Adding Queues to Your Models</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-06-23T21:54:42-07:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>9:54 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/bird_statue.jpg" title="Adding Queues to your models" class="banner-img" /></p>
+
+<p>At work recently, we needed to introduce the concept of a queue into our rails app.  MySQL really doesn&rsquo;t do a great job with these types of things, because it is so slow.  Redis is a much better solution, because its speed and ease of use.</p>
+
+<p>I built the queueing concern on top of RedisObjects, because it has such a great DSL wrapper for storing ruby types into redis.  The main feature I use is their list object.</p>
+
+<figure class='code'><figcaption><span>queueable.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">Queueable</span>
+</span><span class='line'>  <span class="kp">extend</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Concern</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">included</span> <span class="k">do</span>
+</span><span class='line'>    <span class="kp">include</span> <span class="no">Redis</span><span class="o">::</span><span class="no">Objects</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># more code here</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This adds Redis::Objects to the models that I use this concern on so I can leverage their list DSL method.</p>
+
+<p>In my model, I want to write my own DSL to make it super easy for me to create new queue attributes in all of my models.  I want to be able to just do this in my model:</p>
+
+<figure class='code'><figcaption><span>user.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">Queueable</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">queue</span> <span class="ss">:scoring_queue</span>
+</span><span class='line'>  <span class="n">queue</span> <span class="ss">:email_queue</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For the purposes of my application, I needed to be able to:</p>
+
+<ul>
+<li>rotate the queue, such that the top element returned and is moved to the bottom of the queue.</li>
+<li>set the entire queue to something new.</li>
+<li>re-queue a element, so that if it exists in my queue, it gets sent to the bottom.</li>
+</ul>
+
+
+<figure class='code'><figcaption><span>user_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UserController</span> <span class="o">&lt;</span> <span class="no">ActiveController</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">show</span>
+</span><span class='line'>    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">next_score</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">rotate_scoring_queue</span> <span class="c1">#gets the top element and moves it to the bottom</span>
+</span><span class='line'>    <span class="n">user</span><span class="o">.</span><span class="n">requeue_scoring_queue</span> <span class="n">invited_score</span> <span class="c1"># moves this score to the bottom of the queue</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To accomplish this, I use a meta programming to dynamically create these methods.  The <code>define_method</code> in ruby is an extremely powerful concept that allows developers to create methods based with dynamic names.</p>
+
+<figure class='code'><figcaption><span>queueable.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">class_methods</span> <span class="k">do</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">queue</span><span class="p">(</span><span class="n">queue_name</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">list</span> <span class="n">queue_name</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">define_method</span><span class="p">(</span><span class="s2">&quot;rotate_</span><span class="si">#{</span><span class="n">queue_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>        <span class="n">queue_list</span> <span class="o">=</span> <span class="nb">send</span><span class="p">(</span><span class="n">queue_name</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">queue_list</span><span class="o">.</span><span class="n">rpoplpush</span> <span class="n">queue_list</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">define_method</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">queue_name</span><span class="si">}</span><span class="s2">=&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">vals</span><span class="o">|</span>
+</span><span class='line'>        <span class="n">queue_list</span> <span class="o">=</span> <span class="nb">send</span><span class="p">(</span><span class="n">queue_name</span><span class="p">)</span>
+</span><span class='line'>        <span class="no">Redis</span><span class="o">::</span><span class="no">Objects</span><span class="o">.</span><span class="n">redis</span><span class="o">.</span><span class="n">multi</span> <span class="k">do</span>
+</span><span class='line'>          <span class="n">queue_list</span><span class="o">.</span><span class="n">clear</span>
+</span><span class='line'>          <span class="n">queue_list</span><span class="o">.</span><span class="n">push</span> <span class="o">*</span><span class="n">vals</span><span class="o">.</span><span class="n">reverse</span> <span class="k">if</span> <span class="n">vals</span><span class="o">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">define_method</span><span class="p">(</span><span class="s2">&quot;requeue_</span><span class="si">#{</span><span class="n">queue_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">target</span><span class="o">|</span>
+</span><span class='line'>        <span class="n">queue_list</span> <span class="o">=</span> <span class="nb">send</span><span class="p">(</span><span class="n">queue_name</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">number_removed</span> <span class="o">=</span> <span class="n">queue_list</span><span class="o">.</span><span class="n">delete</span> <span class="n">target</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">if</span> <span class="n">number_removed</span> <span class="o">==</span> <span class="mi">0</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">last_item_in_queue</span> <span class="o">=</span> <span class="n">queue_list</span><span class="o">.</span><span class="n">first</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="n">last_item_in_queue</span>
+</span><span class='line'>          <span class="n">queue_list</span><span class="o">.</span><span class="n">insert</span> <span class="ss">:before</span><span class="p">,</span> <span class="n">last_item_in_queue</span><span class="p">,</span> <span class="n">target</span>
+</span><span class='line'>        <span class="k">else</span>
+</span><span class='line'>          <span class="n">queue_list</span><span class="o">.</span><span class="n">push</span> <span class="n">target</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first line <code>def queue</code> adds in my DSL method to the model to allow queues with a given name to be created.</p>
+
+<p>Unfortunately RedisObjects doesn&rsquo;t come with an out of the box way to set an entire list at once.  So I had to write my own using Redis transactions.  So the second method overrides the setter method of the list to accept an array of values that we will set.</p>
+
+<p>The re-queue method removes a target value from the queue.  Then it sets it to the queue, if it can&rsquo;t find a last item (then that means it was the only item in the queue), it adds it back to the list.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1046,99 +1221,6 @@
 <h2>Backend</h2>
 
 <p>If you want to turn certain features on and off for certain applications, you should use the <a href="https://github.com/FetLife/rollout">rollout gem</a>.  It is a great tool for enabling and disabling features on the fly, or just completely locking up certain parts of the application.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/10/07/angularjs-rails-and-seo-part-2/">Angularjs Rails and SEO Part 2</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-10-07T17:26:43-07:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:26 pm</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/beach.jpeg" title="Angularjs Rails and SEO Part 2" class="banner-img"  /></p>
-
-<p>This is a continuation post from <a href="/blog/2014/10/03/angularjs-rails-seo/">Angularjs Rails and SEO Part 1</a>.</p>
-
-<p>Now we need to configure Ruby on Rails to redirect Google&rsquo;s requests to get the non-ajax version of the page.  Google flags requests by replacing the &lsquo;#!&rsquo; in the url with <code>?_escaped_fragment_=</code> so you can know the route it is trying to fetch.</p>
-
-<p>To catch this, we will add a <code>before_filter</code> to the application controller to watch for the <code>_escaped_fragment_</code> parameter.  This could will look like:</p>
-
-<figure class='code'><figcaption><span>application_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
-</span><span class='line'>  <span class="n">protect_from_forgery</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:catch_escaped_fragment</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kp">protected</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">catch_escaped_fragment</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">fragment</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:_escaped_fragment_</span><span class="o">]</span>
-</span><span class='line'>      <span class="c1"># Build the original url</span>
-</span><span class='line'>      <span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">request</span><span class="o">.</span><span class="n">protocol</span><span class="si">}#{</span><span class="n">request</span><span class="o">.</span><span class="n">host_with_port</span><span class="si">}#{</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>      <span class="n">url_with_hash</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">#!</span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:_escaped_fragment_</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="c1"># Render it with the PhantomJS script and return the result</span>
-</span><span class='line'>      <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;phantomjs &#39;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/lib/phantomjs/ember_to_static.js&#39; &#39;</span><span class="si">#{</span><span class="n">url_with_hash</span><span class="si">}</span><span class="s2">&#39; silence&quot;</span>
-</span><span class='line'>      <span class="n">result</span> <span class="o">=</span> <span class="sb">`</span><span class="si">#{</span><span class="n">command</span><span class="si">}</span><span class="sb">`</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">render</span> <span class="ss">text</span><span class="p">:</span> <span class="n">result</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This rails application controller code will trigger the phantomjs script we wrote in the previous blog post.  Since it asks to run it in silent mode, we can take the entire log output of the script (which should be the completed AngularJS application) and return that to google.</p>
-
-<h2>Rails concurrency</h2>
-
-<p>Because this methodology is blocking the thread request, when phantomjs tries to fetch the angularjs page, the website hangs. Because rails only executes one request at a time, phantomJS&rsquo;s request will sit and wait forever, since the request it is currently in will never finish.   To fix this, you will need to run your server with passenger.  Passenger can handle multiple requests in Ruby.</p>
-
-<p>Add <code>gem 'passenger'</code> to your Gemfile. Then you can run it like this</p>
-
-<p>and to run the application you can run <code>passenger -p 3000 -a 127.0.0.1</code>  if this is your first time running passenger with rails, you will have to follow an installation script.</p>
-
-<p>Awesome! You are finished.</p>
 </div>
   
   
