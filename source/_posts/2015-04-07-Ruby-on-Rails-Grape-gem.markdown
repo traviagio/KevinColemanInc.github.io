@@ -8,7 +8,6 @@ categories:
 
 <img src="/images/grapes.jpeg" title="Ruby on Rails Grape gem" class="banner-img" />
 
-
 Ruby on Rails is a very powerful framework that is awesome at building RESTful APIs.  Using vanilla rails to build an API, while completely possible, is not always the best way to go.  [Grape](https://github.com/intridea/grape) is micro-api framework design to work along side rails for developing an RESTful API.
 
 Grape has some very [expansive documentation](https://github.com/intridea/grape/blob/master/README.md) describing how the gem works, so I am not going to dive too deeply into that
