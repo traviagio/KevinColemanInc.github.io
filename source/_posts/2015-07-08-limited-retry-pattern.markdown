@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-<img src="/images/horse_statue.jpeg" title="Limited Retry Pattern" class="banner-img" />
+<img src="/images/horse_statue.jpg" title="Limited Retry Pattern" class="banner-img" />
 
 The limited retry pattern is a great tool for retrying method calls a limited number of times.  In instances where I want to make an API with a limited number of tries. I would have my method look like this:
 
