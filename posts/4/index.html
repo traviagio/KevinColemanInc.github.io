@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="I have worked on several projects that need a reporting tool to present the data models in a complex manor. I often find these queries to get more &hellip;">
+  <meta name="description" content="This is version two of my reporting schema used for Focused Care Solutions reporting to case managers. This pattern follows contains a lot of the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -102,6 +102,242 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/17/reporting-with-rails-part-1/">Reporting With Rails Part 2</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-03-17T22:49:55-07:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:49 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This is version two of my reporting schema used for Focused Care Solutions reporting to case managers.  This pattern follows contains a lot of the benefits of the first one, except hides a lot of the code messiness.</p>
+
+<h2>Goodbye lib/reports.rb</h2>
+
+<p>I hated how cluttered and ugly reports.rb got.  It ended being a graveyard for code decay causing a massive file (+500 lines of SQL/Ruby code) making it crazy difficult to maintain and find things in.  Sooo much scrolling.</p>
+
+<h2>Hello migrations!</h2>
+
+<p>This time I moved all of my SQL to be the data layer.  Everything was self contained in a reporting row.</p>
+
+<figure class='code'><figcaption><span>_create_reports.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">create_table</span> <span class="ss">:reports</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="ss">:uuid</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:name</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">text</span> <span class="ss">:sql</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span>
+</span><span class='line'>    <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The reports model only contains the name of the report and the sql for this report.  The column formatting will be done within the query (no more slow ruby helper methods) and the user friendly column headers will be in the select.  PGResult gives you an array of all of the headers that you can loop through.</p>
+
+<p>To add a report you simply create a migration and add the report in it:</p>
+
+<figure class='code'><figcaption><span>add_all_member_report.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;SELECT</span>
+</span><span class='line'><span class="s1">           email as &quot;email&quot;,                 </span>
+</span><span class='line'><span class="s1">           sign_in_count as &quot;sign in count&quot;,</span>
+</span><span class='line'><span class="s1">           last_sign_in_at as &quot;last sign in at&quot;,</span>
+</span><span class='line'><span class="s1">           created_at as &quot;created at&quot;,</span>
+</span><span class='line'><span class="s1">           updated_at as &quot;updated at&quot;,</span>
+</span><span class='line'><span class="s1">           archived_at as &quot;archived at&quot;,</span>
+</span><span class='line'><span class="s1">           first_name as &quot;first name&quot;,</span>
+</span><span class='line'><span class="s1">           last_name as &quot;last name&quot;,</span>
+</span><span class='line'><span class="s1">           phone_number as &quot;phone number&quot;,</span>
+</span><span class='line'><span class="s1">           member_number as &quot;member number&quot;,</span>
+</span><span class='line'><span class="s1">           date_of_birth as &quot;date of birth&quot;,</span>
+</span><span class='line'><span class="s1">           note as &quot;note&quot;</span>
+</span><span class='line'><span class="s1">          FROM Users&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="no">Report</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span>
+</span><span class='line'>      <span class="nb">name</span><span class="p">:</span> <span class="s2">&quot;All Members&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="ss">sql</span><span class="p">:</span> <span class="n">sql</span>
+</span><span class='line'>      <span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This way, new developers only and new deployments have to run migrations when they are setting up a new box and you get a history of what each report was.  If you want to edit a report, find it by the name and change the SQL code.</p>
+
+<h2>reports_controler.rb</h2>
+
+<p>I broke reports controller into two controller files.  One going in the API folder and one going in the top level reports folder.  The top level folder handles all of the HTML methods with reporting while the API actually runs the report.  This way the users aren’t stuck with a long page load time while the report is being run and I can leverage AngularJS to display the report results.</p>
+
+<figure class='code'><figcaption><span>reports_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ReportsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>  <span class="n">before_action</span> <span class="ss">:set_report</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:show</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:authenticate_user!</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">load_and_authorize_resource</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">index</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">show</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>    <span class="c1"># Use callbacks to share common setup or constraints between actions.</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">set_report</span>
+</span><span class='line'>      <span class="vi">@report</span> <span class="o">=</span> <span class="no">Report</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Only the index and show methods are needed here.  We don’t want regular users to created or edit reports (yet).  Show and Index methods handle the AngularJS HTML and, for the show, writes the report_id to tell the javascript what report to run.</p>
+
+<figure class='code'><figcaption><span>api/v1/reports_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">API</span><span class="o">::</span><span class="no">V1</span><span class="o">::</span><span class="no">ReportsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>  <span class="n">respond_to</span> <span class="ss">:json</span>
+</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:authenticate_user_from_token!</span>
+</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:authenticate_user!</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">before_action</span> <span class="ss">:set_report</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:show</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">load_and_authorize_resource</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">index</span>
+</span><span class='line'>    <span class="vi">@meter</span> <span class="o">=</span> <span class="no">Report</span><span class="o">.</span><span class="n">all</span>
+</span><span class='line'>    <span class="n">render</span> <span class="ss">:index</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">run</span>
+</span><span class='line'>    <span class="vi">@results</span> <span class="o">=</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="vi">@report</span><span class="o">.</span><span class="n">sql</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">render</span> <span class="ss">:run</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>  <span class="c1"># Use callbacks to share common setup or constraints between actions.</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">set_report</span>
+</span><span class='line'>      <span class="vi">@report</span> <span class="o">=</span> <span class="no">Report</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here the code is stupid simple.  There isn’t any complicated formatting or send functions.  All acts as a layer between the view and the data, as it should.</p>
+
+<h2>run.json.jbuilder</h2>
+
+<p>Json for each report gets rendered with this view method.  Thanks to PGResult, you get a seperate list of the headers from the data.  I included that seperately from the data, so that it would be easier for the Javascript to find and render the form data.</p>
+
+<figure class='code'><figcaption><span>run.json.jbuilder</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">json</span><span class="o">.</span><span class="n">table</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">json</span><span class="o">.</span><span class="n">headers</span> <span class="vi">@results</span><span class="o">.</span><span class="n">fields</span>
+</span><span class='line'>  <span class="n">json</span><span class="o">.</span><span class="n">rows</span> <span class="vi">@results</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Pros</h2>
+
+<ul>
+<li>Hides the SQL in the database, keeping the code base clean.</li>
+<li>The view is report agnostic.  You don’t have to write a separate view per report.</li>
+<li>Custom SQL == more control over reports behavior</li>
+<li>You don’t have to deploy to update a reporting query, but don’t forget to write a migration for it.</li>
+<li>Dynamically loaded via JSON, this allowing multiple clients to run reports.  (maybe a mobile app?)</li>
+</ul>
+
+
+<h2>Cons</h2>
+
+<ul>
+<li>You have to format on the database side, which makes writing the query more annoying, because you can’t use Rail’s helper methods.</li>
+<li>Editing Queries can be a little annoying, because you have to look up what is currently in the DB and create a migration to view it.</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>

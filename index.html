@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="Escaping slashes in can leave regex expressions difficult to read. A regex statement that is meant to identify a url like this one http://atdc.org/ &hellip;">
+  <meta name="description" content="When working with active_record, you often need to establish if a row exists to see if you can do operations against it. Here is an interesting &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -102,6 +102,73 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/07/10/rails-tips-fast-relation-detection/">Rails Tips: Fast Relation Detection</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-07-10T08:15:04-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:15 am</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/cafe.jpg" title="Rails tips: Fast Relation Detection" class="banner-img"  /></p>
+
+<p>When working with active_record, you often need to establish if a row exists to see if you can do operations against it.  Here is an interesting technique when checking if objects or relations exist in a collection.</p>
+
+<p>Many developers use the <code>present?</code> method, but this is bad practice, because it performs a standard <code>SELECT</code> query against your table which, relative to a count, is very slow.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">blog</span><span class="o">.</span><span class="n">posts</span><span class="o">.</span><span class="n">present?</span>
+</span><span class='line'><span class="c1"># SELECT id FROM `posts` WHERE (&quot;posts&quot;.blog_id = 1)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The better trick would be to use the <code>exits?</code> method to more efficiently determine if a record exists since it just has to return a number instead of a large collection of objects</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">blog</span><span class="o">.</span><span class="n">posts</span><span class="o">.</span><span class="n">exists?</span>
+</span><span class='line'><span class="c1"># SELECT id FROM `posts` WHERE (&quot;posts&quot;.blog_id = 1) LIMIT 1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Alternatively, if you know you are going to need the object later, it is better to just load exactly what you need and use it later:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="n">blog</span><span class="o">.</span><span class="n">posts</span><span class="o">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</span><span class='line'><span class="c1"># SELECT id FROM `posts` WHERE (&quot;posts&quot;.blog_id = 1)</span>
+</span><span class='line'>  <span class="n">do_something_with_posts</span><span class="p">(</span><span class="n">blog</span><span class="o">.</span><span class="n">posts</span><span class="p">)</span>
+</span><span class='line'>  <span class="c1"># No query</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you had done a exists or a count on the post, then you would have to run back to the database to fetch the rest of the objects.  While this is more memory intensive, it can be much faster technique.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -978,66 +1045,6 @@
 <p>Since its launch 3 months ago, it has found over 350 job postings and gets on average 100 hits per day with a list of 60 subscribers.</p>
 
 <p>If you are looking for a job in Atlanta’s startup community, Atlanta Startup Jobs is the place to start.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/01/08/happybeam/">SideProject: HappyBeam - Meditate and Improve</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-01-08T10:11:59-08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:11 am</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/HappyBeam-feature-graphic.png" title="SideProject: HappyBeam - Meditate and improve" class="banner-img"  /></p>
-
-<h3>Please Vote for us!!</h3>
-
-<h1>Happiness Apps Challenge</h1>
-
-<p>Side projects are some of the best way for developers to learn new skills and maybe a little cash :-).  I really enjoy attending <a href="/blog/2014/10/26/how-to-win-a-hackathon/">Hackathon&rsquo;s</a>, because they really push my skillset as a developer.</p>
-
-<p>Most of my recently hackathons have required I learned android development, so I decided for my next project to buckle down and make a nicely designed, complicated android app.  The HappinessApps challenge was the perfect excuse for me to build an app worthy of my portfolio.</p>
-
-<p>For the HappinessApps hackathon, <a href="http://kcoleman.me">Kevin Coleman</a> and Haider Khan interviewed 57 unhappy people via Mechanical Turk that used to meditate.  We wanted to know why they stopped meditating.  32 users felt frustrated with meditation, because they never felt like they were getting any better and weren&rsquo;t confident that meditation was improving their happiness.</p>
-
-<h1>Enter <a href="http://www.happybeamapp.com">HappyBeam</a></h1>
-
-<p>&ldquo;If you can&rsquo;t measure it, you can&rsquo;t improve it.&rdquo; -Peter Drucker</p>
-
-<p>HappyBeam is the first app that is specifically designed to measure your inner peace by building up the bridge between physical movements and mental fluctuations. It helps you have a peaceful mind, reduce stress and depression, and improves your meditations. The less movement and lower the score that HappyBeam detects, the more you improve.</p>
-
-<p>HappyBeam runs alongside meditation apps to measure how a user moves during a meditation.  The app calculates a movement score using a cutting-edge algorithm. Happy-peaceful scores are marked green, not-so-good scores are yellow, high-anxiety scores are red.</p>
-
-<p>In the &ldquo;Your Meditations Chart&rdquo;, users see their improving meditation scores across all their meditations. The history list shows a list of each session with a chart displaying when and how long they moved.</p>
-
-<p>Currently, there is no other meditation apps that shows how a user is improving.</p>
-
-<p>HappyBeam leverages the latest Android Wear technology so that users can measure motion with their smartwatch.  This delivers a better reading of their meditation.</p>
-
-<p>HappyBeam was built in 3 weeks for the Happiness Apps challenge.</p>
-
-<p><a href="http://www.happybeamapp.com">Website</a></p>
-
-<p><a href="https://play.google.com/store/apps/details?id=zkhaider.com.happinessproject">Android Play Store</a>​</p>
 </div>
   
   
