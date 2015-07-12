@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Coleman]]></title>
   <link href="http://www.kcoleman.me/atom.xml" rel="self"/>
   <link href="http://www.kcoleman.me/"/>
-  <updated>2015-07-10T09:02:28-07:00</updated>
+  <updated>2015-07-12T16:42:30-07:00</updated>
   <id>http://www.kcoleman.me/</id>
   <author>
     <name><![CDATA[Kevin Coleman]]></name>
@@ -12,6 +12,53 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rails Tip: Returning]]></title>
+    <link href="http://www.kcoleman.me/blog/2015/07/12/ruby-tip-returning/"/>
+    <updated>2015-07-12T13:35:15-07:00</updated>
+    <id>http://www.kcoleman.me/blog/2015/07/12/ruby-tip-returning</id>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/house.jpg" title="Rails tip: Returning" class="banner-img"  /></p>
+
+<p>If you have been programming in Rails for pretty much any length of time, you will definitely run into a method that looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">some_method</span>
+</span><span class='line'>  <span class="n">foo</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>  <span class="n">foo</span> <span class="o">&lt;&lt;</span> <span class="no">Cat</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="n">foo</span> <span class="o">&lt;&lt;</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">foo</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You initiate some local variable, do some things to it, then return it.</p>
+
+<p>There is a lot of boiler plate code here and the smart developers behind rails added a method to the object class called returning.  This method simplifies this workflow.  Here is an example of the returning method in action.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">some_method</span>
+</span><span class='line'>  <span class="n">returning</span> <span class="n">foo</span> <span class="o">=</span> <span class="o">[]</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">foo</span> <span class="o">&lt;&lt;</span> <span class="no">Cat</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>    <span class="n">foo</span> <span class="o">&lt;&lt;</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is a much more elegant solution since it just reads more like a sentence than the previous example.  &ldquo;Add Cat and Dog to foo then return&rdquo; vs &ldquo;create foo. Add Cat and Dog. return foo&rdquo;.  Ruby&rsquo;s ability to easily add DSL to objectss on the fly makes ruby so powerful and easy to maintian.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails Tips: Fast Relation Detection]]></title>
@@ -1458,38 +1505,6 @@
 <p><a href="https://www.linkedin.com/in/yosepk">Yosep Kim</a> built <a href="htttp://asitgoes.com">AsItGoes.com</a> to help presenters get feed back on the presentation. Apparently, I need to be more funny, ha.  I am going to take this tool to my <a href="http://www.toastmasters.org/">Toastmaster</a>&rsquo;s club and use it for feedback for my presentations.</p>
 
 <p>I can&rsquo;t wait to attend to the next event.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[What It Takes to Be Entry Level Rails Developers]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/06/13/entry-level-rails/"/>
-    <updated>2014-06-13T13:42:01-07:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/06/13/entry-level-rails</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/bridge.jpg" title="What it takes to be entry level Rails developers" class="banner-img" /></p>
-
-<p>I get asked a lot about what it takes to break into the Ruby on Rails industry at the various hackathons and start up weekends I have attended.  Spurred by this <a href="http://www.reddit.com/r/ruby/comments/282n9k/what_ruby_skills_are_essential_for_an_entrylevel/">/r/ruby question</a>.  I shall try my best to answer this question in a public setting.</p>
-
-<h2>I want to this in an entry level rails developer</h2>
-
-<ol>
-<li>Build a <a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUDL</a> application</li>
-<li>Understand and apply <a href="http://getbootstrap.com/">bootstrap</a></li>
-<li>Build a to-do application or any simple super basic app that requires a few controllers, models, etc.</li>
-<li>Use slightly obscure gems, like the <a href="https://github.com/sferik/twitter">twitter</a>, <a href="https://github.com/arsduo/koala">koala</a>, <a href="https://rubygems.org/gems/mandrill-api">mandrill</a>, <a href="https://github.com/amatsuda/kaminari">kaminari</a>, <a href="https://github.com/rails/jbuilder">jbuilder</a>, etc. to prove to me that they can read the documentation and figure out how to use a gem.</li>
-</ol>
-
-
-<h2>Bonuses</h2>
-
-<ol>
-<li>Understanding a testing framework (<a href="https://github.com/rspec/rspec-rails">rspec</a> is my preference)</li>
-<li>Knowing some basic javascript (jquery)</li>
-<li>Know <a href="http://en.wikipedia.org/wiki/Test-driven_development">TDD</a></li>
-<li>Knowing Thin Controllers, Fat Models</li>
-<li>Attends the local ruby on rails <a href="http://meetup.com">meetup</a></li>
-</ol>
-
 ]]></content>
   </entry>
   
