@@ -45,9 +45,6 @@ See job postings from Atlanta's top startups.
 ## SparkChat [link](http://kcoleman.me/chat)
 Chat with me when I am gTalk.  Still in alpha version.  Currently trying to port it to [Meteor](https://www.meteor.com/) when I have time.
 
-## LeadResponder [link](http://LeadResponder.com)
-Respond to contact requests immediately
-
 ## Focused Care Solutions
 Monitor healthcare member's health remotely
 
