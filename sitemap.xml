@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://www.kcoleman.me/blog/2015/08/23/skills-needed-for-a-junior-developer/</loc>
+    <lastmod>2015-08-23T14:42:13-07:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>http://www.kcoleman.me/blog/2015/07/12/ruby-tip-returning/</loc>
     <lastmod>2015-07-12T13:35:15-07:00</lastmod>
     <priority>0.8</priority>
@@ -172,37 +177,37 @@
   </url>
   <url>
     <loc>http://www.kcoleman.me/blog/archives/</loc>
-    <lastmod>2015-07-16T20:31:07-07:00</lastmod>
+    <lastmod>2015-08-24T21:52:43-07:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://www.kcoleman.me/</loc>
-    <lastmod>2015-07-16T20:31:07-07:00</lastmod>
+    <lastmod>2015-08-24T21:52:43-07:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>http://www.kcoleman.me/about/</loc>
-    <lastmod>2015-07-16T20:31:07-07:00</lastmod>
+    <lastmod>2015-08-24T21:52:43-07:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://www.kcoleman.me/contact/</loc>
-    <lastmod>2015-07-16T20:31:07-07:00</lastmod>
+    <lastmod>2015-08-24T21:52:43-07:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://www.kcoleman.me/coleman-laws/</loc>
-    <lastmod>2015-07-16T20:31:07-07:00</lastmod>
+    <lastmod>2015-08-24T21:52:43-07:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://www.kcoleman.me/projects/</loc>
-    <lastmod>2015-07-16T20:31:07-07:00</lastmod>
+    <lastmod>2015-08-24T21:52:43-07:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

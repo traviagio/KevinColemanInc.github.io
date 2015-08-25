@@ -9,7 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="I have always wanted to start my own business, ever since I was in high school. Since then, I have been struggling to find an idea that I am truly &hellip;">
+  <meta name="description" content="Unlike Ruby on Rails, Android app development does not have as definitive of an opinion on how apps should be developed and so we have designed our &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -102,6 +102,187 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/12/android-app-architecture/">Otto Meet Retrofit: How to Build a Scalable and Performant Android Application</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-12T12:46:43-07:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>12:46 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/beach2.jpg" title="Otto meet Retrofit: How to build a scalable and performant Android application" class="banner-img"  /></p>
+
+<p>Unlike Ruby on Rails, Android app development does not have as definitive of an opinion on how apps should be developed and so we have designed our own pattern leveraging open source tools like <a href="http://square.github.io/otto/">Otto</a> and <a href="http://square.github.io/retrofit/">Retrofit</a> to design our applications.</p>
+
+<p>After much research, we at <a href="http://sparkstart.io">Spark Start</a> invested in developing a design pattern for our client applications that leverages the best practices.  Jumping right in here:</p>
+
+<h2>Consuming a RESTful API</h2>
+
+<p>Following Object Oriented Programming&rsquo;s best practices, all objects should each only have one job.  With the start of a new api, create a folder with the name of the API you are trying to consume.</p>
+
+<p>Inside of your client.java file, you will include your retrofit interface classes.  This file will specify how your app will be calling the API.</p>
+
+<figure class='code'><figcaption><span>APIClient.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">APIClient</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">interface</span> <span class="nc">IUser</span> <span class="o">{</span>
+</span><span class='line'>        <span class="nd">@GET</span><span class="o">(</span><span class="s">&quot;/users/Me.json&quot;</span><span class="o">)</span>
+</span><span class='line'>        <span class="kt">void</span> <span class="nf">getMe</span><span class="o">(</span><span class="n">Callback</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">callback</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nd">@GET</span><span class="o">(</span><span class="s">&quot;/users.json&quot;</span><span class="o">)</span>
+</span><span class='line'>        <span class="kt">void</span> <span class="nf">getUsers</span><span class="o">(</span><span class="n">Callback</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;&gt;</span> <span class="n">callback</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This keeps all of our API information in one small maintainable file.  Notice how we are always using the retrofit callback method instead of the async call.  This will allow our code to start a web request on any thread.  Now the code consuming this will never have to worry about thread locking.</p>
+
+<figure class='code'><figcaption><span>APIManager.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">APIManager</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">Bus</span> <span class="n">mBus</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">CooleafAPIManager</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">,</span> <span class="n">Bus</span> <span class="n">bus</span><span class="o">)</span>
+</span><span class='line'>    <span class="o">{</span>
+</span><span class='line'>        <span class="n">mBus</span> <span class="o">=</span> <span class="n">bus</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">mAsyncRestAdapter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RestAdapter</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">setEndpoint</span><span class="o">(</span><span class="n">API_URL</span><span class="o">)</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">setRequestInterceptor</span><span class="o">(</span><span class="n">getCookieInterceptor</span><span class="o">())</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">setLogLevel</span><span class="o">(</span><span class="n">RestAdapter</span><span class="o">.</span><span class="na">LogLevel</span><span class="o">.</span><span class="na">BASIC</span><span class="o">)</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Subscribe</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onLoadAuthenticateEvent</span><span class="o">(</span><span class="n">LoadAuthenticateEvent</span> <span class="n">loadAuthenticateEvent</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">String</span> <span class="n">email</span> <span class="o">=</span> <span class="n">loadAuthenticateEvent</span><span class="o">.</span><span class="na">getEmail</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">String</span> <span class="n">password</span> <span class="o">=</span> <span class="n">loadAuthenticateEvent</span><span class="o">.</span><span class="na">getPassword</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">Callback</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">callback</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Callback</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;()</span> <span class="o">{</span>
+</span><span class='line'>            <span class="nd">@Override</span>
+</span><span class='line'>            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">success</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">,</span> <span class="n">Response</span> <span class="n">response</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">mBus</span><span class="o">.</span><span class="na">post</span><span class="o">(</span><span class="k">new</span> <span class="nf">LoadedMeEvent</span><span class="o">(</span><span class="n">user</span><span class="o">));</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="nd">@Override</span>
+</span><span class='line'>            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">failure</span><span class="o">(</span><span class="n">RetrofitError</span> <span class="n">retrofitError</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">mBus</span><span class="o">.</span><span class="na">post</span><span class="o">(</span><span class="k">new</span> <span class="nf">LoadedErrorEvent</span><span class="o">(</span><span class="n">retrofitError</span><span class="o">));</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">};</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">sClient</span><span class="o">.</span><span class="na">authenticate</span><span class="o">(</span><span class="n">email</span><span class="o">,</span> <span class="n">password</span><span class="o">,</span> <span class="n">deviceID</span><span class="o">,</span> <span class="n">callback</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The manager class acts as a middleware between the client and the rest of our application.  For our <a href="http://cooleaf.com">most recent application</a>, authentication is handled by cookies, so we had to create our own cookie interceptor to handle authentication.</p>
+
+<p>The manager class subscribes to the bus and watches for events that request an API call.  When a user needs to authenticate, it catches the event, creates a callback which will intern fire off a new event once the response is finished.</p>
+
+<h2>Hooking in Otto into the controller classes</h2>
+
+<p>Otto is a great tool for managing async task events.  It has an event bus that you subscribe and unsubscribe your fragments and activities to, so when a callback (e.g. Retrofit is finished with a request), they can process the response.</p>
+
+<figure class='code'><figcaption><span>LoginFragment.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onResume</span><span class="o">()</span>
+</span><span class='line'>    <span class="o">{</span>
+</span><span class='line'>       <span class="kd">super</span><span class="o">.</span><span class="na">onResume</span><span class="o">();</span>
+</span><span class='line'>       <span class="n">BusProvider</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">register</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPause</span><span class="o">()</span>
+</span><span class='line'>    <span class="o">{</span>
+</span><span class='line'>        <span class="kd">super</span><span class="o">.</span><span class="na">onPause</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">BusProvider</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">unregister</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">onLoginClick</span><span class="o">()</span>
+</span><span class='line'>    <span class="o">{</span>
+</span><span class='line'>        <span class="n">BusProvider</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">post</span><span class="o">(</span><span class="k">new</span> <span class="nf">LoadAuthenticateEvent</span><span class="o">(</span><span class="n">userName</span><span class="o">,</span><span class="n">password</span><span class="o">));</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When the login fragment is resumed, otto automatically subscribes the fragment to the bus.  When it is paused, it unsubscribes.  This is awesome, because if a request is initiated to the API, but then the fragment is closed before the rest api responds, we don&rsquo;t have the fragment still listening for that response.</p>
+
+<h2>Conclusion</h2>
+
+<p>Otto and retrofit play really nicely together and are great tools for building an android app.  Managing all of the events can get a bit ugly, so be careful how you name them and organize them in the project.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1006,44 +1187,6 @@
 <li><p>Attend <a href="http://www.atlsuds.com/">startup</a> events. There are lots of people that have ideas, raised millions of dollars, but don&rsquo;t have the tech talent to build what they want to build. You need to find these people. Build relationships with VC firms. There are lots of startups with a $200,000 tech budget and no one to spend it on.</p></li>
 </ol>
 
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/06/21/goodie-hack-number-2/">Goodie Hack #2</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-06-21T14:31:51-07:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>2:31 pm</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/urban.jpg" title="Goodie Hack Atlanta 2014" class="banner-img" /></p>
-
-<p><a href="http://goodiehack.com/">Goodie Hack</a> was awesome! I met some really cool people and got to learn more about the Atlanta Food and Farming organizations.</p>
-
-<p>I joined the Atlanta Food and Farming organization where we integerated <a href="https://www.google.com/maps/preview">Google Map Builder</a> and <a href="http://www.google.com/google-d-s/createforms.html">Google Forms</a> to build an awesome resource for sharing data about where your food comes from.  Food related organizations submit data about what they are doing to encourage healthy eating in the community.  Our map includes information like where the closet community garden is or where they can donate their compost.</p>
-
-<p><a href="https://www.linkedin.com/in/yosepk">Yosep Kim</a> built <a href="htttp://asitgoes.com">AsItGoes.com</a> to help presenters get feed back on the presentation. Apparently, I need to be more funny, ha.  I am going to take this tool to my <a href="http://www.toastmasters.org/">Toastmaster</a>&rsquo;s club and use it for feedback for my presentations.</p>
-
-<p>I can&rsquo;t wait to attend to the next event.</p>
 </div>
   
   
