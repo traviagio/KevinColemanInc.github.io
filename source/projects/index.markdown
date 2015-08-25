@@ -7,6 +7,12 @@ footer: true
 ---
 Try some things I've built recently like…
 
+## Uber Outside Hack Winner
+Read about it on [Uber's blog](https://devblog.uber.com/outside-hack-winners-create-an-app-that-merges-traffic-conditions-with-uber/).
+
+## First Dev Job [link](https://www.firstdevjob.com/)
+Learn how to build the skills you need to land your first $100k dev job
+
 ## Sentimas [link](http://challengepost.com/software/sentimus-edegx)
 Natural Language Processing algorithm for improving Sear's Review recommendations
 Built on Apigee and NodeJs
