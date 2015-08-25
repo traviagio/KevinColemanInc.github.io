@@ -6,7 +6,7 @@ sharing: true
 footer: true
 ---
 
-<img src="/images/kevin.jpg" title="Kevin Coleman" class="responsive-img" style="width:50%" />
+<img src="/images/kevin.jpg" title="Kevin Coleman" class="responsive-img" style="border-radius: 18px; width: 120px;margin-left: auto;margin-right: auto" />
 
 ## Who am I?
 Based in San Francisco, CA, I am a jack of all trades software engineer that specializes in web applications and mobile apps.  I graduated from Georgia Tech with a B.S. in Electrical Engineering.
