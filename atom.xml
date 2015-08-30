@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Coleman]]></title>
   <link href="http://www.kcoleman.me/atom.xml" rel="self"/>
   <link href="http://www.kcoleman.me/"/>
-  <updated>2015-08-24T21:52:43-07:00</updated>
+  <updated>2015-08-29T21:10:59-07:00</updated>
   <id>http://www.kcoleman.me/</id>
   <author>
     <name><![CDATA[Kevin Coleman]]></name>
@@ -12,27 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[5 Things You Should Be Doing to Get Your First Rails Job]]></title>
-    <link href="http://www.kcoleman.me/blog/2015/08/23/skills-needed-for-a-junior-developer/"/>
-    <updated>2015-08-23T14:42:13-07:00</updated>
-    <id>http://www.kcoleman.me/blog/2015/08/23/skills-needed-for-a-junior-developer</id>
-    <content type="html"><![CDATA[<p>I have looked at hundreds of candidates for our entry level ruby on rails position.  All of the candidates so far are missing some very key basic features to their resume and portfolios.</p>
-
-<h2>1. Have a github profile with interesting projects</h2>
-
-<h2>2. Have a blog</h2>
-
-<h2>3. Understand basic database design</h2>
-
-<h2>4. Code code code</h2>
-
-<h2>5.</h2>
-
-<p>PS: We are hiring a junior Rails developer at Zugata and I want to talk briefly about what skills you need to have to work with us.</p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails Tip: Returning]]></title>
@@ -1509,6 +1488,23 @@
 <li><p>Attend <a href="http://www.atlsuds.com/">startup</a> events. There are lots of people that have ideas, raised millions of dollars, but don&rsquo;t have the tech talent to build what they want to build. You need to find these people. Build relationships with VC firms. There are lots of startups with a $200,000 tech budget and no one to spend it on.</p></li>
 </ol>
 
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Goodie Hack #2]]></title>
+    <link href="http://www.kcoleman.me/blog/2014/06/21/goodie-hack-number-2/"/>
+    <updated>2014-06-21T14:31:51-07:00</updated>
+    <id>http://www.kcoleman.me/blog/2014/06/21/goodie-hack-number-2</id>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/urban.jpg" title="Goodie Hack Atlanta 2014" class="banner-img" /></p>
+
+<p><a href="http://goodiehack.com/">Goodie Hack</a> was awesome! I met some really cool people and got to learn more about the Atlanta Food and Farming organizations.</p>
+
+<p>I joined the Atlanta Food and Farming organization where we integerated <a href="https://www.google.com/maps/preview">Google Map Builder</a> and <a href="http://www.google.com/google-d-s/createforms.html">Google Forms</a> to build an awesome resource for sharing data about where your food comes from.  Food related organizations submit data about what they are doing to encourage healthy eating in the community.  Our map includes information like where the closet community garden is or where they can donate their compost.</p>
+
+<p><a href="https://www.linkedin.com/in/yosepk">Yosep Kim</a> built <a href="htttp://asitgoes.com">AsItGoes.com</a> to help presenters get feed back on the presentation. Apparently, I need to be more funny, ha.  I am going to take this tool to my <a href="http://www.toastmasters.org/">Toastmaster</a>&rsquo;s club and use it for feedback for my presentations.</p>
+
+<p>I can&rsquo;t wait to attend to the next event.</p>
 ]]></content>
   </entry>
   
