@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Coleman]]></title>
   <link href="http://www.kcoleman.me/atom.xml" rel="self"/>
   <link href="http://www.kcoleman.me/"/>
-  <updated>2015-08-29T21:10:59-07:00</updated>
+  <updated>2015-08-31T17:55:33-07:00</updated>
   <id>http://www.kcoleman.me/</id>
   <author>
     <name><![CDATA[Kevin Coleman]]></name>
@@ -18,7 +18,7 @@
     <link href="http://www.kcoleman.me/blog/2015/07/12/ruby-tip-returning/"/>
     <updated>2015-07-12T13:35:15-07:00</updated>
     <id>http://www.kcoleman.me/blog/2015/07/12/ruby-tip-returning</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/house.jpg" title="Rails tip: Returning" class="banner-img"  /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/house.jpg" alt="house" title="Rails tip: Returning" class="banner-img"  /></p>
 
 <p>If you have been programming in Rails for pretty much any length of time, you will definitely run into a method that looks like this:</p>
 
@@ -65,7 +65,7 @@
     <link href="http://www.kcoleman.me/blog/2015/07/10/rails-tips-fast-relation-detection/"/>
     <updated>2015-07-10T08:15:04-07:00</updated>
     <id>http://www.kcoleman.me/blog/2015/07/10/rails-tips-fast-relation-detection</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/cafe.jpg" title="Rails tips: Fast Relation Detection" class="banner-img"  /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/cafe.jpg" alt="cafe" title="Rails tips: Fast Relation Detection" class="banner-img"  /></p>
 
 <p>When working with active_record, you often need to establish if a row exists to see if you can do operations against it.  Here is an interesting technique when checking if objects or relations exist in a collection.</p>
 
@@ -111,7 +111,7 @@
     <link href="http://www.kcoleman.me/blog/2015/07/09/regex-escaping-slashes/"/>
     <updated>2015-07-09T07:49:01-07:00</updated>
     <id>http://www.kcoleman.me/blog/2015/07/09/regex-escaping-slashes</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/buildings.jpg" title="Regex: Escaping Slashes" class="banner-img"  /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/buildings.jpg" alt="buildings in czech" title="Regex: Escaping Slashes" class="banner-img"  /></p>
 
 <p>Escaping slashes in can leave regex expressions difficult to read.  A regex statement that is meant to identify a url like this one <code>http://atdc.org/wp-admin/admin-ajax.php</code>.</p>
 
@@ -136,7 +136,7 @@
     <link href="http://www.kcoleman.me/blog/2015/07/08/limited-retry-pattern/"/>
     <updated>2015-07-08T23:43:12-07:00</updated>
     <id>http://www.kcoleman.me/blog/2015/07/08/limited-retry-pattern</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/horse_statue.jpg" title="Limited Retry Pattern" class="banner-img" /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/horse_statue.jpg" alt="horse statue" title="Limited Retry Pattern" class="banner-img" /></p>
 
 <p>The limited retry pattern is a great tool for retrying method calls a limited number of times.  In instances where I want to make an API with a limited number of tries. I would have my method look like this:</p>
 
@@ -172,7 +172,7 @@
     <link href="http://www.kcoleman.me/blog/2015/06/23/queable-concern/"/>
     <updated>2015-06-23T21:54:42-07:00</updated>
     <id>http://www.kcoleman.me/blog/2015/06/23/queable-concern</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/bird_statue.jpg" title="Adding Queues to your models" class="banner-img" /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/bird_statue.jpg" alt="bird statue" title="Adding Queues to your models" class="banner-img" /></p>
 
 <p>At work recently, we needed to introduce the concept of a queue into our rails app.  MySQL really doesn&rsquo;t do a great job with these types of things, because it is so slow.  Redis is a much better solution, because its speed and ease of use.</p>
 
@@ -326,7 +326,7 @@
     <link href="http://www.kcoleman.me/blog/2015/06/10/hosting-side-projects/"/>
     <updated>2015-06-10T19:33:59-07:00</updated>
     <id>http://www.kcoleman.me/blog/2015/06/10/hosting-side-projects</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/czech_2.jpg" title="Hosting Side Projects for Free" class="banner-img img-responsive"/></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/czech_2.jpg" alt="czech" title="Hosting Side Projects for Free" class="banner-img img-responsive"/></p>
 
 <p>With <a href="https://blog.heroku.com/archives/2015/5/7/new-dyno-types-public-beta">Heroku&rsquo;s latest pricing restructure announcement</a>, I decided it was time to re-evaluate my <a href="http://www.kcoleman.me/projects">side-project</a> hosting strategies.  Historically, <a href="http://heroku.com">Heroku</a> has been my go to as a hosting provider for my various rails application endeavors, because it is so easy to setup and, most importantly, free.</p>
 
@@ -401,7 +401,7 @@
     <link href="http://www.kcoleman.me/blog/2015/06/06/adding-search-to-atlanta-startup-jobs/"/>
     <updated>2015-06-06T05:23:14-07:00</updated>
     <id>http://www.kcoleman.me/blog/2015/06/06/adding-search-to-atlanta-startup-jobs</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/czech_1.jpg" title="Adding search to Atlanta Startup Jobs" class="banner-img"/></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/czech_1.jpg" alt="czech" title="Adding search to Atlanta Startup Jobs" class="banner-img"/></p>
 
 <p>I found a few minutes today to finally add search to <a href="http://atlantastartupjobs.com">Atlanta Startup Jobs</a>.  I had been putting it off for a long time, thinking it would be a long laborous process, but I found it was shockingly easy.  Here is what I did:</p>
 
@@ -454,7 +454,7 @@
     <link href="http://www.kcoleman.me/blog/2015/06/03/rails-patterns-builders-and-models/"/>
     <updated>2015-06-03T00:23:38-07:00</updated>
     <id>http://www.kcoleman.me/blog/2015/06/03/rails-patterns-builders-and-models</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/sf-bridge.jpg" title="Rails Patterns: Builders and Models" class="banner-img"/></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/sf-bridge.jpg" alt="bridge" title="Rails Patterns: Builders and Models" class="banner-img"/></p>
 
 <p>A huge problem with ruby on rails apps is many of them end with overly cluttered models and controller methods. An attempt to solve this would be to move what you can to your active record models, but then you end up with heavily bloated model classes that extend way beyond their intended active record design patterns.  Active record models should just manage the communication between the rails app and the database.  Anything else is just code smell.</p>
 
@@ -575,7 +575,7 @@
     <link href="http://www.kcoleman.me/blog/2015/04/07/Ruby-on-Rails-Grape-gem/"/>
     <updated>2015-04-07T01:36:51-07:00</updated>
     <id>http://www.kcoleman.me/blog/2015/04/07/Ruby-on-Rails-Grape-gem</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/grapes.jpeg" title="Ruby on Rails Grape gem" class="banner-img" /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/grapes.jpeg" alt="grapes" title="Ruby on Rails Grape gem" class="banner-img" /></p>
 
 <p>Ruby on Rails is a very powerful framework that is awesome at building RESTful APIs.  Using vanilla rails to build an API, while completely possible, is not always the best way to go.  <a href="https://github.com/intridea/grape">Grape</a> is micro-api framework design to work along side rails for developing an RESTful API.</p>
 
@@ -615,7 +615,7 @@
     <link href="http://www.kcoleman.me/blog/2015/03/12/android-app-architecture/"/>
     <updated>2015-03-12T12:46:43-07:00</updated>
     <id>http://www.kcoleman.me/blog/2015/03/12/android-app-architecture</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/beach2.jpg" title="Otto meet Retrofit: How to build a scalable and performant Android application" class="banner-img"  /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/beach2.jpg" alt="beach" title="Otto meet Retrofit: How to build a scalable and performant Android application" class="banner-img"  /></p>
 
 <p>Unlike Ruby on Rails, Android app development does not have as definitive of an opinion on how apps should be developed and so we have designed our own pattern leveraging open source tools like <a href="http://square.github.io/otto/">Otto</a> and <a href="http://square.github.io/retrofit/">Retrofit</a> to design our applications.</p>
 
@@ -775,7 +775,7 @@
     <link href="http://www.kcoleman.me/blog/2015/01/12/atlanta-startup-jobs/"/>
     <updated>2015-01-12T17:52:21-08:00</updated>
     <id>http://www.kcoleman.me/blog/2015/01/12/atlanta-startup-jobs</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/park.jpg" title="Atlanta Startup Jobs - Scratch your own itch" class="banner-img"  /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/park.jpg"  alt="park" title="Atlanta Startup Jobs - Scratch your own itch" class="banner-img"  /></p>
 
 <p>I have always wanted to start my own business, ever since I was in high school. Since then, I have been struggling to find an idea that I am truly passionate enough to invest my time or resources to execute on my own.</p>
 
@@ -804,7 +804,7 @@
     <link href="http://www.kcoleman.me/blog/2015/01/08/happybeam/"/>
     <updated>2015-01-08T10:11:59-08:00</updated>
     <id>http://www.kcoleman.me/blog/2015/01/08/happybeam</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/HappyBeam-feature-graphic.png" title="SideProject: HappyBeam - Meditate and improve" class="banner-img"  /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/HappyBeam-feature-graphic.png" alt="happy beam logo" title="SideProject: HappyBeam - Meditate and improve" class="banner-img"  /></p>
 
 <h3>Please Vote for us!!</h3>
 
@@ -843,7 +843,7 @@
     <link href="http://www.kcoleman.me/blog/2014/10/26/how-to-win-a-hackathon/"/>
     <updated>2014-10-26T17:14:40-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/10/26/how-to-win-a-hackathon</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/cooking.jpg" title="How to win a hackathon" class="banner-img"  /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/cooking.jpg" alt="cooking" title="How to win a hackathon" class="banner-img"  /></p>
 
 <p>I have been to a few hackathons and startup weekends over the last few years and I have a pretty good prize rate (I have placed at more than 50% of the events).  After my back to back win of the ATT and FinApps hackathons, I want to share my thoughts on what it takes to be a winning team.</p>
 
@@ -939,7 +939,7 @@
     <link href="http://www.kcoleman.me/blog/2014/10/09/one-rails-app-two-web-applications/"/>
     <updated>2014-10-09T17:11:45-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/10/09/one-rails-app-two-web-applications</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/mountains.jpeg" title="One Rails App Two Web Applications" class="banner-img"  /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/mountains.jpeg" alt="mountains" title="One Rails App Two Web Applications" class="banner-img"  /></p>
 
 <p>When building a rails application, sometimes it is quicker to build one code base that is shared on two completely different frontend applications.  I am going to discuss the design approaches I used to segregate the two rails websites within a single rails application base.</p>
 
@@ -1087,7 +1087,7 @@
     <link href="http://www.kcoleman.me/blog/2014/10/07/angularjs-rails-and-seo-part-2/"/>
     <updated>2014-10-07T17:26:43-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/10/07/angularjs-rails-and-seo-part-2</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/beach.jpeg" title="Angularjs Rails and SEO Part 2" class="banner-img"  /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/beach.jpeg"  alt="beach" title="Angularjs Rails and SEO Part 2" class="banner-img"  /></p>
 
 <p>This is a continuation post from <a href="http://www.kcoleman.me/blog/2014/10/03/angularjs-rails-seo/">Angularjs Rails and SEO Part 1</a>.</p>
 
@@ -1159,7 +1159,7 @@
     <link href="http://www.kcoleman.me/blog/2014/10/03/angularjs-rails-seo/"/>
     <updated>2014-10-03T09:05:45-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/10/03/angularjs-rails-seo</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/mountain.jpeg" title="Angularjs Rails and SEO Part 1" class="banner-img"  /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/mountain.jpeg" alt="mountain" title="Angularjs Rails and SEO Part 1" class="banner-img"  /></p>
 
 <h2>Intro</h2>
 
@@ -1383,7 +1383,7 @@
     <link href="http://www.kcoleman.me/blog/2014/07/28/new-house/"/>
     <updated>2014-07-28T09:46:17-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/07/28/new-house</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/city-houses.jpg" title="First Real Estate Investment Property" class="banner-img"  /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/city-houses.jpg" alt="city houses" title="First Real Estate Investment Property" class="banner-img"  /></p>
 
 <p>This week I will be closing on my first house that I plan on renovating and selling in the next few months.  I have been looking for a low-end flip for over a year now and I finally found one via <a href="http://networthrealtyusa.com/">NetWorth Reality</a> in Atlanta.</p>
 
@@ -1422,7 +1422,7 @@
     <link href="http://www.kcoleman.me/blog/2014/07/23/how-to-get-osx-git-branch-name-in-console/"/>
     <updated>2014-07-23T12:13:52-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/07/23/how-to-get-osx-git-branch-name-in-console</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/hills.jpg" title="How to get OSX git branch name in console" class="banner-img"  /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/hills.jpg" alt="hills" title="How to get OSX git branch name in console" class="banner-img"  /></p>
 
 <p>I have always had a problem of forgetting which git branch I was on and committing my changes to the wrong branch.  The best way I have found to solve this problem is to have the branch name printed in the console prompt.</p>
 
@@ -1455,7 +1455,7 @@
     <link href="http://www.kcoleman.me/blog/2014/07/05/web-consulting/"/>
     <updated>2014-07-05T08:46:57-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/07/05/web-consulting</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/ppl-skyline.jpg" title="How to start web consulting" class="banner-img"  /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/ppl-skyline.jpg" alt="skyline" title="How to start web consulting" class="banner-img"  /></p>
 
 <p>I have lots of advice for you. I just moved from a corporate job to rails consulting 2-4mo ago, because someone offered me more money than I could say no to.</p>
 
@@ -1496,7 +1496,7 @@
     <link href="http://www.kcoleman.me/blog/2014/06/21/goodie-hack-number-2/"/>
     <updated>2014-06-21T14:31:51-07:00</updated>
     <id>http://www.kcoleman.me/blog/2014/06/21/goodie-hack-number-2</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/urban.jpg" title="Goodie Hack Atlanta 2014" class="banner-img" /></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/urban.jpg" alt="urban" title="Goodie Hack Atlanta 2014" class="banner-img" /></p>
 
 <p><a href="http://goodiehack.com/">Goodie Hack</a> was awesome! I met some really cool people and got to learn more about the Atlanta Food and Farming organizations.</p>
 

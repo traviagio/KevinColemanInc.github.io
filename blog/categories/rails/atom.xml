@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Rails, | Kevin Coleman]]></title>
   <link href="http://www.kcoleman.me/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://www.kcoleman.me/"/>
-  <updated>2015-08-29T21:10:59-07:00</updated>
+  <updated>2015-08-31T17:55:33-07:00</updated>
   <id>http://www.kcoleman.me/</id>
   <author>
     <name><![CDATA[Kevin Coleman]]></name>
@@ -18,7 +18,7 @@
     <link href="http://www.kcoleman.me/blog/2015/06/03/rails-patterns-builders-and-models/"/>
     <updated>2015-06-03T00:23:38-07:00</updated>
     <id>http://www.kcoleman.me/blog/2015/06/03/rails-patterns-builders-and-models</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/sf-bridge.jpg" title="Rails Patterns: Builders and Models" class="banner-img"/></p>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/sf-bridge.jpg" alt="bridge" title="Rails Patterns: Builders and Models" class="banner-img"/></p>
 
 <p>A huge problem with ruby on rails apps is many of them end with overly cluttered models and controller methods. An attempt to solve this would be to move what you can to your active record models, but then you end up with heavily bloated model classes that extend way beyond their intended active record design patterns.  Active record models should just manage the communication between the rails app and the database.  Anything else is just code smell.</p>
 
