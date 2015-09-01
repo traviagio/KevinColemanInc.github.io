@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-<img src="/images/road.jpg" title="Rails 4.1 enums: How not to handle stats" class="banner-img"/>
+<img src="/images/road.jpg" alt="road" title="Rails 4.1 enums: How not to handle stats" class="banner-img"/>
 
 I subscribe to the [Ruby Weekly](http://rubyweekly.com/) news blog, so I can stay updated with the latest rails practices and gems.  90% of the time, there is some really good information in there.  But occasionally, sometime catches my eye that just feels wrong.
 

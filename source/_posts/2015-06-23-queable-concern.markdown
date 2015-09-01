@@ -5,7 +5,7 @@ date: 2015-06-23 21:54:42 -0700
 comments: true
 categories: 
 ---
-<img src="/images/bird_statue.jpg" title="Adding Queues to your models" class="banner-img" />
+<img src="/images/bird_statue.jpg" alt="bird statue" title="Adding Queues to your models" class="banner-img" />
 
 At work recently, we needed to introduce the concept of a queue into our rails app.  MySQL really doesn't do a great job with these types of things, because it is so slow.  Redis is a much better solution, because its speed and ease of use.
 

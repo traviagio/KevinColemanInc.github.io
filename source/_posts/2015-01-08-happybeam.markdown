@@ -5,7 +5,7 @@ date: 2015-01-08 13:11:59 -0500
 comments: true
 categories: projects
 ---
-<img src="/images/HappyBeam-feature-graphic.png" title="SideProject: HappyBeam - Meditate and improve" class="banner-img"  />
+<img src="/images/HappyBeam-feature-graphic.png" alt="happy beam logo" title="SideProject: HappyBeam - Meditate and improve" class="banner-img"  />
 
 ### Please Vote for us!!
 

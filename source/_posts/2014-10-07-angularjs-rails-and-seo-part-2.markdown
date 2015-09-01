@@ -5,7 +5,7 @@ date: 2014-10-07 20:26:43 -0400
 comments: true
 categories:
 ---
-<img src="/images/beach.jpeg" title="Angularjs Rails and SEO Part 2" class="banner-img"  />
+<img src="/images/beach.jpeg"  alt="beach" title="Angularjs Rails and SEO Part 2" class="banner-img"  />
 
 This is a continuation post from [Angularjs Rails and SEO Part 1](/blog/2014/10/03/angularjs-rails-seo/).
 

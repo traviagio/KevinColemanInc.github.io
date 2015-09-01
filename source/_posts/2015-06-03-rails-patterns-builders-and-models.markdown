@@ -5,7 +5,7 @@ date: 2015-06-03 09:23:38 +0200
 comments: true
 categories: rails, ruby
 ---
-<img src="/images/sf-bridge.jpg" title="Rails Patterns: Builders and Models" class="banner-img"/>
+<img src="/images/sf-bridge.jpg" alt="bridge" title="Rails Patterns: Builders and Models" class="banner-img"/>
 
 A huge problem with ruby on rails apps is many of them end with overly cluttered models and controller methods. An attempt to solve this would be to move what you can to your active record models, but then you end up with heavily bloated model classes that extend way beyond their intended active record design patterns.  Active record models should just manage the communication between the rails app and the database.  Anything else is just code smell.
 

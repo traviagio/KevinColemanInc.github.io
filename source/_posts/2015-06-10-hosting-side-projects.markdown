@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-<img src="/images/czech_2.jpg" title="Hosting Side Projects for Free" class="banner-img img-responsive"/>
+<img src="/images/czech_2.jpg" alt="czech" title="Hosting Side Projects for Free" class="banner-img img-responsive"/>
 
 With [Heroku's latest pricing restructure announcement](https://blog.heroku.com/archives/2015/5/7/new-dyno-types-public-beta), I decided it was time to re-evaluate my [side-project](/projects) hosting strategies.  Historically, [Heroku](http://heroku.com) has been my go to as a hosting provider for my various rails application endeavors, because it is so easy to setup and, most importantly, free.
 

@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-<img src="/images/house.jpg" title="Rails tip: Returning" class="banner-img"  />
+<img src="/images/house.jpg" alt="house" title="Rails tip: Returning" class="banner-img"  />
 
 If you have been programming in Rails for pretty much any length of time, you will definitely run into a method that looks like this:
 

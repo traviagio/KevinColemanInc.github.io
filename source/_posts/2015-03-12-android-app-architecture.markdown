@@ -5,7 +5,7 @@ date: 2015-03-12 15:46:43 -0400
 comments: true
 categories: 
 ---
-<img src="/images/beach2.jpg" title="Otto meet Retrofit: How to build a scalable and performant Android application" class="banner-img"  />
+<img src="/images/beach2.jpg" alt="beach" title="Otto meet Retrofit: How to build a scalable and performant Android application" class="banner-img"  />
 
 Unlike Ruby on Rails, Android app development does not have as definitive of an opinion on how apps should be developed and so we have designed our own pattern leveraging open source tools like [Otto](http://square.github.io/otto/) and [Retrofit](http://square.github.io/retrofit/) to design our applications.
 

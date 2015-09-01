@@ -6,7 +6,7 @@ comments: true
 categories:
 ---
 
-<img src="/images/mountains.jpeg" title="One Rails App Two Web Applications" class="banner-img"  />
+<img src="/images/mountains.jpeg" alt="mountains" title="One Rails App Two Web Applications" class="banner-img"  />
 
 When building a rails application, sometimes it is quicker to build one code base that is shared on two completely different frontend applications.  I am going to discuss the design approaches I used to segregate the two rails websites within a single rails application base.
 

@@ -5,7 +5,7 @@ date: 2014-07-28 12:46:17 -0400
 comments: true
 categories: real_estate
 ---
-<img src="/images/city-houses.jpg" title="First Real Estate Investment Property" class="banner-img"  />
+<img src="/images/city-houses.jpg" alt="city houses" title="First Real Estate Investment Property" class="banner-img"  />
 
 This week I will be closing on my first house that I plan on renovating and selling in the next few months.  I have been looking for a low-end flip for over a year now and I finally found one via [NetWorth Reality](http://networthrealtyusa.com/) in Atlanta.
 

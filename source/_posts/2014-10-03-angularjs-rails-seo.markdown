@@ -6,7 +6,7 @@ comments: true
 categories:
 ---
 
-<img src="/images/mountain.jpeg" title="Angularjs Rails and SEO Part 1" class="banner-img"  />
+<img src="/images/mountain.jpeg" alt="mountain" title="Angularjs Rails and SEO Part 1" class="banner-img"  />
 
 ## Intro
 Today I was handed an interesting project around improve the SEO surface area of an [AngularJS](https://angularjs.org/) SPA for a client.  After a bit of research on how to handle this, I decided that I should roll my own tool to solve this problem as it will give me greater flexibility later as opposed to going with a SaaS app like [Prerender.io](http://Prerender.io).

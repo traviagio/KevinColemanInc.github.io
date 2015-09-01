@@ -6,7 +6,7 @@ comments: true
 categories:
 ---
 
-<img src="/images/hills.jpg" title="How to get OSX git branch name in console" class="banner-img"  />
+<img src="/images/hills.jpg" alt="hills" title="How to get OSX git branch name in console" class="banner-img"  />
 
 I have always had a problem of forgetting which git branch I was on and committing my changes to the wrong branch.  The best way I have found to solve this problem is to have the branch name printed in the console prompt.
 

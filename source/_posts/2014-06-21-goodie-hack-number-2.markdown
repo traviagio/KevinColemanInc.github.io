@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-<img src="/images/urban.jpg" title="Goodie Hack Atlanta 2014" class="banner-img" />
+<img src="/images/urban.jpg" alt="urban" title="Goodie Hack Atlanta 2014" class="banner-img" />
 
 [Goodie Hack](http://goodiehack.com/) was awesome! I met some really cool people and got to learn more about the Atlanta Food and Farming organizations.
 

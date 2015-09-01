@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-<img src="/images/park.jpg" title="Atlanta Startup Jobs - Scratch your own itch" class="banner-img"  />
+<img src="/images/park.jpg"  alt="park" title="Atlanta Startup Jobs - Scratch your own itch" class="banner-img"  />
 
 I have always wanted to start my own business, ever since I was in high school. Since then, I have been struggling to find an idea that I am truly passionate enough to invest my time or resources to execute on my own.
 

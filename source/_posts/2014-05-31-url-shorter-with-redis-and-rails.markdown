@@ -5,7 +5,7 @@ date: 2014-05-31 14:22:47 -0400
 comments: true
 categories: 
 ---
-<img src="/images/locks.jpg" title="Redis key value storage" class="banner-img" />
+<img src="/images/locks.jpg" title="Redis key value storage" alt="locks" class="banner-img" />
 
 Here is how to build a quick URL shortener in Rails 4.0 that shares the same application as the rest of your project, but is meant to run on a different domain using [Redis](http://redis.io/).
 

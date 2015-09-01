@@ -5,7 +5,7 @@ date: 2014-10-26 20:14:40 -0400
 comments: true
 categories:
 ---
-<img src="/images/cooking.jpg" title="How to win a hackathon" class="banner-img"  />
+<img src="/images/cooking.jpg" alt="cooking" title="How to win a hackathon" class="banner-img"  />
 
 I have been to a few hackathons and startup weekends over the last few years and I have a pretty good prize rate (I have placed at more than 50% of the events).  After my back to back win of the ATT and FinApps hackathons, I want to share my thoughts on what it takes to be a winning team.
 

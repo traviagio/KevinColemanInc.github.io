@@ -6,7 +6,7 @@ comments: true
 categories:
 ---
 
-<img src="/images/ppl-skyline.jpg" title="How to start web consulting" class="banner-img"  />
+<img src="/images/ppl-skyline.jpg" alt="skyline" title="How to start web consulting" class="banner-img"  />
 
 I have lots of advice for you. I just moved from a corporate job to rails consulting 2-4mo ago, because someone offered me more money than I could say no to.
 

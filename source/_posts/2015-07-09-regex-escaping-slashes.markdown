@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-<img src="/images/buildings.jpg" title="Regex: Escaping Slashes" class="banner-img"  />
+<img src="/images/buildings.jpg" alt="buildings in czech" title="Regex: Escaping Slashes" class="banner-img"  />
 
 Escaping slashes in can leave regex expressions difficult to read.  A regex statement that is meant to identify a url like this one `http://atdc.org/wp-admin/admin-ajax.php`.
 

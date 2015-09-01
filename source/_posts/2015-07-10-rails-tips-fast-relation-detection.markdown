@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-<img src="/images/cafe.jpg" title="Rails tips: Fast Relation Detection" class="banner-img"  />
+<img src="/images/cafe.jpg" alt="cafe" title="Rails tips: Fast Relation Detection" class="banner-img"  />
 
 When working with active_record, you often need to establish if a row exists to see if you can do operations against it.  Here is an interesting technique when checking if objects or relations exist in a collection.
 
