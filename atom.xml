@@ -4,7 +4,7 @@
   <title><![CDATA[Kevin Coleman]]></title>
   <link href="http://www.kcoleman.me/atom.xml" rel="self"/>
   <link href="http://www.kcoleman.me/"/>
-  <updated>2015-08-31T17:55:33-07:00</updated>
+  <updated>2015-09-03T18:41:54-07:00</updated>
   <id>http://www.kcoleman.me/</id>
   <author>
     <name><![CDATA[Kevin Coleman]]></name>
@@ -12,6 +12,121 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Bulk Email Sending With Ruby]]></title>
+    <link href="http://www.kcoleman.me/blog/2015/09/03/bulk-email-sending-with-ruby/"/>
+    <updated>2015-09-03T17:44:17-07:00</updated>
+    <id>http://www.kcoleman.me/blog/2015/09/03/bulk-email-sending-with-ruby</id>
+    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/bike.jpg" alt="bike" title="Bulk email sending with Ruby" class="banner-img"  /></p>
+
+<p>A friend of mine last week has a mailing list from 5+ years ago from an old niche website that he would like to market a new website too.  He asked for my advice on the cheapest and most effective solution for blasting out to this 100k user list.</p>
+
+<p>I approached this problem with a few things in mind.  Mail providers don&rsquo;t trust emails from new domains and new email servers.  Mail servers, much like websites, have a reputation score.  If a mail server thinks you blasting too much unwanted email, then they assume you&rsquo;re a spam king and mark all emails sent from your address as spam.</p>
+
+<p>So the key take away is don&rsquo;t let mail servers think you are spamming their users.  The best way to protect yourself getting a bad reputation is making sure you are sending to a legit email and you only send it once.</p>
+
+<p>Since Mailgun&rsquo;s IP addresses are have a high reputation, we opted to use them instead of rolling our own POP server.  Plus they offer 10k emails sending for free.</p>
+
+<p>In my script I validate an email 3 different ways before I determine if it is a legit email account.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">verify_domain</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">c</span> <span class="o">=</span> <span class="no">Whois</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="n">c</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="n">domain_from_email</span><span class="p">(</span><span class="n">email</span><span class="p">))</span>
+</span><span class='line'>  <span class="n">c</span><span class="o">.</span><span class="n">registered?</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">domain_from_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">split</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">domain</span> <span class="o">=</span> <span class="nb">split</span><span class="o">[-</span><span class="mi">1</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">dd</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">dd</span><span class="o">[-</span><span class="mi">2</span><span class="o">]</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">dd</span><span class="o">[-</span><span class="mi">1</span><span class="o">]</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first check is to see if the domain is even a valid domain name.  I use the gem <code>[whois](https://github.com/weppos/whois)</code> to verify the domain of the email is legit.  <code>domain_from_email</code> is just a hacky way of pulling out the domain from the email account. This would break if your email had a .co.uk domain, or anything with 2 dots in the tld, but most of the emails don&rsquo;t fall into that category.</p>
+
+<p>So, now we know the domain is real, lets check the MX records to see if the domain even supports receiving emails.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">def</span> <span class="nf">validate_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">ValidateEmail</span><span class="o">.</span><span class="n">valid?</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">ValidateEmail</span><span class="o">.</span><span class="n">mx_valid_with_fallback?</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is using the <a href="https://github.com/hallelujah/valid_email">valid_email gem</a>.</p>
+
+<p>We could actually ask the mail server if the email address is legit, but that can be an unreliable source of information depending on how the machines are configured.</p>
+
+<p>Since there could be duplicate email addresses in this list or in case I need to restart the process, I need to keep track of who I have emailed already.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">def</span> <span class="nf">already_sent?</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">SentEmail</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So I check to see if I think I have seen this email before.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="vi">@emails</span> <span class="o">=</span> <span class="n">load_emails</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="vi">@emails</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">50</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">email</span><span class="o">|</span>
+</span><span class='line'>    <span class="k">begin</span>
+</span><span class='line'>      <span class="k">raise</span> <span class="s2">&quot;verify domain failed&quot;</span> <span class="k">unless</span> <span class="n">verify_domain</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">raise</span> <span class="s2">&quot;email validate failed&quot;</span> <span class="k">unless</span> <span class="n">validate_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">raise</span> <span class="s2">&quot;already sent&quot;</span> <span class="k">if</span> <span class="n">already_sent?</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="no">Inviter</span><span class="o">.</span><span class="n">invite</span><span class="p">(</span><span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">deliver</span>
+</span><span class='line'>      <span class="no">SentEmail</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">rescue</span> <span class="no">StandardError</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+</span><span class='line'>      <span class="no">FilteredEmail</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span><span class="n">email</span><span class="p">,</span> <span class="ss">reason</span><span class="p">:</span><span class="n">ex</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Wrapping it all together, we have a check each of our validation methods.  If any one of them fails, we throw an exception which makes note of it in the rescue method.</p>
+
+<p>I limit the run to 50 emails initially just so I can keep an eye on my mailgun reputation.</p>
+
+<p>Because mailgun limits the number of emails that can be processed per hour, I am not going to bother threading this, since this will process much faster than mailgun will let me.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails Tip: Returning]]></title>
@@ -1488,23 +1603,6 @@
 <li><p>Attend <a href="http://www.atlsuds.com/">startup</a> events. There are lots of people that have ideas, raised millions of dollars, but don&rsquo;t have the tech talent to build what they want to build. You need to find these people. Build relationships with VC firms. There are lots of startups with a $200,000 tech budget and no one to spend it on.</p></li>
 </ol>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Goodie Hack #2]]></title>
-    <link href="http://www.kcoleman.me/blog/2014/06/21/goodie-hack-number-2/"/>
-    <updated>2014-06-21T14:31:51-07:00</updated>
-    <id>http://www.kcoleman.me/blog/2014/06/21/goodie-hack-number-2</id>
-    <content type="html"><![CDATA[<p><img src="http://www.kcoleman.me/images/urban.jpg" alt="urban" title="Goodie Hack Atlanta 2014" class="banner-img" /></p>
-
-<p><a href="http://goodiehack.com/">Goodie Hack</a> was awesome! I met some really cool people and got to learn more about the Atlanta Food and Farming organizations.</p>
-
-<p>I joined the Atlanta Food and Farming organization where we integerated <a href="https://www.google.com/maps/preview">Google Map Builder</a> and <a href="http://www.google.com/google-d-s/createforms.html">Google Forms</a> to build an awesome resource for sharing data about where your food comes from.  Food related organizations submit data about what they are doing to encourage healthy eating in the community.  Our map includes information like where the closet community garden is or where they can donate their compost.</p>
-
-<p><a href="https://www.linkedin.com/in/yosepk">Yosep Kim</a> built <a href="htttp://asitgoes.com">AsItGoes.com</a> to help presenters get feed back on the presentation. Apparently, I need to be more funny, ha.  I am going to take this tool to my <a href="http://www.toastmasters.org/">Toastmaster</a>&rsquo;s club and use it for feedback for my presentations.</p>
-
-<p>I can&rsquo;t wait to attend to the next event.</p>
 ]]></content>
   </entry>
   

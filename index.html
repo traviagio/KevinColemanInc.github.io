@@ -9,12 +9,7 @@
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="If you have been programming in Rails for pretty much any length of time, you will definitely run into a method that looks like this: 1
-2
-3
-4
-5
-6 &hellip;">
+  <meta name="description" content="A friend of mine last week has a mailing list from 5+ years ago from an old niche website that he would like to market a new website too. He asked &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -107,6 +102,142 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/09/03/bulk-email-sending-with-ruby/">Bulk Email Sending With Ruby</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-09-03T17:44:17-07:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>5:44 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/bike.jpg" alt="bike" title="Bulk email sending with Ruby" class="banner-img"  /></p>
+
+<p>A friend of mine last week has a mailing list from 5+ years ago from an old niche website that he would like to market a new website too.  He asked for my advice on the cheapest and most effective solution for blasting out to this 100k user list.</p>
+
+<p>I approached this problem with a few things in mind.  Mail providers don&rsquo;t trust emails from new domains and new email servers.  Mail servers, much like websites, have a reputation score.  If a mail server thinks you blasting too much unwanted email, then they assume you&rsquo;re a spam king and mark all emails sent from your address as spam.</p>
+
+<p>So the key take away is don&rsquo;t let mail servers think you are spamming their users.  The best way to protect yourself getting a bad reputation is making sure you are sending to a legit email and you only send it once.</p>
+
+<p>Since Mailgun&rsquo;s IP addresses are have a high reputation, we opted to use them instead of rolling our own POP server.  Plus they offer 10k emails sending for free.</p>
+
+<p>In my script I validate an email 3 different ways before I determine if it is a legit email account.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">verify_domain</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">c</span> <span class="o">=</span> <span class="no">Whois</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="n">c</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="n">domain_from_email</span><span class="p">(</span><span class="n">email</span><span class="p">))</span>
+</span><span class='line'>  <span class="n">c</span><span class="o">.</span><span class="n">registered?</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">domain_from_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">split</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">domain</span> <span class="o">=</span> <span class="nb">split</span><span class="o">[-</span><span class="mi">1</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">dd</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">dd</span><span class="o">[-</span><span class="mi">2</span><span class="o">]</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">dd</span><span class="o">[-</span><span class="mi">1</span><span class="o">]</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first check is to see if the domain is even a valid domain name.  I use the gem <code>[whois](https://github.com/weppos/whois)</code> to verify the domain of the email is legit.  <code>domain_from_email</code> is just a hacky way of pulling out the domain from the email account. This would break if your email had a .co.uk domain, or anything with 2 dots in the tld, but most of the emails don&rsquo;t fall into that category.</p>
+
+<p>So, now we know the domain is real, lets check the MX records to see if the domain even supports receiving emails.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">def</span> <span class="nf">validate_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">ValidateEmail</span><span class="o">.</span><span class="n">valid?</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">ValidateEmail</span><span class="o">.</span><span class="n">mx_valid_with_fallback?</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is using the <a href="https://github.com/hallelujah/valid_email">valid_email gem</a>.</p>
+
+<p>We could actually ask the mail server if the email address is legit, but that can be an unreliable source of information depending on how the machines are configured.</p>
+
+<p>Since there could be duplicate email addresses in this list or in case I need to restart the process, I need to keep track of who I have emailed already.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">def</span> <span class="nf">already_sent?</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">SentEmail</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So I check to see if I think I have seen this email before.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="vi">@emails</span> <span class="o">=</span> <span class="n">load_emails</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="vi">@emails</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">50</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">email</span><span class="o">|</span>
+</span><span class='line'>    <span class="k">begin</span>
+</span><span class='line'>      <span class="k">raise</span> <span class="s2">&quot;verify domain failed&quot;</span> <span class="k">unless</span> <span class="n">verify_domain</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">raise</span> <span class="s2">&quot;email validate failed&quot;</span> <span class="k">unless</span> <span class="n">validate_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">raise</span> <span class="s2">&quot;already sent&quot;</span> <span class="k">if</span> <span class="n">already_sent?</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="no">Inviter</span><span class="o">.</span><span class="n">invite</span><span class="p">(</span><span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">deliver</span>
+</span><span class='line'>      <span class="no">SentEmail</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">rescue</span> <span class="no">StandardError</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+</span><span class='line'>      <span class="no">FilteredEmail</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span><span class="n">email</span><span class="p">,</span> <span class="ss">reason</span><span class="p">:</span><span class="n">ex</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Wrapping it all together, we have a check each of our validation methods.  If any one of them fails, we throw an exception which makes note of it in the rescue method.</p>
+
+<p>I limit the run to 50 emails initially just so I can keep an eye on my mailgun reputation.</p>
+
+<p>Because mailgun limits the number of emails that can be processed per hour, I am not going to bother threading this, since this will process much faster than mailgun will let me.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -887,187 +1018,6 @@
 <li>By &ldquo;just&rdquo; I mean, standard gem stack provided in rails 4.2 with typical basic additions I would use in both grape and vanilla rails.</li>
 </ul>
 
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/03/12/android-app-architecture/">Otto Meet Retrofit: How to Build a Scalable and Performant Android Application</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-12T12:46:43-07:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>12:46 pm</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/beach2.jpg" alt="beach" title="Otto meet Retrofit: How to build a scalable and performant Android application" class="banner-img"  /></p>
-
-<p>Unlike Ruby on Rails, Android app development does not have as definitive of an opinion on how apps should be developed and so we have designed our own pattern leveraging open source tools like <a href="http://square.github.io/otto/">Otto</a> and <a href="http://square.github.io/retrofit/">Retrofit</a> to design our applications.</p>
-
-<p>After much research, we at <a href="http://sparkstart.io">Spark Start</a> invested in developing a design pattern for our client applications that leverages the best practices.  Jumping right in here:</p>
-
-<h2>Consuming a RESTful API</h2>
-
-<p>Following Object Oriented Programming&rsquo;s best practices, all objects should each only have one job.  With the start of a new api, create a folder with the name of the API you are trying to consume.</p>
-
-<p>Inside of your client.java file, you will include your retrofit interface classes.  This file will specify how your app will be calling the API.</p>
-
-<figure class='code'><figcaption><span>APIClient.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">APIClient</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">interface</span> <span class="nc">IUser</span> <span class="o">{</span>
-</span><span class='line'>        <span class="nd">@GET</span><span class="o">(</span><span class="s">&quot;/users/Me.json&quot;</span><span class="o">)</span>
-</span><span class='line'>        <span class="kt">void</span> <span class="nf">getMe</span><span class="o">(</span><span class="n">Callback</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">callback</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nd">@GET</span><span class="o">(</span><span class="s">&quot;/users.json&quot;</span><span class="o">)</span>
-</span><span class='line'>        <span class="kt">void</span> <span class="nf">getUsers</span><span class="o">(</span><span class="n">Callback</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;&gt;</span> <span class="n">callback</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This keeps all of our API information in one small maintainable file.  Notice how we are always using the retrofit callback method instead of the async call.  This will allow our code to start a web request on any thread.  Now the code consuming this will never have to worry about thread locking.</p>
-
-<figure class='code'><figcaption><span>APIManager.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">APIManager</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">Bus</span> <span class="n">mBus</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="nf">CooleafAPIManager</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">,</span> <span class="n">Bus</span> <span class="n">bus</span><span class="o">)</span>
-</span><span class='line'>    <span class="o">{</span>
-</span><span class='line'>        <span class="n">mBus</span> <span class="o">=</span> <span class="n">bus</span><span class="o">;</span>
-</span><span class='line'>        <span class="n">mAsyncRestAdapter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RestAdapter</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
-</span><span class='line'>                <span class="o">.</span><span class="na">setEndpoint</span><span class="o">(</span><span class="n">API_URL</span><span class="o">)</span>
-</span><span class='line'>                <span class="o">.</span><span class="na">setRequestInterceptor</span><span class="o">(</span><span class="n">getCookieInterceptor</span><span class="o">())</span>
-</span><span class='line'>                <span class="o">.</span><span class="na">setLogLevel</span><span class="o">(</span><span class="n">RestAdapter</span><span class="o">.</span><span class="na">LogLevel</span><span class="o">.</span><span class="na">BASIC</span><span class="o">)</span>
-</span><span class='line'>                <span class="o">.</span><span class="na">build</span><span class="o">();</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nd">@Subscribe</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onLoadAuthenticateEvent</span><span class="o">(</span><span class="n">LoadAuthenticateEvent</span> <span class="n">loadAuthenticateEvent</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">String</span> <span class="n">email</span> <span class="o">=</span> <span class="n">loadAuthenticateEvent</span><span class="o">.</span><span class="na">getEmail</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">String</span> <span class="n">password</span> <span class="o">=</span> <span class="n">loadAuthenticateEvent</span><span class="o">.</span><span class="na">getPassword</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">Callback</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">callback</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Callback</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>            <span class="nd">@Override</span>
-</span><span class='line'>            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">success</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">,</span> <span class="n">Response</span> <span class="n">response</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="n">mBus</span><span class="o">.</span><span class="na">post</span><span class="o">(</span><span class="k">new</span> <span class="nf">LoadedMeEvent</span><span class="o">(</span><span class="n">user</span><span class="o">));</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="nd">@Override</span>
-</span><span class='line'>            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">failure</span><span class="o">(</span><span class="n">RetrofitError</span> <span class="n">retrofitError</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="n">mBus</span><span class="o">.</span><span class="na">post</span><span class="o">(</span><span class="k">new</span> <span class="nf">LoadedErrorEvent</span><span class="o">(</span><span class="n">retrofitError</span><span class="o">));</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">};</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">sClient</span><span class="o">.</span><span class="na">authenticate</span><span class="o">(</span><span class="n">email</span><span class="o">,</span> <span class="n">password</span><span class="o">,</span> <span class="n">deviceID</span><span class="o">,</span> <span class="n">callback</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The manager class acts as a middleware between the client and the rest of our application.  For our <a href="http://cooleaf.com">most recent application</a>, authentication is handled by cookies, so we had to create our own cookie interceptor to handle authentication.</p>
-
-<p>The manager class subscribes to the bus and watches for events that request an API call.  When a user needs to authenticate, it catches the event, creates a callback which will intern fire off a new event once the response is finished.</p>
-
-<h2>Hooking in Otto into the controller classes</h2>
-
-<p>Otto is a great tool for managing async task events.  It has an event bus that you subscribe and unsubscribe your fragments and activities to, so when a callback (e.g. Retrofit is finished with a request), they can process the response.</p>
-
-<figure class='code'><figcaption><span>LoginFragment.java</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="nd">@Override</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onResume</span><span class="o">()</span>
-</span><span class='line'>    <span class="o">{</span>
-</span><span class='line'>       <span class="kd">super</span><span class="o">.</span><span class="na">onResume</span><span class="o">();</span>
-</span><span class='line'>       <span class="n">BusProvider</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">register</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>    <span class="nd">@Override</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPause</span><span class="o">()</span>
-</span><span class='line'>    <span class="o">{</span>
-</span><span class='line'>        <span class="kd">super</span><span class="o">.</span><span class="na">onPause</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">BusProvider</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">unregister</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">onLoginClick</span><span class="o">()</span>
-</span><span class='line'>    <span class="o">{</span>
-</span><span class='line'>        <span class="n">BusProvider</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">post</span><span class="o">(</span><span class="k">new</span> <span class="nf">LoadAuthenticateEvent</span><span class="o">(</span><span class="n">userName</span><span class="o">,</span><span class="n">password</span><span class="o">));</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>When the login fragment is resumed, otto automatically subscribes the fragment to the bus.  When it is paused, it unsubscribes.  This is awesome, because if a request is initiated to the API, but then the fragment is closed before the rest api responds, we don&rsquo;t have the fragment still listening for that response.</p>
-
-<h2>Conclusion</h2>
-
-<p>Otto and retrofit play really nicely together and are great tools for building an android app.  Managing all of the events can get a bit ugly, so be careful how you name them and organize them in the project.</p>
 </div>
   
   

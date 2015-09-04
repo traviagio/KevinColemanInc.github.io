@@ -5,16 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Rails Tip: Returning - Kevin Coleman</title>
+  <title>Bulk Email Sending With Ruby - Kevin Coleman</title>
   <meta name="author" content="Kevin Coleman">
 
   
-  <meta name="description" content="If you have been programming in Rails for pretty much any length of time, you will definitely run into a method that looks like this: 1
-2
-3
-4
-5
-6 &hellip;">
+  <meta name="description" content="A friend of mine last week has a mailing list from 5+ years ago from an old niche website that he would like to market a new website too. He asked &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -23,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.kcoleman.me/blog/2015/07/12/ruby-tip-returning">
+  <link rel="canonical" href="http://www.kcoleman.me/blog/2015/09/03/bulk-email-sending-with-ruby">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Kevin Coleman" type="application/atom+xml">
@@ -111,7 +106,7 @@
   <header>
     
       
-        <h1 class="entry-title">Rails Tip: Returning</h1>
+        <h1 class="entry-title">Bulk Email Sending With Ruby</h1>
       
     
     
@@ -121,7 +116,7 @@
 
 
 
-<time class='entry-date' datetime='2015-07-12T13:35:15-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:35 pm</span></time>
+<time class='entry-date' datetime='2015-09-03T17:44:17-07:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>5:44 pm</span></time>
         
         
       </p>
@@ -129,9 +124,17 @@
   </header>
 
 
-<div class="entry-content"><p><img src="/images/house.jpg" alt="house" title="Rails tip: Returning" class="banner-img"  /></p>
+<div class="entry-content"><p><img src="/images/bike.jpg" alt="bike" title="Bulk email sending with Ruby" class="banner-img"  /></p>
 
-<p>If you have been programming in Rails for pretty much any length of time, you will definitely run into a method that looks like this:</p>
+<p>A friend of mine last week has a mailing list from 5+ years ago from an old niche website that he would like to market a new website too.  He asked for my advice on the cheapest and most effective solution for blasting out to this 100k user list.</p>
+
+<p>I approached this problem with a few things in mind.  Mail providers don&rsquo;t trust emails from new domains and new email servers.  Mail servers, much like websites, have a reputation score.  If a mail server thinks you blasting too much unwanted email, then they assume you&rsquo;re a spam king and mark all emails sent from your address as spam.</p>
+
+<p>So the key take away is don&rsquo;t let mail servers think you are spamming their users.  The best way to protect yourself getting a bad reputation is making sure you are sending to a legit email and you only send it once.</p>
+
+<p>Since Mailgun&rsquo;s IP addresses are have a high reputation, we opted to use them instead of rolling our own POP server.  Plus they offer 10k emails sending for free.</p>
+
+<p>In my script I validate an email 3 different ways before I determine if it is a legit email account.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -139,35 +142,95 @@
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">some_method</span>
-</span><span class='line'>  <span class="n">foo</span> <span class="o">=</span> <span class="o">[]</span>
-</span><span class='line'>  <span class="n">foo</span> <span class="o">&lt;&lt;</span> <span class="no">Cat</span><span class="o">.</span><span class="n">new</span>
-</span><span class='line'>  <span class="n">foo</span> <span class="o">&lt;&lt;</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">foo</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">verify_domain</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">c</span> <span class="o">=</span> <span class="no">Whois</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="n">c</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="n">domain_from_email</span><span class="p">(</span><span class="n">email</span><span class="p">))</span>
+</span><span class='line'>  <span class="n">c</span><span class="o">.</span><span class="n">registered?</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">domain_from_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">split</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">domain</span> <span class="o">=</span> <span class="nb">split</span><span class="o">[-</span><span class="mi">1</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">dd</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">dd</span><span class="o">[-</span><span class="mi">2</span><span class="o">]</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">dd</span><span class="o">[-</span><span class="mi">1</span><span class="o">]</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>You initiate some local variable, do some things to it, then return it.</p>
+<p>The first check is to see if the domain is even a valid domain name.  I use the gem <code>[whois](https://github.com/weppos/whois)</code> to verify the domain of the email is legit.  <code>domain_from_email</code> is just a hacky way of pulling out the domain from the email account. This would break if your email had a .co.uk domain, or anything with 2 dots in the tld, but most of the emails don&rsquo;t fall into that category.</p>
 
-<p>There is a lot of boiler plate code here and the smart developers behind rails added a method to the object class called returning.  This method simplifies this workflow.  Here is an example of the returning method in action.</p>
+<p>So, now we know the domain is real, lets check the MX records to see if the domain even supports receiving emails.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">some_method</span>
-</span><span class='line'>  <span class="n">returning</span> <span class="n">foo</span> <span class="o">=</span> <span class="o">[]</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">foo</span> <span class="o">&lt;&lt;</span> <span class="no">Cat</span><span class="o">.</span><span class="n">new</span>
-</span><span class='line'>    <span class="n">foo</span> <span class="o">&lt;&lt;</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">def</span> <span class="nf">validate_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">ValidateEmail</span><span class="o">.</span><span class="n">valid?</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">ValidateEmail</span><span class="o">.</span><span class="n">mx_valid_with_fallback?</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
 </span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>This is a much more elegant solution since it just reads more like a sentence than the previous example.  &ldquo;Add Cat and Dog to foo then return&rdquo; vs &ldquo;create foo. Add Cat and Dog. return foo&rdquo;.  Ruby&rsquo;s ability to easily add DSL to objectss on the fly makes ruby so powerful and easy to maintian.</p>
+<p>This is using the <a href="https://github.com/hallelujah/valid_email">valid_email gem</a>.</p>
+
+<p>We could actually ask the mail server if the email address is legit, but that can be an unreliable source of information depending on how the machines are configured.</p>
+
+<p>Since there could be duplicate email addresses in this list or in case I need to restart the process, I need to keep track of who I have emailed already.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="k">def</span> <span class="nf">already_sent?</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>    <span class="no">SentEmail</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span> <span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So I check to see if I think I have seen this email before.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="vi">@emails</span> <span class="o">=</span> <span class="n">load_emails</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="vi">@emails</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">50</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">email</span><span class="o">|</span>
+</span><span class='line'>    <span class="k">begin</span>
+</span><span class='line'>      <span class="k">raise</span> <span class="s2">&quot;verify domain failed&quot;</span> <span class="k">unless</span> <span class="n">verify_domain</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">raise</span> <span class="s2">&quot;email validate failed&quot;</span> <span class="k">unless</span> <span class="n">validate_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">raise</span> <span class="s2">&quot;already sent&quot;</span> <span class="k">if</span> <span class="n">already_sent?</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="no">Inviter</span><span class="o">.</span><span class="n">invite</span><span class="p">(</span><span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">deliver</span>
+</span><span class='line'>      <span class="no">SentEmail</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span><span class="n">email</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">rescue</span> <span class="no">StandardError</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+</span><span class='line'>      <span class="no">FilteredEmail</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">email</span><span class="p">:</span><span class="n">email</span><span class="p">,</span> <span class="ss">reason</span><span class="p">:</span><span class="n">ex</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Wrapping it all together, we have a check each of our validation methods.  If any one of them fails, we throw an exception which makes note of it in the rescue method.</p>
+
+<p>I limit the run to 50 emails initially just so I can keep an eye on my mailgun reputation.</p>
+
+<p>Because mailgun limits the number of emails that can be processed per hour, I am not going to bother threading this, since this will process much faster than mailgun will let me.</p>
 </div>
 
 
@@ -192,7 +255,7 @@
 
 
 
-<time class='entry-date' datetime='2015-07-12T13:35:15-07:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:35 pm</span></time>
+<time class='entry-date' datetime='2015-09-03T17:44:17-07:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>5:44 pm</span></time>
       
       
 
@@ -201,7 +264,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.kcoleman.me/blog/2015/07/12/ruby-tip-returning/" data-via="KevinColemanInc" data-counturl="http://www.kcoleman.me/blog/2015/07/12/ruby-tip-returning/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://www.kcoleman.me/blog/2015/09/03/bulk-email-sending-with-ruby/" data-via="KevinColemanInc" data-counturl="http://www.kcoleman.me/blog/2015/09/03/bulk-email-sending-with-ruby/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -212,10 +275,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2015/07/10/rails-tips-fast-relation-detection/" title="Previous Post: Rails tips: Fast Relation Detection">&laquo; Rails tips: Fast Relation Detection</a>
+        <a class="basic-alignment left" href="/blog/2015/07/12/ruby-tip-returning/" title="Previous Post: Rails tip: Returning">&laquo; Rails tip: Returning</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2015/09/03/bulk-email-sending-with-ruby/" title="Next Post: Bulk email sending with Ruby">Bulk email sending with Ruby &raquo;</a>
       
     </p>
   </footer>
